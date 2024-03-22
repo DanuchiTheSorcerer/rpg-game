@@ -3,16 +3,20 @@ import { Title } from "./gameStates/title";
 class Game {
   constructor() {
     this.gameStates = [];
-    this.activeGameState =  "";
+    this.activeGameState =  null;
   }
   init() {
     this.createGameStates()
+    this.loadGameState(0)
   }
   createGameStates() {
     this.gameStates.push(new Title())
   }
-  loadGameState() {
-    
+  loadGameState(newLoadedState) {
+    //takes in a number
+    //0 = title, 1 = world, 2 = dungeon
+    this.activeGameState = newLoadedState
+    this.gameStates[newLoadedState].load()
   }
 };
 
