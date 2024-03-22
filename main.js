@@ -1,20 +1,23 @@
-
+import { Title } from "./gameStates/title";
 
 class Game {
-  constructor(gameStates) {
-    this.gameStates = [gameStates]
+  constructor() {
+    this.gameStates = [];
     this.activeGameState =  "";
   }
-  createGameStates() {}
+  init() {
+    this.createGameStates()
+  }
+  createGameStates() {
+    this.gameStates.push(new Title())
+  }
+  loadGameState() {
+    
+  }
 };
 
-export class GameState {
-  constructor(name,canvases) {
-    this.name = name
-    this.canvases = canvases
-  }
-}
-
+let game = new Game()
+game.init()
 
 
 /////--------------------COOKIE DISCOVERIES(found Mar 20, 2024)------------------------------------
@@ -40,9 +43,3 @@ function deleteAllCookies() {
   }
 }
  */
-
-document.querySelector('#bodyDiv').innerHTML = `
-    <canvas id="info" width="${window.innerWidth/5 - 10}" height="${window.innerHeight - 20}" style="border: 1px solid black;position:absolute;left:10px"></canvas>
-    <canvas id="mainScreen" width="${4*window.innerWidth/5 - 10}" height="${2*(window.innerHeight - 20)/3}" style="border: 1px solid black;position:absolute;left:${window.innerWidth/5}px"></canvas>
-    <canvas id="dialogue" width="${4*window.innerWidth/5 - 10}" height="${(window.innerHeight - 20)/3}" style="border: 1px solid black;position:absolute;left:${window.innerWidth/5}px;top:${2*(window.innerHeight/3 - 3)}px"></canvas>
-`;
