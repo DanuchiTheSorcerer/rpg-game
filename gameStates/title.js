@@ -1,13 +1,12 @@
 import { GameState } from "./gameState";
-import { Canvas } from "../extraModules/canvas"
+import { DrawController } from "../extraModules/drawController"
 
 export class Title extends GameState {
     constructor() {
-        super("title", [new Canvas(0,0,1,1,1,"main")]);
-        this.draw = this.draw.bind(this)
+        super("title", new DrawController([new Canvas(0,0,1,1,1,"main")]));
     }
     draw() {
-        this.canvasData[0].refresh()
+        this.drawController.refreshAll()
         window.requestAnimationFrame(this.draw)
     }
 };

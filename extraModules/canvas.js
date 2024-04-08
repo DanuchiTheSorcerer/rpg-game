@@ -9,25 +9,6 @@ export class Canvas {
         this.borderWidth = borderWidth
         document.querySelector('#bodyDiv').insertAdjacentHTML("beforeend",`<canvas id=${this.id}></canvas>`);
     }
-    lineDraw(x1,y1,x2,y2) {
-        let canvas = document.getElementById(this.id)
-        let ctx = canvas.getContext("2d")
-        //alert("x:" + window.innerWidth + " y:" + window.innerHeight)
-        ctx.moveTo((x1*canvas.width)/(this.widthRel*1200),(y1*canvas.height)/(this.heightRel*675))
-        ctx.lineTo((x2*canvas.width)/(this.widthRel*1200),(y2*canvas.height)/(this.heightRel*675))
-        ctx.stroke()
-    }
-    rectDraw(x,y,width,height) {
-        let canvas = document.getElementById(this.id)
-        let ctx = canvas.getContext("2d")
-        //alert("x:" + window.innerWidth + " y:" + window.innerHeight)
-        ctx.beginPath()
-        ctx.rect((x*canvas.width)/(this.widthRel*1200),
-                (y*canvas.height)/(this.heightRel*675),
-                (width*canvas.width)/(this.widthRel*1200),
-                (height*canvas.height)/(this.heightRel*675))
-        ctx.fill()
-    }
     refresh() {
         let canvas = document.getElementById(this.id)
         let ctx = canvas.getContext("2d")

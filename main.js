@@ -8,7 +8,7 @@ class Game {
   }
   init() {
     this.createGameStates()
-    this.loadGameState(1)
+    this.loadGameState(0)
   }
   createGameStates() {
     this.gameStates.push(new Title())

@@ -1,7 +1,8 @@
 export class GameState {
-    constructor(name,canvasData) {
+    constructor(name,drawController) {
       this.name = name
-      this.canvasData = canvasData
+      this.drawController = drawController
+      this.drawCycle = 0
       this.draw = this.draw.bind(this)
     }
     load() {
