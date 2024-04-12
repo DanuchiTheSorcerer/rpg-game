@@ -6,6 +6,8 @@ export class GameState {
       this.draw = this.draw.bind(this)
     }
     load() {
+      alert("game state started loading")
+      this.drawController.newButton("main",10,10,100,100)
       this.draw()
     }
     draw() {
