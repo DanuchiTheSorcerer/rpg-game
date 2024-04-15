@@ -1,5 +1,6 @@
 import { GameState } from "./gameState";
 import { DrawController } from "../extraModules/drawController"
+import { Canvas } from "../extraModules/canvas"
 
 export class Dungeon extends GameState {
     constructor() {
