@@ -26,6 +26,8 @@ let game = new Game()
 game.init()
 
 
+/*  */
+
 /////--------------------COOKIE DISCOVERIES(found Mar 20, 2024)------------------------------------
 //cookies: form "key=value"
 //document.cookie = "key=value" to append a cookie or change a cookie with the same key
