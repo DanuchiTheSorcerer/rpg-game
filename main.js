@@ -26,7 +26,6 @@ let game = new Game()
 game.init()
 
 
-/*  */
 
 /////--------------------COOKIE DISCOVERIES(found Mar 20, 2024)------------------------------------
 //cookies: form "key=value"
