@@ -17,7 +17,7 @@ export class DrawController {
     newRect(canvasNumber,x,y,width,height) {
         this.elements.push(new Rect(canvasNumber,x,y,width,height))
     }
-    newButton(canvasNumber,x,y,width,height) {
-        this.elements.push(new Button(canvasNumber,x,y,width,height))
+    newButton(canvasNumber,x,y,width,height,color,text) {
+        this.elements.push(new Button(canvasNumber,x,y,width,height,color,text))
     }
 }

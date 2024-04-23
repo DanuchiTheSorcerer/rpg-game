@@ -8,7 +8,7 @@ export class GameState {
       this.inputController = new InputController()
     }
     load() {
-      this.drawController.newButton(1,100,200,300,200)
+      this.drawController.newButton(0,300,400,600,100,[127,63,31],"Continue Game")
       this.draw()
     }
     draw() {
