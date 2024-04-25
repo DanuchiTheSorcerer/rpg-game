@@ -5,12 +5,13 @@ class DrawElement {
 }
 
 export class Rect extends DrawElement {
-    constructor(canvasNumber,x,y,width,height) {
+    constructor(canvasNumber,x,y,width,height,color) {
         super(canvasNumber)
         this.x = x
         this.y = y
         this.width = width
         this.height = height
+        this.color = color
         this.type = "rect"
     }
     draw(canvas,inputPacket) {
@@ -24,14 +25,9 @@ export class Rect extends DrawElement {
     }
 }
 
-export class Button extends DrawElement {
+export class Button extends Rect {
     constructor(canvasNumber,x,y,width,height,color,text) {
-        super(canvasNumber)
-        this.x = x
-        this.y = y
-        this.width = width
-        this.height = height
-        this.color = color
+        super(canvasNumber,x,y,width,height,color)
         this.text = text
         this.type = "button"
     }
@@ -63,5 +59,25 @@ export class Button extends DrawElement {
         ctx.font = `${this.height * window.innerHeight/1000}px Verdana`
         ctx.fillText(this.text,((this.x+this.width/2)*can.width)/(canvas.widthRel*1200),
                             ((this.y+this.height/2)*can.height)/(canvas.heightRel*675))
+    }
+}
+
+export class Sprite extends DrawElement {
+    constructor(canvasNumber,x,y,scaleWidth,source) {
+        super(canvasNumber)
+        this.x = x
+        this.y = y
+        this.scaleWidth = scaleWidth
+        this.source = source
+    }
+    draw(canvas,inputPacket) {
+        let can = document.getElementById(canvas.id)
+        let ctx = can.getContext("2d")
+        let img = new Image()
+        img.src = this.source
+        ctx.drawImage(img, (this.x*can.width)/(canvas.widthRel*1200),
+                        (this.y*can.height)/(canvas.heightRel*675),
+                        (this.scaleWidth*can.width)/(canvas.widthRel*1200),
+                        (this.scaleWidth*(img.height/img.width)*can.height)/(canvas.heightRel*675))
     }
 }

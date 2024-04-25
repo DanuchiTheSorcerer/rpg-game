@@ -8,6 +8,7 @@ export class GameState {
       this.inputController = new InputController()
     }
     load() {
+      this.drawController.newSprite(0,0,0,1200,"../sprites/gameTitle.png")
       this.drawController.newButton(0,300,400,600,100,[127,63,31],"Continue Game")
       this.draw()
     }
