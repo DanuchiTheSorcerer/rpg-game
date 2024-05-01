@@ -20,14 +20,17 @@ export class InputController {
 
     getInputPacket() {
         let returnValue = {}
+        //initiate vars for landscape
         let innerHeight = window.innerHeight
         let innerWidth = window.innerHeight * 16/9
         let sideLength = (window.innerWidth - innerWidth)/2
+        //if portrait make them portrait
         if (window.innerHeight/window.innerWidth>9/16) {
             innerWidth = window.innerWidth
             innerHeight = window.innerWidth * 9/16
             sideLength = (window.innerHeight - innerHeight)/2
         }
+        //actually returning things
         if (window.innerHeight/window.innerWidth>9/16) {
             returnValue = {
                 mouseX: this.mouseX*(1200/innerWidth),
