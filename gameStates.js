@@ -9,24 +9,33 @@ export class GameState {
       this.drawController = drawController
       this.shouldEndState = false
       this.inputController = new InputController()
+      this.updateFrame = this.updateFrame.bind(this);
     }
     load() {
       this.drawController.newSprite(0, 0, 0, 1200, "../sprites/gameTitle.png");
       this.drawController.newButton(0, 300, 400, 600, 100, [127, 63, 31], "Continue Game");
-
-      const updateLogic = (resolve) => {
-        let inputPacket = this.inputController.getInputPacket();
-        this.drawController.refreshAll(this.inputController.getInputPacket());
-        this.logicFrame();
-        if (inputPacket.leftMouse) {
-          alert("end");
-          this.shouldEndState = true;
-          resolve();
-        } else {
-          window.requestAnimationFrame(() => updateLogic(resolve));
-        }
-      };
-      window.requestAnimationFrame(updateLogic);
+      this.updateFrame(() => {
+        this.shouldEndState = true
+        alert("callback")
+      });
+      this.waitForEnd()
+    }
+    updateFrame(callback) {
+      if (this.shouldEndState) {
+        return
+      }
+      let inputPacket = this.inputController.getInputPacket();
+      this.drawController.refreshAll(inputPacket);
+      if (!inputPacket.leftMouse) {
+        requestAnimationFrame(() => this.updateFrame(callback)); // Calling itself recursively
+      } else {
+        callback(); // Call the callback function once animation stops
+      }
+    }
+    waitForEnd() {
+      if (!this.shouldEndState) {
+        this.waitForEnd()
+      } else {return}
     }
     logicFrame() {
     }

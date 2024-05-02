@@ -19,9 +19,7 @@ class Game {
     //takes in a number
     //0 = title, 1 = world, 2 = dungeon
     this.activeGameState = newLoadedState
-    new Promise(resolve => {
-      this.gameStates[newLoadedState].load(resolve);
-    });
+    this.gameStates[newLoadedState].load();
   }
 };
 
