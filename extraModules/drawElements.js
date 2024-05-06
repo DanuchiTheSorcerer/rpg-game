@@ -58,7 +58,8 @@ export class Button extends Rect {
         ctx.textAlign = "center"
         ctx.font = `${this.height * window.innerHeight/1000}px Verdana`
         ctx.fillText(this.text,((this.x+this.width/2)*can.width)/(canvas.widthRel*1200),
-                            ((this.y+this.height/2)*can.height)/(canvas.heightRel*675))
+                            ((this.y+this.height/2)*can.height)/(canvas.heightRel*675),
+                            (this.width*can.width)/(canvas.widthRel*1200))
     }
 }
 
