@@ -1,4 +1,4 @@
-import { Title, Dungeon } from "./gameStates";
+import { Title, Dungeon, World } from "./gameStates";
 
 class Game {
   constructor() {
@@ -11,6 +11,7 @@ class Game {
   }
   createGameStates() {
     this.gameStates.push(new Title())
+    this.gameStates.push(new World())
     this.gameStates.push(new Dungeon())
   }
   loadGameState(newLoadedState) {

@@ -41,7 +41,8 @@ export class GameState {
 
 export class Title extends GameState {
     constructor() {
-        super("title", new DrawController([new Canvas(0,0,1,1,1,"main")]));
+        super("title", new DrawController([
+          new Canvas(0,0,1,1,1,"main")]));
     }
     logicFrame() {
       if (this.iterations == 0) {
@@ -54,8 +55,18 @@ export class Title extends GameState {
     }
 };
 
+export class World extends GameState {
+  constructor() {
+      super("world", new DrawController([
+        new Canvas(0,0,1,1,1,"main")]));
+  }
+};
+
 export class Dungeon extends GameState {
   constructor() {
-      super("dungeon", new DrawController([new Canvas(0,0,0.25,1,1,"side"),new Canvas(0.25,0,0.75,0.67,1,"main"),new Canvas(0.25,0.67,0.75,0.33,1,"bottom")]));
+      super("dungeon", new DrawController([
+      new Canvas(0,0,0.25,1,1,"side"),
+      new Canvas(0.25,0,0.75,0.67,1,"main"),
+      new Canvas(0.25,0.67,0.75,0.33,1,"bottom")]));
   }
 };
