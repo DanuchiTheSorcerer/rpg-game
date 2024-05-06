@@ -7,15 +7,14 @@ export class GameState {
     constructor(name,drawController) {
       this.name = name
       this.drawController = drawController
+      this.nextState = null
       this.inputController = new InputController()
       this.updateFrame = this.updateFrame.bind(this);
+      this.iterations = 0
     }
     load(callback) {
       this.resetState();
-      this.drawController.newSprite(0, 0, 0, 1200, "../sprites/gameTitle.png");
-      this.drawController.newButton(0, 300, 400, 600, 100, [127, 63, 31], "Continue Game");
       this.updateFrame(() => {
-        alert("up call" + this.inputController.leftMouse)
         callback();
       });
     }
@@ -23,7 +22,8 @@ export class GameState {
       let inputPacket = this.inputController.getInputPacket();
       this.drawController.refreshAll(inputPacket);
       this.logicFrame()
-      if (!inputPacket.leftMouse) {
+      this.iterations++
+      if (this.nextState == null) {
         requestAnimationFrame(() => this.updateFrame(callback)); // Calling itself recursively
       } else {
         callback(); // Call the callback function once animation stops
@@ -33,6 +33,7 @@ export class GameState {
     }
     resetState() {
       this.inputController = new InputController()
+      this.drawController.resetElements()
     }
 };
 
@@ -41,6 +42,15 @@ export class GameState {
 export class Title extends GameState {
     constructor() {
         super("title", new DrawController([new Canvas(0,0,1,1,1,"main")]));
+    }
+    logicFrame() {
+      if (this.iterations == 0) {
+        this.drawController.newSprite(0, 0, 0, 1200, "../sprites/gameTitle.png");
+        this.drawController.newButton(0, 300, 400, 600, 100, [127, 63, 31], "Continue Game");
+      }
+      if (this.iterations == 100) {
+        this.nextState = 1
+      }
     }
 };
 

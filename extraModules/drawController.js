@@ -23,4 +23,7 @@ export class DrawController {
     newSprite(canvasNumber,x,y,scaleWidth,source) {
         this.elements.push(new Sprite(canvasNumber,x,y,scaleWidth,source))
     }
+    resetElements() {
+        this.elements = []
+    }
 }

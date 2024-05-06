@@ -18,8 +18,7 @@ class Game {
     //0 = title, 1 = world, 2 = dungeon
     this.activeGameState = newLoadedState
     this.gameStates[newLoadedState].load(() => {
-      alert("gamecall");
-      this.loadGameState(1);
+      this.loadGameState(this.gameStates[this.activeGameState].nextState);
     });
   }
 };
