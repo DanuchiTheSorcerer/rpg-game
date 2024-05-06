@@ -1,5 +1,4 @@
-import { Title } from "./gameStates";
-import { Dungeon } from "./gameStates";
+import { Title, Dungeon } from "./gameStates";
 
 class Game {
   constructor() {
@@ -9,7 +8,6 @@ class Game {
   init() {
     this.createGameStates()
     this.loadGameState(0)
-    alert("done")
   }
   createGameStates() {
     this.gameStates.push(new Title())
@@ -19,7 +17,10 @@ class Game {
     //takes in a number
     //0 = title, 1 = world, 2 = dungeon
     this.activeGameState = newLoadedState
-    this.gameStates[newLoadedState].load();
+    this.gameStates[newLoadedState].load(() => {
+      alert("gamecall");
+      this.loadGameState(1);
+    });
   }
 };
 

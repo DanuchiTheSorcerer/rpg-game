@@ -7,37 +7,32 @@ export class GameState {
     constructor(name,drawController) {
       this.name = name
       this.drawController = drawController
-      this.shouldEndState = false
       this.inputController = new InputController()
       this.updateFrame = this.updateFrame.bind(this);
     }
-    load() {
+    load(callback) {
+      this.resetState();
       this.drawController.newSprite(0, 0, 0, 1200, "../sprites/gameTitle.png");
       this.drawController.newButton(0, 300, 400, 600, 100, [127, 63, 31], "Continue Game");
       this.updateFrame(() => {
-        this.shouldEndState = true
-        alert("callback")
+        alert("up call" + this.inputController.leftMouse)
+        callback();
       });
-      this.waitForEnd()
     }
     updateFrame(callback) {
-      if (this.shouldEndState) {
-        return
-      }
       let inputPacket = this.inputController.getInputPacket();
       this.drawController.refreshAll(inputPacket);
+      this.logicFrame()
       if (!inputPacket.leftMouse) {
         requestAnimationFrame(() => this.updateFrame(callback)); // Calling itself recursively
       } else {
         callback(); // Call the callback function once animation stops
       }
     }
-    waitForEnd() {
-      if (!this.shouldEndState) {
-        this.waitForEnd()
-      } else {return}
-    }
     logicFrame() {
+    }
+    resetState() {
+      this.inputController = new InputController()
     }
 };
 
