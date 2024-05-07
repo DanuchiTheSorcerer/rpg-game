@@ -68,14 +68,28 @@ export class Title extends GameState {
     logicFrame(inputPacket) {
       this.drawController.resetElements()
       this.drawController.newSprite(0, 0, 0, 1200, "../sprites/gameTitle.png");
-      this.drawController.newButton(0, 300, 400, 600, 100, [127, 63, 31], "Continue Game");
+      this.drawController.newButton(0, 300, 350, 600, 100, [127, 63, 31], "Continue Game");
+      this.drawController.newButton(0, 300, 500, 600, 100, [127, 63, 31], "Start New Game");
 
       if (this.iterations == 0) {
-        this.addButton(300, 400, 600, 100,() => {this.nextState = 1});
+        this.addButton(300, 350, 600, 100,() => {this.nextState = 1});
+        this.addButton(300, 500, 600, 100,() => {this.nextState = 1;this.deleteAllCookies()});
       }
 
 
       this.processButtons(inputPacket)
+    }
+    deleteAllCookies() {
+      const cookies = document.cookie.split("; ");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.slice(0, eqPos) : cookie;
+        if (eqPos==1) {
+          name=""
+        }
+        document.cookie = name + "=; expires=Thu, 01-Jan-1970 00:00:01 GMT;";
+      }
     }
 };
 
