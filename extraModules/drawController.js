@@ -7,9 +7,11 @@ export class DrawController {
         this.elements = []
     }
     refreshAll(inputPacket) {
+        //refresh canvases
         for(let i = 0;i<this.canvases.length;i++) {
             this.canvases[i].refresh()
         }
+        //draw elements
         for (let i = 0;i<this.elements.length;i++) {
             this.elements[i].draw(this.canvases[this.elements[i].canvasNumber],inputPacket)
         }

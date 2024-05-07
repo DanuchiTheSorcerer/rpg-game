@@ -11,22 +11,29 @@ export class GameState {
       this.inputController = new InputController()
       this.updateFrame = this.updateFrame.bind(this);
       this.iterations = 0
+      this.buttons = []
     }
     load(callback) {
+      // reset state and then set the callback for when the state ends
       this.resetState();
       this.updateFrame(() => {
         callback();
       });
     }
     updateFrame(callback) {
+      //get inputs
       let inputPacket = this.inputController.getInputPacket();
+      //refresh canvas
       this.drawController.refreshAll(inputPacket);
+      // run logic of the state
       this.logicFrame(inputPacket)
+      // add to the iteration number
       this.iterations++
+      // end state if needed, otherwise repeat
       if (this.nextState == null) {
-        requestAnimationFrame(() => this.updateFrame(callback)); // Calling itself recursively
+        requestAnimationFrame(() => this.updateFrame(callback));
       } else {
-        callback(); // Call the callback function once animation stops
+        callback(); 
       }
     }
     logicFrame() {
@@ -63,20 +70,20 @@ export class Title extends GameState {
     constructor() {
         super("title", new DrawController([
           new Canvas(0,0,1,1,1,"main")]));
-        this.buttons = []
     }
     logicFrame(inputPacket) {
+      //reset and then create new draw elements
       this.drawController.resetElements()
       this.drawController.newSprite(0, 0, 0, 1200, "../sprites/gameTitle.png");
       this.drawController.newButton(0, 300, 350, 600, 100, [127, 63, 31], "Continue Game");
       this.drawController.newButton(0, 300, 500, 600, 100, [127, 63, 31], "Start New Game");
-
+      // on first run add the logic of the buttons
       if (this.iterations == 0) {
         this.addButton(300, 350, 600, 100,() => {this.nextState = 1});
         this.addButton(300, 500, 600, 100,() => {this.nextState = 1;this.deleteAllCookies()});
       }
 
-
+      //proccess buttons :/
       this.processButtons(inputPacket)
     }
     deleteAllCookies() {

@@ -17,6 +17,7 @@ export class Rect extends DrawElement {
     draw(canvas,inputPacket) {
         let can = document.getElementById(canvas.id)
         let ctx = can.getContext("2d")
+        //big brain scaing of rectangle
         ctx.rect((this.x*can.width)/(canvas.widthRel*1200),
                 (this.y*can.height)/(canvas.heightRel*675),
                 (this.width*can.width)/(canvas.widthRel*1200),
@@ -35,12 +36,14 @@ export class Button extends Rect {
         let can = document.getElementById(canvas.id)
         let ctx = can.getContext("2d")
         ctx.fillStyle = "black"
+        //big brain scaing of rectangle
         ctx.fillRect(((this.x-2)*can.width)/(canvas.widthRel*1200),
                 ((this.y-2)*can.height)/(canvas.heightRel*675),
                 ((this.width+4)*can.width)/(canvas.widthRel*1200),
                 ((this.height+4)*can.height)/(canvas.heightRel*675))
+        //set color
         ctx.fillStyle = `rgb(${this.color[0]},${this.color[1]},${this.color[2]})`
-        
+        //change the appearance if it is being pressed
         if (inputPacket.mouseX > this.x + canvas.xRel * 1200 && 
             inputPacket.mouseY > this.y + canvas.yRel * 675 && 
             inputPacket.mouseX < this.x + this.width + canvas.xRel * 1200 && 
@@ -53,6 +56,7 @@ export class Button extends Rect {
                 (this.y*can.height)/(canvas.heightRel*675),
                 (this.width*can.width)/(canvas.widthRel*1200),
                 (this.height*can.height)/(canvas.heightRel*675))
+        //text location calculations go burrrr
         ctx.fillStyle = "black"
         ctx.textBaseline = "middle"
         ctx.textAlign = "center"

@@ -12,6 +12,7 @@ export class Canvas {
     refresh() {
         let canvas = document.getElementById(this.id)
         let ctx = canvas.getContext("2d")
+        // reset canvas properties based on if it is portrait or landscape
         if (window.innerHeight/window.innerWidth>9/16) {
             canvas.style = `
             position:absolute;
