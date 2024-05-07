@@ -36,7 +36,7 @@ game.init()
   //You can use the following string manipulation
   //var cookieStr = document.cookie
   //var cookies = cookieStr.split('; ')
-  //cookies is an array with all of the individual cookies
+  //cookies is an array with all of the individual cookie key strings
 /* Cookie deleting function I definetly didn't steal
 function deleteAllCookies() {
   const cookies = document.cookie.split("; ");

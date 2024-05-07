@@ -21,7 +21,7 @@ export class GameState {
     updateFrame(callback) {
       let inputPacket = this.inputController.getInputPacket();
       this.drawController.refreshAll(inputPacket);
-      this.logicFrame()
+      this.logicFrame(inputPacket)
       this.iterations++
       if (this.nextState == null) {
         requestAnimationFrame(() => this.updateFrame(callback)); // Calling itself recursively
@@ -35,6 +35,26 @@ export class GameState {
       this.inputController = new InputController()
       this.drawController.resetElements()
     }
+    addButton(x,y,width,height,func) {
+      this.buttons.push({
+        x:x,
+        y:y,
+        width:width,
+        height:height,
+        func:func
+      })
+    }
+    processButtons(inputPacket) {
+      for (let i = 0;i<this.buttons.length;i++) {
+        if (inputPacket.mouseX > this.buttons[i].x &&
+            inputPacket.mouseY > this.buttons[i].y &&
+            inputPacket.mouseX < this.buttons[i].x + this.buttons[i].width &&
+            inputPacket.mouseY < this.buttons[i].y + this.buttons[i].height &&
+            inputPacket.leftMouse) {
+          this.buttons[i].func()
+        }
+      }
+    }
 };
 
 
@@ -43,15 +63,19 @@ export class Title extends GameState {
     constructor() {
         super("title", new DrawController([
           new Canvas(0,0,1,1,1,"main")]));
+        this.buttons = []
     }
-    logicFrame() {
+    logicFrame(inputPacket) {
+      this.drawController.resetElements()
+      this.drawController.newSprite(0, 0, 0, 1200, "../sprites/gameTitle.png");
+      this.drawController.newButton(0, 300, 400, 600, 100, [127, 63, 31], "Continue Game");
+
       if (this.iterations == 0) {
-        this.drawController.newSprite(0, 0, 0, 1200, "../sprites/gameTitle.png");
-        this.drawController.newButton(0, 300, 400, 600, 100, [127, 63, 31], "Continue Game");
+        this.addButton(300, 400, 600, 100,() => {this.nextState = 1});
       }
-      if (this.iterations == 100) {
-        this.nextState = 1
-      }
+
+
+      this.processButtons(inputPacket)
     }
 };
 

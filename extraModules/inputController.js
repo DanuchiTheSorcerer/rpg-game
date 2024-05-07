@@ -44,6 +44,7 @@ export class InputController {
                 leftMouse:this.leftMouse
             }
         }
+        document.getElementById("console").innerText = Math.floor(returnValue.mouseX) + " " + Math.floor(returnValue.mouseY) + " " + returnValue.leftMouse
         return returnValue
     }
 }
