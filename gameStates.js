@@ -80,23 +80,11 @@ export class Title extends GameState {
       // on first run add the logic of the buttons
       if (this.iterations == 0) {
         this.addButton(300, 350, 600, 100,() => {this.nextState = 1});
-        this.addButton(300, 500, 600, 100,() => {this.nextState = 1;this.deleteAllCookies()});
+        this.addButton(300, 500, 600, 100,() => {this.nextState = 1});
       }
 
       //proccess buttons :/
       this.processButtons(inputPacket)
-    }
-    deleteAllCookies() {
-      const cookies = document.cookie.split("; ");
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i];
-        const eqPos = cookie.indexOf("=");
-        const name = eqPos > -1 ? cookie.slice(0, eqPos) : cookie;
-        if (eqPos==1) {
-          name=""
-        }
-        document.cookie = name + "=; expires=Thu, 01-Jan-1970 00:00:01 GMT;";
-      }
     }
 };
 
@@ -104,6 +92,9 @@ export class World extends GameState {
   constructor() {
       super("world", new DrawController([
         new Canvas(0,0,1,1,1,"main")]));
+  }
+  logicFrame() {
+    
   }
 };
 
