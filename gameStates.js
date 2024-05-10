@@ -79,9 +79,9 @@ export class Title extends GameState {
       this.drawController.newButton(0, 300, 500, 600, 100, [127, 63, 31], "Start New Game");
       // on first run add the logic of the buttons
       if (this.iterations == 0) {
-        localStorage.setItem("dog","bark")
+        localStorage.setItem("save",JSON.stringify({x:10,y:20,speed:8}))
         this.addButton(300, 350, 600, 100,() => {this.nextState = 1});
-        this.addButton(300, 500, 600, 100,() => {this.nextState = 1;localStorage.clear()});
+        this.addButton(300, 500, 600, 100,() => {this.nextState = 1;localStorage.removeItem("save")});
       }
 
       //proccess buttons :/
@@ -95,7 +95,26 @@ export class World extends GameState {
         new Canvas(0,0,1,1,1,"main")]));
   }
   logicFrame() {
-    alert(localStorage.getItem("dog"))
+    this.saveFile = {x:10}
+    alert(this.saveFile.x) 
+    this.saveFile = null
+    alert(this.saveFile.x) 
+  }
+  get saveFile() {
+    let save = null
+    if (this.iterations == 0) {
+      let strSave = localStorage.getItem("save")
+      if (strSave != null) {
+        save = JSON.parse(strSave)
+      }
+    }
+    return save
+  }
+  set saveFile(save) {
+    localStorage.setItem("save",JSON.stringify(save))
+    if (save == null) {
+      localStorage.removeItem("save")
+    }
   }
 };
 
