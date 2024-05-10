@@ -79,8 +79,9 @@ export class Title extends GameState {
       this.drawController.newButton(0, 300, 500, 600, 100, [127, 63, 31], "Start New Game");
       // on first run add the logic of the buttons
       if (this.iterations == 0) {
+        localStorage.setItem("dog","bark")
         this.addButton(300, 350, 600, 100,() => {this.nextState = 1});
-        this.addButton(300, 500, 600, 100,() => {this.nextState = 1});
+        this.addButton(300, 500, 600, 100,() => {this.nextState = 1;localStorage.clear()});
       }
 
       //proccess buttons :/
@@ -94,7 +95,7 @@ export class World extends GameState {
         new Canvas(0,0,1,1,1,"main")]));
   }
   logicFrame() {
-    
+    alert(localStorage.getItem("dog"))
   }
 };
 
