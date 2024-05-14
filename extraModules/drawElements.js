@@ -22,6 +22,7 @@ export class Rect extends DrawElement {
                 (this.y*can.height)/(canvas.heightRel*675),
                 (this.width*can.width)/(canvas.widthRel*1200),
                 (this.height*can.height)/(canvas.heightRel*675))
+        ctx.fillStyle = `rgb(${this.color[0]},${this.color[1]},${this.color[2]})`
         ctx.fill()
     }
 }
