@@ -116,9 +116,12 @@ export class World extends GameState {
         new Canvas(0,0,1,1,1,"main")]));
   }
   logicFrame() {
-    this.drawController.newRect(0,0,0,600,337.5,[255,0,0])
-    this.drawController.newRect(0,600,337.5,600,337.5,[255,0,0])
-    this.drawController.newSprite(0,500,237.5,200,"../sprites/character.png")
+    if (this.iterations ==1) {
+      this.drawController.newRect(0,0,0,600,337.5,[255,0,0])
+      this.drawController.newRect(0,600,337.5,600,337.5,[255,0,0])
+      this.drawController.newCircle(0,600,337.5,100,[0,255,0])
+      //this.drawController.newSprite(0,500,237.5,200,"../sprites/character.png")
+    }
   }
 };
 

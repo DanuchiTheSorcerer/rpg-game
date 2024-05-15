@@ -87,3 +87,21 @@ export class Sprite extends DrawElement {
                         (this.scaleWidth*(img.height/img.width)*can.height)/(canvas.heightRel*675))
     }
 }
+
+export class Circle extends DrawElement {
+    constructor(canvasNumber,x,y,radius,color) {
+        super(canvasNumber)
+        this.x = x
+        this.y = y
+        this.radius = radius
+        this.color = color
+    }
+    draw(canvas,inputPacket) {
+        let can = document.getElementById(canvas.id)
+        let ctx = can.getContext("2d")
+        ctx.beginPath();
+        ctx.arc(this.x-this.radius/2, this.y - this.radius/2, this.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgb(' + this.color[0] + ',' + this.color[1] + ',' + this.color[2] + ')'
+        ctx.fill();
+    }
+}
