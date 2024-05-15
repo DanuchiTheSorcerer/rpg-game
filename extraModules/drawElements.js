@@ -100,7 +100,8 @@ export class Circle extends DrawElement {
         let can = document.getElementById(canvas.id)
         let ctx = can.getContext("2d")
         ctx.beginPath();
-        ctx.arc(this.x-this.radius/2, this.y - this.radius/2, this.radius, 0, 2 * Math.PI);
+        ctx.arc((this.x*can.width)/(canvas.widthRel*1200),
+        (this.y*can.height)/(canvas.heightRel*675),(this.radius*can.width)/(canvas.widthRel*1200) , 0, 2 * Math.PI);
         ctx.fillStyle = 'rgb(' + this.color[0] + ',' + this.color[1] + ',' + this.color[2] + ')'
         ctx.fill();
     }

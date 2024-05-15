@@ -117,8 +117,13 @@ export class World extends GameState {
   }
   logicFrame() {
     if (this.iterations ==1) {
-      this.drawController.newRect(0,0,0,600,337.5,[255,0,0])
-      this.drawController.newRect(0,600,337.5,600,337.5,[255,0,0])
+      this.drawController.newRect(0,500,237.5,200,200,[255,0,0])
+      this.drawController.newRect(0,300,237.5,200,100,[255,0,0])
+      this.drawController.newRect(0,100,237.5,200,200,[255,0,0])
+      this.drawController.newRect(0,0,237.5,100,100,[255,0,0])
+      this.drawController.newRect(0,1100,237.5,100,100,[255,0,0])
+      this.drawController.newRect(0,700,237.5,200,100,[255,0,0])
+      this.drawController.newRect(0,900,237.5,200,200,[255,0,0])
       this.drawController.newCircle(0,600,337.5,100,[0,255,0])
       //this.drawController.newSprite(0,500,237.5,200,"../sprites/character.png")
     }
