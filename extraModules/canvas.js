@@ -8,6 +8,8 @@ export class Canvas {
         this.heightRel = heightRel
         this.borderWidth = borderWidth
         this.resolutionFactor = resolutionFactor
+    }
+    createElement() {
         document.querySelector('#bodyDiv').insertAdjacentHTML("beforeend",`<canvas id=${this.id}></canvas>`);
     }
     refresh() {

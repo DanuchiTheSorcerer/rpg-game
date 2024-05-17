@@ -40,7 +40,12 @@ export class GameState {
     }
     resetState() {
       this.inputController = new InputController()
+      this.removeButtons()
       this.drawController.resetElements()
+      this.iterations = 0
+      this.nextState = null
+      document.getElementById("bodyDiv").innerHTML = " "
+      this.drawController.createElements()
     }
     addButton(x,y,width,height,func) {
       this.buttons.push({
@@ -87,6 +92,7 @@ export class Title extends GameState {
     constructor() {
         super("title", new DrawController([
           new Canvas(0,0,1,1,1,1,"main")]));
+        this.isOnOptions = false
     }
     logicFrame(inputPacket) {
       //reset and then create new draw elements
@@ -152,5 +158,9 @@ export class Dungeon extends GameState {
   }
   logicFrame() {
     this.drawController.newCircle(0,100,200,50,[0,0,255])
+    this.drawController.newCircle(1,100,200,50,[0,0,255])
+    if (this.iterations == 100) {
+      this.nextState = 0
+    }
   }
 };

@@ -16,6 +16,11 @@ export class DrawController {
             this.elements[i].draw(this.canvases[this.elements[i].canvasNumber],inputPacket)
         }
     }
+    createElements() {
+        for(let i = 0;i<this.canvases.length;i++) {
+            this.canvases[i].createElement()
+        }
+    }
     newRect(canvasNumber,x,y,width,height,color) {
         this.elements.push(new Rect(canvasNumber,x,y,width,height,color))
     }
