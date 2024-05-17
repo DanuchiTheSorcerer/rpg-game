@@ -57,12 +57,6 @@ export class Button extends Rect {
                 (this.height*canvas.resolutionFactor))
         //text location calculations go burrrr
         ctx.fillStyle = "black"
-        //ctx.textBaseline = "middle"
-        //ctx.textAlign = "center"
-        //ctx.font = `${this.height*canvas.resolutionFactor * window.innerHeight/1000}px Verdana`
-        /*ctx.fillText(this.text,(this.x*canvas.resolutionFactor)+(this.width/2)*canvas.resolutionFactor,
-                            (this.y*canvas.resolutionFactor)+(this.height/2)*canvas.resolutionFactor,
-                            (this.width*canvas.resolutionFactor))*/
 
         // Start with a large font size
         let fontSize = 100;

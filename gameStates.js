@@ -51,6 +51,9 @@ export class GameState {
         func:func
       })
     }
+    removeButtons() {
+      this.buttons = []
+    }
     processButtons(inputPacket) {
       for (let i = 0;i<this.buttons.length;i++) {
         if (inputPacket.mouseX > this.buttons[i].x &&
@@ -88,19 +91,33 @@ export class Title extends GameState {
     logicFrame(inputPacket) {
       //reset and then create new draw elements
       this.drawController.resetElements()
-      this.drawController.newSprite(0, 0, 0, 1200, "../sprites/gameTitle.png");
-      this.drawController.newButton(0, 300, 350, 600, 100, [127, 63, 31], "Continue Game");
-      this.drawController.newButton(0, 300, 500, 600, 100, [127, 63, 31], "Start New Game");
-      this.drawController.newButton(0, 50, 500, 200, 100, [127, 63, 31], "Options");
+      if (!this.isOnOptions) {
+        this.drawController.newSprite(0, 0, 0, 1200, "../sprites/gameTitle.png");
+        this.drawController.newButton(0, 300, 350, 600, 100, [127, 63, 31], "Continue Game");
+        this.drawController.newButton(0, 300, 500, 600, 100, [127, 63, 31], "Start New Game");
+        this.drawController.newButton(0, 25, 550, 250, 100, [127, 63, 31], "Options");
+      }
+      if (this.isOnOptions) {
+        this.drawController.newButton(0,25,25,250,100,[127,0,255],"Go Back")
+        this.addButton(25,25,250,100,() => {this.isOnOptions = false;this.removeButtons();
+          this.pressedFunnyButton = false
+          this.addButton(300, 350, 600, 100,() => {this.nextState = 1});
+          this.addButton(300,500,600,100, () => {
+            this.pressedFunnyButton = true
+            this.addButton(300, 200, 600, 100,() => {this.nextState = 1;this.saveFile = null});
+          })
+          this.addButton(25,550,250,100,() => {this.isOnOptions = true;this.removeButtons()})
+        })
+      }
       // on first run add the logic of the buttons
       if (this.iterations == 0) {
         this.pressedFunnyButton = false
-        this.saveFile = {x:10,y:20,speed:8}
         this.addButton(300, 350, 600, 100,() => {this.nextState = 1});
         this.addButton(300,500,600,100, () => {
           this.pressedFunnyButton = true
           this.addButton(300, 200, 600, 100,() => {this.nextState = 1;this.saveFile = null});
         })
+        this.addButton(25,550,250,100,() => {this.isOnOptions = true;this.removeButtons()})
       }
       if (this.pressedFunnyButton) {
         this.drawController.newButton(0, 300, 200, 600, 100, [127, 63, 31], "Are you sure?")
@@ -117,8 +134,11 @@ export class World extends GameState {
         new Canvas(0,0,1,1,1,1,"main")]));
   }
   logicFrame() {
-    if (this.iterations ==1) {
+    if (this.iterations == 1) {
       this.drawController.newCircle(0,600,337.5,100,[0,255,0])
+    }
+    if (this.iterations == 100) {
+      this.nextState = 2
     }
   }
 };
@@ -129,5 +149,8 @@ export class Dungeon extends GameState {
       new Canvas(0,0,0.25,1,1,1,"side"),
       new Canvas(0.25,0,0.75,0.67,1,1,"main"),
       new Canvas(0.25,0.67,0.75,0.33,1,1,"bottom")]));
+  }
+  logicFrame() {
+    this.drawController.newCircle(0,100,200,50,[0,0,255])
   }
 };
