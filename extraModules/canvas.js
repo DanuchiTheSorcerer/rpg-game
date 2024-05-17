@@ -1,13 +1,13 @@
 export class Canvas {
     //all "Rel" arguments are 0 to 1, id is a string, borderWidth is a # of pixels
-    constructor(xRel,yRel,widthRel,heightRel,borderWidth,resolutionFactor,id) {
+    constructor(xRel,yRel,widthRel,heightRel,borderWidth,id) {
         this.id = id
         this.xRel = xRel
         this.yRel = yRel
         this.widthRel = widthRel
         this.heightRel = heightRel
         this.borderWidth = borderWidth
-        this.resolutionFactor = resolutionFactor
+        this.resolutionFactor = localStorage.getItem("resolution")
     }
     createElement() {
         document.querySelector('#bodyDiv').insertAdjacentHTML("beforeend",`<canvas id=${this.id}></canvas>`);

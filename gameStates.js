@@ -91,7 +91,7 @@ export class GameState {
 export class Title extends GameState {
     constructor() {
         super("title", new DrawController([
-          new Canvas(0,0,1,1,1,1,"main")]));
+          new Canvas(0,0,1,1,1,"main")]));
         this.isOnOptions = false
     }
     logicFrame(inputPacket) {
@@ -114,6 +114,16 @@ export class Title extends GameState {
           })
           this.addButton(25,550,250,100,() => {this.isOnOptions = true;this.removeButtons()})
         })
+        this.drawController.newButton(0,25,150,100,50,[127,0,255],"Res 1")
+        this.drawController.newButton(0,150,150,100,50,[127,0,255],"Res 2")
+        this.drawController.newButton(0,275,150,100,50,[127,0,255],"Res 3")
+        this.drawController.newButton(0,400,150,100,50,[127,0,255],"Res 4")
+        this.drawController.newButton(0,525,150,100,50,[127,0,255],"Res 5")
+        this.addButton(25,150,100,50,() => {localStorage.setItem("resolution",1)})
+        this.addButton(150,150,100,50,() => {localStorage.setItem("resolution",2)})
+        this.addButton(275,150,100,50,() => {localStorage.setItem("resolution",3)})
+        this.addButton(400,150,100,50,() => {localStorage.setItem("resolution",4)})
+        this.addButton(525,150,100,50,() => {localStorage.setItem("resolution",5)})
       }
       // on first run add the logic of the buttons
       if (this.iterations == 0) {
@@ -137,7 +147,7 @@ export class Title extends GameState {
 export class World extends GameState {
   constructor() {
       super("world", new DrawController([
-        new Canvas(0,0,1,1,1,1,"main")]));
+        new Canvas(0,0,1,1,1,"main")]));
   }
   logicFrame() {
     if (this.iterations == 1) {
@@ -152,9 +162,9 @@ export class World extends GameState {
 export class Dungeon extends GameState {
   constructor() {
       super("dungeon", new DrawController([
-      new Canvas(0,0,0.25,1,1,1,"side"),
-      new Canvas(0.25,0,0.75,0.67,1,1,"main"),
-      new Canvas(0.25,0.67,0.75,0.33,1,1,"bottom")]));
+      new Canvas(0,0,0.25,1,1,"side"),
+      new Canvas(0.25,0,0.75,0.67,1,"main"),
+      new Canvas(0.25,0.67,0.75,0.33,1,"bottom")]));
   }
   logicFrame() {
     this.drawController.newCircle(0,100,200,50,[0,0,255])
