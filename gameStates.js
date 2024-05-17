@@ -83,7 +83,7 @@ export class GameState {
 export class Title extends GameState {
     constructor() {
         super("title", new DrawController([
-          new Canvas(0,0,1,1,1,"main")]));
+          new Canvas(0,0,1,1,1,1,"main")]));
     }
     logicFrame(inputPacket) {
       //reset and then create new draw elements
@@ -113,19 +113,12 @@ export class Title extends GameState {
 export class World extends GameState {
   constructor() {
       super("world", new DrawController([
-        new Canvas(0,0,1,1,1,"main")]));
+        new Canvas(0,0,1,1,1,0.1,"main")]));
   }
   logicFrame() {
     if (this.iterations ==1) {
-      this.drawController.newRect(0,500,237.5,200,200,[255,0,0])
-      this.drawController.newRect(0,300,237.5,200,100,[255,0,0])
-      this.drawController.newRect(0,100,237.5,200,200,[255,0,0])
-      this.drawController.newRect(0,0,237.5,100,100,[255,0,0])
-      this.drawController.newRect(0,1100,237.5,100,100,[255,0,0])
-      this.drawController.newRect(0,700,237.5,200,100,[255,0,0])
-      this.drawController.newRect(0,900,237.5,200,200,[255,0,0])
       this.drawController.newCircle(0,600,337.5,100,[0,255,0])
-      //this.drawController.newSprite(0,500,237.5,200,"../sprites/character.png")
+      this.drawController.newSprite(0,500,237.5,200,"../sprites/character.png")
     }
   }
 };
@@ -133,8 +126,8 @@ export class World extends GameState {
 export class Dungeon extends GameState {
   constructor() {
       super("dungeon", new DrawController([
-      new Canvas(0,0,0.25,1,1,"side"),
-      new Canvas(0.25,0,0.75,0.67,1,"main"),
-      new Canvas(0.25,0.67,0.75,0.33,1,"bottom")]));
+      new Canvas(0,0,0.25,1,1,1,"side"),
+      new Canvas(0.25,0,0.75,0.67,1,1,"main"),
+      new Canvas(0.25,0.67,0.75,0.33,1,1,"bottom")]));
   }
 };

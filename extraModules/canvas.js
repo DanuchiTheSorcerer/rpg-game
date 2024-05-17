@@ -1,12 +1,13 @@
 export class Canvas {
     //all "Rel" arguments are 0 to 1, id is a string, borderWidth is a # of pixels
-    constructor(xRel,yRel,widthRel,heightRel,borderWidth,id) {
+    constructor(xRel,yRel,widthRel,heightRel,borderWidth,resolutionFactor,id) {
         this.id = id
         this.xRel = xRel
         this.yRel = yRel
         this.widthRel = widthRel
         this.heightRel = heightRel
         this.borderWidth = borderWidth
+        this.resolutionFactor = resolutionFactor
         document.querySelector('#bodyDiv').insertAdjacentHTML("beforeend",`<canvas id=${this.id}></canvas>`);
     }
     refresh() {
@@ -24,8 +25,8 @@ export class Canvas {
             left:${this.xRel * window.innerWidth}px;
             top:${this.yRel * (window.innerWidth*9/16) + (window.innerHeight - window.innerWidth*(9/16))/2}px;
             `;
-            canvas.width = this.widthRel * (window.innerWidth) - this.borderWidth * 2
-            canvas.height = this.heightRel * (window.innerWidth*9/16) - this.borderWidth * 2
+            canvas.width = 1200 * this.resolutionFactor
+            canvas.height = 675 * this.resolutionFactor
         } else {
             canvas.style = `
             position:absolute;
@@ -37,8 +38,8 @@ export class Canvas {
             left:${this.xRel * (window.innerHeight*16/9) + (window.innerWidth - window.innerHeight*(16/9))/2}px;
             top:${this.yRel * window.innerHeight}px;
             `;
-            canvas.width = this.widthRel * (window.innerHeight*16/9) - this.borderWidth * 2
-            canvas.height = this.heightRel * (window.innerHeight) - this.borderWidth * 2
+            canvas.width = 1200 * this.resolutionFactor
+            canvas.height = 675 * this.resolutionFactor
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height);   
     }

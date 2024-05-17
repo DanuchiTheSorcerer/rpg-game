@@ -18,10 +18,10 @@ export class Rect extends DrawElement {
         let can = document.getElementById(canvas.id)
         let ctx = can.getContext("2d")
         //big brain scaing of rectangle
-        ctx.rect((this.x*can.width)/(canvas.widthRel*1200),
-                (this.y*can.height)/(canvas.heightRel*675),
-                (this.width*can.width)/(canvas.widthRel*1200),
-                (this.height*can.height)/(canvas.heightRel*675))
+        ctx.rect((this.x*canvas.resolutionFactor),
+        (this.y*canvas.resolutionFactor),
+        (this.width*canvas.resolutionFactor),
+        (this.height*canvas.resolutionFactor))
         ctx.fillStyle = `rgb(${this.color[0]},${this.color[1]},${this.color[2]})`
         ctx.fill()
     }
@@ -38,33 +38,31 @@ export class Button extends Rect {
         let ctx = can.getContext("2d")
         ctx.fillStyle = "black"
         //big brain scaing of rectangle
-        ctx.fillRect(((this.x-2)*can.width)/(canvas.widthRel*1200),
-                ((this.y-2)*can.height)/(canvas.heightRel*675),
-                ((this.width+4)*can.width)/(canvas.widthRel*1200),
-                ((this.height+4)*can.height)/(canvas.heightRel*675))
+        ctx.fillRect(((this.x-2)*canvas.resolutionFactor),
+                ((this.y-2)*canvas.resolutionFactor),
+                ((this.width+4)*canvas.resolutionFactor),
+                ((this.height+4)*canvas.resolutionFactor))
         //set color
         ctx.fillStyle = `rgb(${this.color[0]},${this.color[1]},${this.color[2]})`
         //change the appearance if it is being pressed
-        if (inputPacket.mouseX > this.x + canvas.xRel * 1200 && 
-            inputPacket.mouseY > this.y + canvas.yRel * 675 && 
-            inputPacket.mouseX < this.x + this.width + canvas.xRel * 1200 && 
-            inputPacket.mouseY < this.y + this.height + canvas.yRel * 675) {
-            if (inputPacket.leftMouse) {
-                ctx.fillStyle = `rgb(${this.color[0]*0.75},${this.color[1]*0.75},${this.color[2]*0.75})`
-            }
+        if (inputPacket.mouseX > (this.x) + canvas.xRel * 1200 && 
+            inputPacket.mouseY > (this.y) + canvas.yRel * 675 && 
+            inputPacket.mouseX < (this.x) + (this.width) + canvas.xRel * 1200 && 
+            inputPacket.mouseY < (this.y) + (this.height) + canvas.yRel * 675) {
+            ctx.fillStyle = `rgb(${this.color[0]*0.75},${this.color[1]*0.75},${this.color[2]*0.75})`
         }
-        ctx.fillRect((this.x*can.width)/(canvas.widthRel*1200),
-                (this.y*can.height)/(canvas.heightRel*675),
-                (this.width*can.width)/(canvas.widthRel*1200),
-                (this.height*can.height)/(canvas.heightRel*675))
+        ctx.fillRect((this.x*canvas.resolutionFactor),
+                (this.y*canvas.resolutionFactor),
+                (this.width*canvas.resolutionFactor),
+                (this.height*canvas.resolutionFactor))
         //text location calculations go burrrr
         ctx.fillStyle = "black"
         ctx.textBaseline = "middle"
         ctx.textAlign = "center"
-        ctx.font = `${this.height * window.innerHeight/1000}px Verdana`
-        ctx.fillText(this.text,((this.x+this.width/2)*can.width)/(canvas.widthRel*1200),
-                            ((this.y+this.height/2)*can.height)/(canvas.heightRel*675),
-                            (this.width*can.width)/(canvas.widthRel*1200))
+        ctx.font = `${this.height*canvas.resolutionFactor * window.innerHeight/1000}px Verdana`
+        ctx.fillText(this.text,(this.x*canvas.resolutionFactor)+(this.width/2)*canvas.resolutionFactor,
+                            (this.y*canvas.resolutionFactor)+(this.height/2)*canvas.resolutionFactor,
+                            (this.width*canvas.resolutionFactor))
     }
 }
 
@@ -81,10 +79,10 @@ export class Sprite extends DrawElement {
         let ctx = can.getContext("2d")
         let img = new Image()
         img.src = this.source
-        ctx.drawImage(img, (this.x*can.width)/(canvas.widthRel*1200),
-                        (this.y*can.height)/(canvas.heightRel*675),
-                        (this.scaleWidth*can.width)/(canvas.widthRel*1200),
-                        (this.scaleWidth*(img.height/img.width)*can.height)/(canvas.heightRel*675))
+        ctx.drawImage(img, (this.x*canvas.resolutionFactor),
+                        (this.y*canvas.resolutionFactor),
+                        (this.scaleWidth*canvas.resolutionFactor),
+                        (this.scaleWidth*canvas.resolutionFactor)*(img.height/img.width))
     }
 }
 
@@ -100,8 +98,8 @@ export class Circle extends DrawElement {
         let can = document.getElementById(canvas.id)
         let ctx = can.getContext("2d")
         ctx.beginPath();
-        ctx.arc((this.x*can.width)/(canvas.widthRel*1200),
-        (this.y*can.height)/(canvas.heightRel*675),(this.radius*can.width)/(canvas.widthRel*1200) , 0, 2 * Math.PI);
+        ctx.arc((this.x*canvas.resolutionFactor),
+        (this.y*canvas.resolutionFactor),(this.radius*canvas.resolutionFactor), 0, 2 * Math.PI);
         ctx.fillStyle = 'rgb(' + this.color[0] + ',' + this.color[1] + ',' + this.color[2] + ')'
         ctx.fill();
     }

@@ -57,8 +57,8 @@ export class InputController {
             }
         }
         let console = Math.floor(returnValue.mouseX) + " " + Math.floor(returnValue.mouseY) + " " + returnValue.leftMouse
-        console = ""
-        for (let i = 0;i<this.keys.length;i++) {console = console + this.keys[i] + " "}
+        //console = ""
+        //for (let i = 0;i<this.keys.length;i++) {console = console + this.keys[i] + " "}
         document.getElementById("console").innerText = console
         return returnValue
     }
