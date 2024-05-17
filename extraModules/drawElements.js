@@ -57,12 +57,35 @@ export class Button extends Rect {
                 (this.height*canvas.resolutionFactor))
         //text location calculations go burrrr
         ctx.fillStyle = "black"
-        ctx.textBaseline = "middle"
-        ctx.textAlign = "center"
-        ctx.font = `${this.height*canvas.resolutionFactor * window.innerHeight/1000}px Verdana`
-        ctx.fillText(this.text,(this.x*canvas.resolutionFactor)+(this.width/2)*canvas.resolutionFactor,
+        //ctx.textBaseline = "middle"
+        //ctx.textAlign = "center"
+        //ctx.font = `${this.height*canvas.resolutionFactor * window.innerHeight/1000}px Verdana`
+        /*ctx.fillText(this.text,(this.x*canvas.resolutionFactor)+(this.width/2)*canvas.resolutionFactor,
                             (this.y*canvas.resolutionFactor)+(this.height/2)*canvas.resolutionFactor,
-                            (this.width*canvas.resolutionFactor))
+                            (this.width*canvas.resolutionFactor))*/
+
+        // Start with a large font size
+        let fontSize = 100;
+         // Set the font style
+        ctx.font = fontSize + 'px Verdana';
+        // Measure the text width and height
+        let textWidth = ctx.measureText(this.text).width;
+        let textHeight = fontSize; // Assuming constant height for simplicity
+
+        // Reduce font size until it fits within the specified area
+        while (textWidth > this.width || textHeight > this.height/1.5) {
+            fontSize--;
+            ctx.font = fontSize + 'px Verdana';
+            textWidth = ctx.measureText(this.text).width;
+            textHeight = fontSize;
+        }
+
+        // Calculate the position to center the text
+        const textX = this.x + (this.width - textWidth) / 2;
+        const textY = this.y + (this.height - textHeight) / 2 + fontSize * 0.8; // Adjust for baseline
+
+        // Draw the text
+        ctx.fillText(this.text, textX, textY);
     }
 }
 

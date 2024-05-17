@@ -91,6 +91,7 @@ export class Title extends GameState {
       this.drawController.newSprite(0, 0, 0, 1200, "../sprites/gameTitle.png");
       this.drawController.newButton(0, 300, 350, 600, 100, [127, 63, 31], "Continue Game");
       this.drawController.newButton(0, 300, 500, 600, 100, [127, 63, 31], "Start New Game");
+      this.drawController.newButton(0, 50, 500, 200, 100, [127, 63, 31], "Options");
       // on first run add the logic of the buttons
       if (this.iterations == 0) {
         this.pressedFunnyButton = false
@@ -113,12 +114,11 @@ export class Title extends GameState {
 export class World extends GameState {
   constructor() {
       super("world", new DrawController([
-        new Canvas(0,0,1,1,1,0.1,"main")]));
+        new Canvas(0,0,1,1,1,1,"main")]));
   }
   logicFrame() {
     if (this.iterations ==1) {
       this.drawController.newCircle(0,600,337.5,100,[0,255,0])
-      this.drawController.newSprite(0,500,237.5,200,"../sprites/character.png")
     }
   }
 };
