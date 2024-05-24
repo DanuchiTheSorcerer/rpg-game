@@ -1,6 +1,7 @@
 import { InputController } from "./extraModules/inputController"
 import { DrawController } from "./extraModules/drawController"
 import { Canvas } from "./extraModules/canvas"
+import { Player } from "./extraModules/creatures"
 
 
 export class GameState {
@@ -148,11 +149,12 @@ export class World extends GameState {
   constructor() {
       super("world", new DrawController([
         new Canvas(0,0,1,1,"main")]));
+      this.player = new Player()
   }
   logicFrame() {
-    if (this.iterations == 1) {
-      this.drawController.newSprite(0,525,262.5,150,"../sprites/character.png")
-    }
+    this.drawController.resetElements()
+    this.player.move(1,9/16)
+    this.drawController.newSprite(0,this.player.position.x,this.player.position.y,150,"../sprites/character.png")
   }
 };
 
