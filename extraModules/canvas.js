@@ -6,7 +6,7 @@ export class Canvas {
         this.yRel = yRel
         this.widthRel = widthRel
         this.heightRel = heightRel
-        this.resolutionFactor = localStorage.getItem("resolution")
+        this.resolutionFactor = localStorage.getItem("resolution") ?? 1
     }
     createElement() {
         document.querySelector('#bodyDiv').insertAdjacentHTML("beforeend",`<canvas id=${this.id}></canvas>`);
