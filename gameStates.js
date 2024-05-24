@@ -151,9 +151,23 @@ export class World extends GameState {
         new Canvas(0,0,1,1,"main")]));
       this.player = new Player()
   }
-  logicFrame() {
+  logicFrame(inputPacket) {
     this.drawController.resetElements()
-    this.player.move(1,9/16)
+    let playerDx = 0
+    let playerDy = 0
+    if (inputPacket.keys.indexOf("KeyS") != -1) {
+      playerDy++
+    }
+    if (inputPacket.keys.indexOf("KeyW") != -1) {
+      playerDy--
+    }
+    if (inputPacket.keys.indexOf("KeyD") != -1) {
+      playerDx++
+    }
+    if (inputPacket.keys.indexOf("KeyA") != -1) {
+      playerDx--
+    }
+    this.player.walk(playerDx,playerDy)
     this.drawController.newSprite(0,this.player.position.x,this.player.position.y,150,"../sprites/character.png")
   }
 };
