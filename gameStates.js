@@ -148,13 +148,17 @@ export class Title extends GameState {
 export class World extends GameState {
   constructor() {
       super("world", new DrawController([
-        new Canvas(0,0,1,1,"main")]));
+        new Canvas(0,0,0.5,1,"left"),
+        new Canvas(0.5,0,0.5,1,"right")]));
       this.player = new Player()
+      this.player2 = new Player()
   }
   logicFrame(inputPacket) {
     this.drawController.resetElements()
     let playerDx = 0
     let playerDy = 0
+    let playerDx2 = 0
+    let playerDy2 = 0
     if (inputPacket.keys.indexOf("KeyS") != -1) {
       playerDy++
     }
@@ -167,10 +171,30 @@ export class World extends GameState {
     if (inputPacket.keys.indexOf("KeyA") != -1) {
       playerDx--
     }
+    if (inputPacket.keys.indexOf("KeyK") != -1) {
+      playerDy2++
+    }
+    if (inputPacket.keys.indexOf("KeyI") != -1) {
+      playerDy2--
+    }
+    if (inputPacket.keys.indexOf("KeyL") != -1) {
+      playerDx2++
+    }
+    if (inputPacket.keys.indexOf("KeyJ") != -1) {
+      playerDx2--
+    }
     this.player.walk(playerDx,playerDy)
-    this.drawController.newRect(0,525,262.5,50,50,[255,127,255])
+    this.player2.walk(playerDx2,playerDy2)
+    this.drawController.newRect(0,325,312.5,50,50,[255,127,255])
+    this.drawController.newRect(0,325- this.player.position.x + this.player2.position.x,312.5- this.player.position.y + this.player2.position.y,50,50,[0,255,0])
     this.drawController.newRect(0,525 - this.player.position.x,262.5-this.player.position.y,150,150,[0,127,255])
     this.drawController.newRect(0,825 - this.player.position.x,112.5-this.player.position.y,150,300,[0,127,255])
+    this.drawController.newRect(1,325,312.5,50,50,[0,255,0])
+    this.drawController.newRect(1,325- this.player2.position.x + this.player.position.x,312.5- this.player2.position.y + this.player.position.y,50,50,[255,127,255])
+    this.drawController.newRect(1,525 - this.player2.position.x,262.5-this.player2.position.y,150,150,[0,127,255])
+    this.drawController.newRect(1,825 - this.player2.position.x,112.5-this.player2.position.y,150,300,[0,127,255])
+    this.drawController.newRect(0,599,0,1,675,[0,0,0])
+    this.drawController.newRect(1,600,0,1,675,[0,0,0])
   }
 };
 
