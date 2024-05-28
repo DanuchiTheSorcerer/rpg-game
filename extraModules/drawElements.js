@@ -18,12 +18,11 @@ export class Rect extends DrawElement {
         let can = document.getElementById(canvas.id)
         let ctx = can.getContext("2d")
         //big brain scaing of rectangle
-        ctx.rect((this.x*canvas.resolutionFactor),
+        ctx.fillStyle = `rgb(${this.color[0]},${this.color[1]},${this.color[2]})`
+        ctx.fillRect((this.x*canvas.resolutionFactor),
         (this.y*canvas.resolutionFactor),
         (this.width*canvas.resolutionFactor),
         (this.height*canvas.resolutionFactor))
-        ctx.fillStyle = `rgb(${this.color[0]},${this.color[1]},${this.color[2]})`
-        ctx.fill()
     }
 }
 

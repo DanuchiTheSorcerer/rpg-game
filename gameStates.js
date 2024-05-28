@@ -168,7 +168,8 @@ export class World extends GameState {
       playerDx--
     }
     this.player.walk(playerDx,playerDy)
-    this.drawController.newSprite(0,this.player.position.x,this.player.position.y,150,"../sprites/character.png")
+    this.drawController.newRect(0,this.player.position.x,this.player.position.y,150,150,[255,127,255])
+    this.drawController.newRect(0,500,200,200,200,[0,127,255])
   }
 };
 
