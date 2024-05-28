@@ -169,8 +169,11 @@ export class World extends GameState {
     }
     this.player.walk(playerDx,playerDy)
     this.drawController.newRect(0,525,262.5,50,50,[255,127,255])
-    this.drawController.newRect(0,525 - this.player.position.x,262.5-this.player.position.y,150,150,[0,127,255])
-    this.drawController.newRect(0,825 - this.player.position.x,112.5-this.player.position.y,150,300,[0,127,255])
+    for (let i = 0;i<10000;i++) {
+      this.drawController.newRect(0,525+300*i - this.player.position.x,262.5-this.player.position.y,150,150,[0,127,255])
+    }
+    this.drawController.newRect(0,-1000- this.player.position.x,-1- this.player.position.y,2000,2,[0,0,0])
+    this.drawController.newRect(0,-1- this.player.position.x,-1000- this.player.position.y,2,2000,[0,0,0])
   }
 };
 
