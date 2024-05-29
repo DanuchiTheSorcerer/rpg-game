@@ -168,7 +168,8 @@ export class World extends GameState {
       playerDx--
     }
     this.player.walk(playerDx,playerDy)
-    this.drawController.newRect(0,525,262.5,50,50,[255,127,255])
+    this.drawController.newCircle(0,550,287.5,25,[255,127,255])
+    this.drawController.newCircle(0,550+20*Math.cos(this.player.rotation),287.5+20*Math.sin(this.player.rotation),5,[255,0,0])
     for (let i = 0;i<10000;i++) {
       this.drawController.newRect(0,525+300*i - this.player.position.x,262.5-this.player.position.y,150,150,[0,127,255])
     }

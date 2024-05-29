@@ -11,9 +11,11 @@ export class Player extends Creature {
         this.position = {x:0,y:0}
         this.speed = {x:0,y:0}
         this.movementSpeedFactor = 1
+        this.rotation = 0
     }
     move(dx,dy) {
         this.position = {x:this.position.x+dx,y:this.position.y+dy}
+        this.rotation = Math.atan2(this.speed.y,this.speed.x)
     }
     accelerate(dx,dy) {
         this.speed = {x:this.speed.x+dx,y:this.speed.y+dy}
