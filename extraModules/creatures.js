@@ -5,15 +5,18 @@ export class Creature {
 }
 
 export class Player extends Creature {
-    constructor() {
+    constructor(spawnX,spawnY) {
         super()
         this.inventory = []
-        this.position = {x:0,y:0}
+        this.position = {x:spawnX,y:spawnY}
         this.speed = {x:0,y:0}
         this.movementSpeedFactor = 4
         this.friction = 5
         //friction * movementSpeedFactor  - friction = terminal velocity
         this.rotation = 0
+    }
+    teleport(dx,dy) {
+        this.position = {x:this.position.x+dx,y:this.position.y+dy}
     }
     move(dx,dy) {
         this.position = {x:this.position.x+dx,y:this.position.y+dy}
