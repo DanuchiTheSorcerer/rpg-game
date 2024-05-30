@@ -10,15 +10,22 @@ export class Player extends Creature {
         this.inventory = []
         this.position = {x:0,y:0}
         this.speed = {x:0,y:0}
-        this.movementSpeedFactor = 1
+        this.movementSpeedFactor = 4
+        this.friction = 5
+        //friction * movementSpeedFactor  - friction = terminal velocity
         this.rotation = 0
     }
     move(dx,dy) {
         this.position = {x:this.position.x+dx,y:this.position.y+dy}
-        this.rotation = Math.atan2(this.speed.y,this.speed.x)
     }
     accelerate(dx,dy) {
         this.speed = {x:this.speed.x+dx,y:this.speed.y+dy}
+    }
+    updatePos(collision) {
+        this.accelerate(-this.speed.x/this.friction,-this.speed.y/this.friction)
+        this.rotation = Math.atan2(this.speed.y,this.speed.x)
+        this.move(this.speed.x,this.speed.y)
+        document.getElementById("console").innerText = Math.sqrt(this.speed.x*this.speed.x + this.speed.y*this.speed.y)
     }
     walk(rx,ry) {
         let direction = Math.atan2(ry,rx)
@@ -29,8 +36,5 @@ export class Player extends Creature {
             dy = 0
         }
         this.accelerate(dx,dy)
-        this.accelerate(-this.speed.x/50,-this.speed.y/50)
-        this.move(this.speed.x,this.speed.y)
-        document.getElementById("console").innerText = Math.sqrt(this.speed.x*this.speed.x + this.speed.y*this.speed.y)
     }
 }
