@@ -186,6 +186,7 @@ export class World extends GameState {
         }
       }
       this.npcs.push(new NPC(600,600,["Hi","asdf","bye bye!"]))
+      this.npcs.push(new NPC(1200,600,["My","name","is","bob"]))
     }
     let playerDx = 0
     let playerDy = 0
@@ -221,7 +222,7 @@ export class World extends GameState {
     }
     let dialogue = this.player.getDialogue()
     if (dialogue) {
-      this.drawController.newButton(0,150,475,900,175,[255,127,0],dialogue)
+      this.drawController.newButton(0,150,475,900,175,[40,117,76],dialogue)
     }
     this.lastInputPacket = inputPacket
   }

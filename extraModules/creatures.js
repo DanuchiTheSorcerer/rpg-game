@@ -130,8 +130,8 @@ export class Player extends Creature {
                 if (distance <= 200) {
                     this.hearing = npcs[i].dialogue
                     this.dialogueStage = 0
+                    return
                 }
-                return
             }
         } else {
             this.dialogueStage++
