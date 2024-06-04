@@ -157,8 +157,8 @@ export class World extends GameState {
     this.npcs = []
     this.lastInputPacket = this.inputController.getInputPacket()
   }
-  createTile(xLocation,yLocation,isWall,func) {
-    this.tiles[xLocation][yLocation] = new StaticTile(xLocation,yLocation,isWall,func)
+  createTile(xLocation,yLocation,isWall,bounceFactor,func) {
+    this.tiles[xLocation][yLocation] = new StaticTile(xLocation,yLocation,isWall,bounceFactor,func)
   }
   processTiles() {
     for (let i = 0;i<this.tiles.length;i++) {
@@ -179,9 +179,9 @@ export class World extends GameState {
       for (let i = 0;i<100;i++) {
         this.tiles[i] = []
         for (let j = 0;j<100;j++) {
-          this.createTile(i,j,false,(x,y) => {})
+          this.createTile(i,j,false,0,(x,y) => {})
           if (i == 0 || j == 0 || i == 99 || j == 99) {
-            this.createTile(i,j,true,(x,y) => {this.drawRect(x,y,100,100,[0,0,0])})
+            this.createTile(i,j,true,0.1,(x,y) => {this.drawRect(x,y,100,100,[0,0,0])})
           }
         }
       }

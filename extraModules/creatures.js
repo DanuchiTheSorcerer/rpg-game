@@ -17,42 +17,46 @@ export class Creature {
         let remainingVector = {x:dx-sideVector.x,y:dy-sideVector.y}
         this.teleport(sideVector.x,sideVector.y)
         if (sideVector.dir == "left") {
+            let bounce = collision[this.tilePos.x-1][this.tilePos.y].bounceFactor
             if (!collision[this.tilePos.x-1][this.tilePos.y].isWall) {
                 this.tilePos = {x:this.tilePos.x-1,y:this.tilePos.y}
             } else {
                 if (remainingVector.x <= 0) {
-                    remainingVector.x = 0
-                    this.accelerate(-this.speed.x,0)
+                    remainingVector.x = remainingVector.x * (-bounce)
+                    this.accelerate(-this.speed.x*(1+bounce),0)
                 }
             }
         }
         if (sideVector.dir == "right") {
+            let bounce = collision[this.tilePos.x+1][this.tilePos.y].bounceFactor
             if (!collision[this.tilePos.x+1][this.tilePos.y].isWall) {
                 this.tilePos = {x:this.tilePos.x +1,y:this.tilePos.y}
             } else {
                 if (remainingVector.x >= 0) {
-                    remainingVector.x = 0
-                    this.accelerate(-this.speed.x,0)
+                    remainingVector.x = remainingVector.x * (-bounce)
+                    this.accelerate(-this.speed.x*(1+bounce),0)
                 }
             }
         }
         if (sideVector.dir == "up") {
+            let bounce = collision[this.tilePos.x][this.tilePos.y-1].bounceFactor
             if (!collision[this.tilePos.x][this.tilePos.y-1].isWall) {
                 this.tilePos = {x:this.tilePos.x,y:this.tilePos.y-1}
             } else {
                 if (remainingVector.y <= 0) {
-                    remainingVector.y = 0
-                    this.accelerate(0,-this.speed.y)
+                    remainingVector.y = remainingVector.y * (-bounce)
+                    this.accelerate(0,-this.speed.y*(1+bounce))
                 }
             }
         }
         if (sideVector.dir == "down") {
+            let bounce = collision[this.tilePos.x][this.tilePos.y+1].bounceFactor
             if (!collision[this.tilePos.x][this.tilePos.y+1].isWall) {
                 this.tilePos = {x:this.tilePos.x,y:this.tilePos.y+1}
             } else {
                 if (remainingVector.y >= 0) {
-                    remainingVector.y = 0
-                    this.accelerate(0,-this.speed.y)
+                    remainingVector.y = remainingVector.y * (-bounce)
+                    this.accelerate(0,-this.speed.y*(1+bounce))
                 }
             }
         }
