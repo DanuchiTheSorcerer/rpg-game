@@ -1,7 +1,7 @@
 import { InputController } from "./extraModules/inputController"
 import { DrawController } from "./extraModules/drawController"
 import { Canvas } from "./extraModules/canvas"
-import { Player } from "./extraModules/creatures"
+import { Player, NPC } from "./extraModules/creatures"
 import { StaticTile } from "./extraModules/gameTiles"
 import { Viewport } from "./extraModules/viewport"
 
@@ -122,11 +122,11 @@ export class Title extends GameState {
         this.drawController.newButton(0,275,150,100,50,[127,0,255],"Res 3")
         this.drawController.newButton(0,400,150,100,50,[127,0,255],"Res 4")
         this.drawController.newButton(0,525,150,100,50,[127,0,255],"Res 5")
-        this.addButton(25,150,100,50,() => {localStorage.setItem("resolution","4")})
-        this.addButton(150,150,100,50,() => {localStorage.setItem("resolution","8")})
-        this.addButton(275,150,100,50,() => {localStorage.setItem("resolution","12")})
-        this.addButton(400,150,100,50,() => {localStorage.setItem("resolution","16")})
-        this.addButton(525,150,100,50,() => {localStorage.setItem("resolution","20")})
+        this.addButton(25,150,100,50,() => {localStorage.setItem("resolution","1")})
+        this.addButton(150,150,100,50,() => {localStorage.setItem("resolution","3")})
+        this.addButton(275,150,100,50,() => {localStorage.setItem("resolution","5")})
+        this.addButton(400,150,100,50,() => {localStorage.setItem("resolution","7")})
+        this.addButton(525,150,100,50,() => {localStorage.setItem("resolution","9")})
       }
       // on first run add the logic of the buttons
       if (this.iterations == 0) {
@@ -154,6 +154,8 @@ export class World extends GameState {
       this.player = new Player(150,150)
       this.tiles = []
     this.viewport = new Viewport()
+    this.npcs = []
+    this.lastInputPacket = this.inputController.getInputPacket()
   }
   createTile(xLocation,yLocation,isWall,func) {
     this.tiles[xLocation][yLocation] = new StaticTile(xLocation,yLocation,isWall,func)
@@ -183,6 +185,7 @@ export class World extends GameState {
           }
         }
       }
+      this.npcs.push(new NPC(600,600,["Hi","asdf","bye bye!"]))
     }
     let playerDx = 0
     let playerDy = 0
@@ -209,10 +212,18 @@ export class World extends GameState {
     this.viewport.moveTo(this.player.position.x-600/this.viewport.scale,this.player.position.y-337.5/this.viewport.scale)
     this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
     this.drawCircle(this.player.position.x+20*Math.cos(this.player.rotation),this.player.position.y+20*Math.sin(this.player.rotation),5,[171,127,171]) // player eye
-    this.drawRect(-1000,-1,2000,2,[0,0,0]) // axis
-    this.drawRect(-1,-1000,2,2000,[0,0,0]) // axis
+    for (let i = 0;i<this.npcs.length;i++) {
+      this.drawCircle(this.npcs[i].position.x,this.npcs[i].position.y,100,[255,127,63])
+    }
     this.processTiles()
-    document.getElementById('console').innerText = this.viewport.scale
+    if (inputPacket.keys.indexOf("Enter") && !this.lastInputPacket.keys.indexOf("Enter")) {
+      this.player.updateDialogue(this.npcs)
+    }
+    let dialogue = this.player.getDialogue()
+    if (dialogue) {
+      this.drawController.newButton(0,150,475,900,175,[255,127,0],dialogue)
+    }
+    this.lastInputPacket = inputPacket
   }
 };
 

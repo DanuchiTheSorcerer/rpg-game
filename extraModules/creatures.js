@@ -4,7 +4,7 @@ export class Creature {
         this.speed = {x:0,y:0}
         this.movementSpeedFactor = 4
         //friction * movementSpeedFactor  - friction = terminal velocity
-        this.friction = 5
+        this.friction = 0.2
         this.rotation = 0
         this.tilePos = {x:Math.floor(spawnX/100),y:Math.floor(spawnY/100)}
     }
@@ -64,7 +64,7 @@ export class Creature {
         this.speed = {x:this.speed.x+dx,y:this.speed.y+dy}
     }
     updatePos(collision) {
-        this.accelerate(-this.speed.x/this.friction,-this.speed.y/this.friction)
+        this.accelerate(-this.speed.x*this.friction,-this.speed.y*this.friction)
         this.rotation = Math.atan2(this.speed.y,this.speed.x)
         this.move(this.speed.x,this.speed.y,collision)
         document.getElementById("console").innerText = Math.sqrt(this.speed.x*this.speed.x + this.speed.y*this.speed.y)
@@ -108,6 +108,8 @@ export class Player extends Creature {
     constructor(spawnX,spawnY) {
         super(spawnX,spawnY)
         this.inventory = []
+        this.dialogueStage = null
+        this.hearing = []
     }
     walk(rx,ry) {
         let direction = Math.atan2(ry,rx)
@@ -118,5 +120,36 @@ export class Player extends Creature {
             dy = 0
         }
         this.accelerate(dx,dy)
+    }
+    updateDialogue(npcs) {
+        if (this.dialogueStage == null) {
+            for (let i = 0;i<npcs.length;i++) {
+                let dx = this.position.x - npcs[i].position.x
+                let dy = this.position.y - npcs[i].position.y
+                let distance = Math.sqrt(dx*dx + dy*dy)
+                if (distance <= 200) {
+                    this.hearing = npcs[i].dialogue
+                    this.dialogueStage = 0
+                }
+                return
+            }
+        } else {
+            this.dialogueStage++
+            if (this.dialogueStage == this.hearing.length) {
+                this.dialogueStage = null
+                this.hearing = []
+            }
+            return
+        }
+    }
+    getDialogue() {
+        return this.hearing[this.dialogueStage]
+    }
+}
+
+export class NPC extends Creature {
+    constructor(spawnX,spawnY,dialogue) {
+        super(spawnX, spawnY)
+        this.dialogue = dialogue
     }
 }
