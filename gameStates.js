@@ -178,7 +178,7 @@ export class World extends GameState {
         this.tiles[i] = []
         for (let j = 0;j<100;j++) {
           this.createTile(i,j,false,(x,y) => {})
-          if (i == 0 || j == 0) {
+          if (i == 0 || j == 0 || i == 99 || j == 99) {
             this.createTile(i,j,true,(x,y) => {this.drawRect(x,y,100,100,[0,0,0])})
           }
         }
