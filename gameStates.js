@@ -208,15 +208,26 @@ export class World extends GameState {
     if (inputPacket.keys.indexOf("KeyK") != -1) {
       this.viewport.zoomIn()
     }
+    if (inputPacket.keys.indexOf("KeyR") != -1) {
+      for (let i = 0;i<98;i++) {
+        for (let j = 0;j<98;j++) {
+          if (Math.random() < (i+j)/200) {
+            this.createTile(i+1,j+1,true,0.1,(x,y)=>{this.drawRect(x,y,100,100,[50,90,130])})
+          } else {
+            this.createTile(i+1,j+1,false,0.1,(x,y) =>{})
+          }
+        }
+      }
+    }
     this.player.walk(playerDx,playerDy)
     this.player.updatePos(this.tiles)
     this.viewport.moveTo(this.player.position.x-600/this.viewport.scale,this.player.position.y-337.5/this.viewport.scale)
-    this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
-    this.drawCircle(this.player.position.x+20*Math.cos(this.player.rotation),this.player.position.y+20*Math.sin(this.player.rotation),5,[171,127,171]) // player eye
     for (let i = 0;i<this.npcs.length;i++) {
       this.drawCircle(this.npcs[i].position.x,this.npcs[i].position.y,100,[255,127,63])
     }
     this.processTiles()
+    this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
+    this.drawCircle(this.player.position.x+20*Math.cos(this.player.rotation),this.player.position.y+20*Math.sin(this.player.rotation),5,[171,127,171]) // player eye
     if (inputPacket.keys.indexOf("Enter") && !this.lastInputPacket.keys.indexOf("Enter")) {
       this.player.updateDialogue(this.npcs)
     }

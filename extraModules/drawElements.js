@@ -19,10 +19,10 @@ export class Rect extends DrawElement {
         let ctx = can.getContext("2d")
         //big brain scaing of rectangle
         ctx.fillStyle = `rgb(${this.color[0]},${this.color[1]},${this.color[2]})`
-        ctx.fillRect((this.x*canvas.resolutionFactor),
-        (this.y*canvas.resolutionFactor),
-        (this.width*canvas.resolutionFactor),
-        (this.height*canvas.resolutionFactor))
+        ctx.fillRect(Math.floor(this.x*canvas.resolutionFactor),
+        Math.floor(this.y*canvas.resolutionFactor),
+        Math.ceil(this.width*canvas.resolutionFactor),
+        Math.ceil(this.height*canvas.resolutionFactor))
     }
 }
 

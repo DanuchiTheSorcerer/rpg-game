@@ -2,8 +2,8 @@ export class Creature {
     constructor(spawnX,spawnY) {
         this.position = {x:spawnX,y:spawnY}
         this.speed = {x:0,y:0}
-        this.movementSpeedFactor = 4
-        //friction * movementSpeedFactor  - friction = terminal velocity
+        this.movementSpeedFactor = 5
+        // movementSpeedFactor / friction - movementSpeedFactor = terminal velocity
         this.friction = 0.2
         this.rotation = 0
         this.tilePos = {x:Math.floor(spawnX/100),y:Math.floor(spawnY/100)}
