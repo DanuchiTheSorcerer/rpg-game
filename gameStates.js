@@ -127,6 +127,16 @@ export class Title extends GameState {
         this.addButton(275,150,100,50,() => {localStorage.setItem("resolution","5")})
         this.addButton(400,150,100,50,() => {localStorage.setItem("resolution","7")})
         this.addButton(525,150,100,50,() => {localStorage.setItem("resolution","9")})
+        this.drawController.newButton(0,25,300,100,50,[127,0,255],"RD 1")
+        this.drawController.newButton(0,150,300,100,50,[127,0,255],"RD 2")
+        this.drawController.newButton(0,275,300,100,50,[127,0,255],"RD 3")
+        this.drawController.newButton(0,400,300,100,50,[127,0,255],"RD 4")
+        this.drawController.newButton(0,525,300,100,50,[127,0,255],"RD 5")
+        this.addButton(25,300,100,50,() => {localStorage.setItem("render","1000")})
+        this.addButton(150,300,100,50,() => {localStorage.setItem("render","3000")})
+        this.addButton(275,300,100,50,() => {localStorage.setItem("render","5000")})
+        this.addButton(400,300,100,50,() => {localStorage.setItem("render","7000")})
+        this.addButton(525,300,100,50,() => {localStorage.setItem("render","9000")})
       }
       // on first run add the logic of the buttons
       if (this.iterations == 0) {
@@ -156,6 +166,7 @@ export class World extends GameState {
     this.viewport = new Viewport()
     this.npcs = []
     this.lastInputPacket = this.inputController.getInputPacket()
+    this.renderDistance = localStorage.getItem("render")
   }
   createTile(xLocation,yLocation,isWall,bounceFactor,func) {
     this.tiles[xLocation][yLocation] = new StaticTile(xLocation,yLocation,isWall,bounceFactor,func)
@@ -163,7 +174,9 @@ export class World extends GameState {
   processTiles() {
     for (let i = 0;i<this.tiles.length;i++) {
       for (let j = 0;j<this.tiles[i].length;j++) {
-        this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
+        if (Math.sqrt((i * 100 - this.player.position.x)*(i * 100 - this.player.position.x) + (j * 100 - this.player.position.y)*(j * 100 - this.player.position.y)) <= this.renderDistance) {
+          this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
+        }
       }
     }
   }
@@ -179,9 +192,9 @@ export class World extends GameState {
       for (let i = 0;i<100;i++) {
         this.tiles[i] = []
         for (let j = 0;j<100;j++) {
-          this.createTile(i,j,false,0,(x,y) => {})
+          this.createTile(i,j,false,0,(x,y) => {this.drawRect(x,y,100,100,[50,191,63])})
           if (i == 0 || j == 0 || i == 99 || j == 99) {
-            this.createTile(i,j,true,0.1,(x,y) => {this.drawRect(x,y,100,100,[0,0,0])})
+            this.createTile(i,j,true,0,(x,y) => {this.drawRect(x,y,100,100,[19,94,24])})
           }
         }
       }
@@ -211,10 +224,9 @@ export class World extends GameState {
     if (inputPacket.keys.indexOf("KeyR") != -1) {
       for (let i = 0;i<98;i++) {
         for (let j = 0;j<98;j++) {
-          if (Math.random() < (i+j)/200) {
-            this.createTile(i+1,j+1,true,0.1,(x,y)=>{this.drawRect(x,y,100,100,[50,90,130])})
-          } else {
-            this.createTile(i+1,j+1,false,0.1,(x,y) =>{})
+          if (Math.random() < (i+j)/2000) {
+            this.createTile(i+1,j+1,true,0,(x,y) => {this.drawRect(x,y,100,100,[19,94,24])})
+
           }
         }
       }
@@ -222,10 +234,10 @@ export class World extends GameState {
     this.player.walk(playerDx,playerDy)
     this.player.updatePos(this.tiles)
     this.viewport.moveTo(this.player.position.x-600/this.viewport.scale,this.player.position.y-337.5/this.viewport.scale)
+    this.processTiles()
     for (let i = 0;i<this.npcs.length;i++) {
       this.drawCircle(this.npcs[i].position.x,this.npcs[i].position.y,100,[255,127,63])
     }
-    this.processTiles()
     this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
     this.drawCircle(this.player.position.x+20*Math.cos(this.player.rotation),this.player.position.y+20*Math.sin(this.player.rotation),5,[171,127,171]) // player eye
     if (inputPacket.keys.indexOf("Enter") && !this.lastInputPacket.keys.indexOf("Enter")) {
