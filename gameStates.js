@@ -140,19 +140,19 @@ export class Title extends GameState {
         this.drawController.newButton(0,275,150,100,50,[127,0,255],"Res 3")
         this.drawController.newButton(0,400,150,100,50,[127,0,255],"Res 4")
         this.drawController.newButton(0,525,150,100,50,[127,0,255],"Res 5")
-        this.addButton(25,150,100,50,() => {localStorage.setItem("resolution","1")})
-        this.addButton(150,150,100,50,() => {localStorage.setItem("resolution","3")})
-        this.addButton(275,150,100,50,() => {localStorage.setItem("resolution","5")})
-        this.addButton(400,150,100,50,() => {localStorage.setItem("resolution","7")})
-        this.addButton(525,150,100,50,() => {localStorage.setItem("resolution","9")})
+        this.addButton(25,150,100,50,() => {localStorage.setItem("resolution","0.5")})
+        this.addButton(150,150,100,50,() => {localStorage.setItem("resolution","1.5")})
+        this.addButton(275,150,100,50,() => {localStorage.setItem("resolution","2.5")})
+        this.addButton(400,150,100,50,() => {localStorage.setItem("resolution","3.5")})
+        this.addButton(525,150,100,50,() => {localStorage.setItem("resolution","4.5")})
         this.drawController.newButton(0,25,300,100,50,[127,0,255],"RD 1")
         this.drawController.newButton(0,150,300,100,50,[127,0,255],"RD 2")
         this.drawController.newButton(0,275,300,100,50,[127,0,255],"RD 3")
         this.drawController.newButton(0,400,300,100,50,[127,0,255],"RD 4")
         this.drawController.newButton(0,525,300,100,50,[127,0,255],"RD 5")
-        this.addButton(25,300,100,50,() => {localStorage.setItem("render","1000")})
-        this.addButton(150,300,100,50,() => {localStorage.setItem("render","3000")})
-        this.addButton(275,300,100,50,() => {localStorage.setItem("render","5000")})
+        this.addButton(25,300,100,50,() => {localStorage.setItem("render","800")})
+        this.addButton(150,300,100,50,() => {localStorage.setItem("render","2000")})
+        this.addButton(275,300,100,50,() => {localStorage.setItem("render","4500")})
         this.addButton(400,300,100,50,() => {localStorage.setItem("render","7000")})
         this.addButton(525,300,100,50,() => {localStorage.setItem("render","9000")})
       }
@@ -206,6 +206,7 @@ export class World extends GameState {
   }
   logicFrame(inputPacket) {
     this.drawController.resetElements()
+    this.drawController.newRect(0,0,0,1200,675,[0,100,255])
     if (this.iterations ==0) {
       for (let i = 0;i<100;i++) {
         this.tiles[i] = []
