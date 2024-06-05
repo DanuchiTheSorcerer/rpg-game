@@ -14,6 +14,7 @@ export class GameState {
       this.inputController = new InputController()
       this.updateFrame = this.updateFrame.bind(this);
       this.iterations = 0
+      this.logicInterval = null
       this.buttons = []
     }
     load(callback) {
@@ -22,21 +23,38 @@ export class GameState {
       this.updateFrame(() => {
         callback();
       });
+      this.startLogicUpdate()
     }
     updateFrame(callback) {
-      //get inputs
-      let inputPacket = this.inputController.getInputPacket();
-      //refresh canvas
-      this.drawController.refreshAll(inputPacket);
-      // run logic of the state
-      this.logicFrame(inputPacket)
-      // add to the iteration number
-      this.iterations++
-      // end state if needed, otherwise repeat
+      // Perform rendering updates
+      this.drawController.refreshAll(this.inputController.getInputPacket());
+  
+      // Check if the state should end
       if (this.nextState == null) {
         requestAnimationFrame(() => this.updateFrame(callback));
       } else {
-        callback(); 
+        this.stopLogicUpdate(); // Stop logic updates when the state ends
+        callback();
+      }
+    }
+    startLogicUpdate(interval = 1000 / 60) {
+      // Start logic updates at a fixed interval (e.g., 60 times per second)
+      this.logicInterval = setInterval(() => {
+        this.runLogic();
+      }, interval);
+    }
+  
+    runLogic() {
+      let inputPacket = this.inputController.getInputPacket();
+      this.logicFrame(inputPacket);
+      this.iterations++;
+    }
+  
+    stopLogicUpdate() {
+      // Stop the logic updates
+      if (this.logicInterval) {
+        clearInterval(this.logicInterval);
+        this.logicInterval = null;
       }
     }
     logicFrame() {
@@ -198,8 +216,8 @@ export class World extends GameState {
           }
         }
       }
-      this.npcs.push(new NPC(600,600,["Hi","asdf","bye bye!"]))
-      this.npcs.push(new NPC(1200,600,["My","name","is","bob"]))
+      this.npcs.push(new NPC(600,600,["Here are the controls","WASD to move","I and K to zoom","And enter to talk!"]))
+      this.npcs.push(new NPC(1200,600,["Wanna know a secret?","the R key does something cool","just dont hold it down"]))
     }
     let playerDx = 0
     let playerDy = 0
