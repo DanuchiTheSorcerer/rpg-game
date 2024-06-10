@@ -4,6 +4,7 @@ import { Canvas } from "./extraModules/canvas"
 import { Player, NPC } from "./extraModules/creatures"
 import { StaticTile } from "./extraModules/gameTiles"
 import { Viewport } from "./extraModules/viewport"
+import { testMap } from "./tileMaps/testMap"
 
 
 export class GameState {
@@ -204,6 +205,18 @@ export class World extends GameState {
   drawRect(x,y,width,height,color) {
     this.drawController.newRect(0,(x - this.viewport.x)*this.viewport.scale,(y - this.viewport.y)*this.viewport.scale,width*this.viewport.scale,height*this.viewport.scale,color)
   }
+  importTileMap(map) {
+    for (let ry = 0;ry<map.length;ry++) {
+      for (let rx = 0;rx<map[ry].length;rx++) {
+        if (map[ry][rx] == 10) {
+          this.createTile(rx,ry,true,0,(x,y) => {this.drawRect(x,y,100,100,[19,94,24])})
+        }
+        if (map[ry][rx] == 20) {
+          this.createTile(rx,ry,false,0,(x,y) => {this.drawRect(x,y,100,100,[50,191,63])})
+        }
+      }
+    }
+  }
   logicFrame(inputPacket) {
     this.drawController.resetElements()
     this.drawController.newRect(0,0,0,1200,675,[0,100,255])
@@ -211,14 +224,16 @@ export class World extends GameState {
       for (let i = 0;i<100;i++) {
         this.tiles[i] = []
         for (let j = 0;j<100;j++) {
-          this.createTile(i,j,false,0,(x,y) => {this.drawRect(x,y,100,100,[50,191,63])})
+          this.createTile(i,j,false,0,(x,y) => {})
           if (i == 0 || j == 0 || i == 99 || j == 99) {
-            this.createTile(i,j,true,0,(x,y) => {this.drawRect(x,y,100,100,[19,94,24])})
+            this.createTile(i,j,true,0,(x,y) => {})
           }
         }
       }
+      this.importTileMap(testMap)
+      //npcs go here
       this.npcs.push(new NPC(600,600,["Here are the controls","WASD to move","I and K to zoom","And enter to talk!"]))
-      this.npcs.push(new NPC(1200,600,["Wanna know a secret?","the R key does something cool","just dont hold it down"]))
+      this.npcs.push(new NPC(1200,600,["Wanna know a secret?","The R key does something cool","Just dont hold it down"]))
     }
     let playerDx = 0
     let playerDy = 0
@@ -240,25 +255,21 @@ export class World extends GameState {
     if (inputPacket.keys.indexOf("KeyK") != -1) {
       this.viewport.zoomIn()
     }
-    if (inputPacket.keys.indexOf("KeyR") != -1) {
-      for (let i = 0;i<98;i++) {
-        for (let j = 0;j<98;j++) {
-          if (Math.random() < (i+j)/2000) {
-            this.createTile(i+1,j+1,true,0,(x,y) => {this.drawRect(x,y,100,100,[19,94,24])})
-
-          }
-        }
-      }
-    }
+    //update player
     this.player.walk(playerDx,playerDy)
     this.player.updatePos(this.tiles)
     this.viewport.moveTo(this.player.position.x-600/this.viewport.scale,this.player.position.y-337.5/this.viewport.scale)
+    //draw tiles
     this.processTiles()
+    //draw npcs
     for (let i = 0;i<this.npcs.length;i++) {
+      this.npcs[i].updatePos(this.tiles)
       this.drawCircle(this.npcs[i].position.x,this.npcs[i].position.y,100,[255,127,63])
     }
+    //draw player
     this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
     this.drawCircle(this.player.position.x+20*Math.cos(this.player.rotation),this.player.position.y+20*Math.sin(this.player.rotation),5,[171,127,171]) // player eye
+    //dialogue logic
     if (inputPacket.keys.indexOf("Enter") && !this.lastInputPacket.keys.indexOf("Enter")) {
       this.player.updateDialogue(this.npcs)
     }
