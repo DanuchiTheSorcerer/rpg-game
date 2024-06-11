@@ -231,6 +231,7 @@ export class World extends GameState {
         }
       }
       this.importTileMap(testMap)
+      this.createTile(7,13,false,0,(x,y) => {this.drawRect(x,y,100,100,[255,100,200]);if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.nextState = 0}})
       //npcs go here
       this.npcs.push(new NPC(600,600,["Here are the controls","WASD to move","I and K to zoom","And enter to talk!"]))
       this.npcs.push(new NPC(1200,600,["Wanna know a secret?","The R key does something cool","Just dont hold it down"]))
@@ -277,6 +278,7 @@ export class World extends GameState {
     if (dialogue) {
       this.drawController.newButton(0,150,475,900,175,[40,117,76],dialogue)
     }
+    document.getElementById("console").innerText = this.player.tilePos.x + " " + this.player.tilePos.y
     this.lastInputPacket = inputPacket
   }
 };
