@@ -120,3 +120,45 @@ export class Circle extends DrawElement {
         ctx.fill();
     }
 }
+
+export class Text extends DrawElement {
+    constructor(canvasNumber,x,y,width,height,color,text) {
+        super(canvasNumber)
+        this.x = x
+        this.y = y
+        this.width = width
+        this.color = color
+        this.height = height
+        this.text = text
+    }
+    draw(canvas,inputPacket) {
+        let can = document.getElementById(canvas.id)
+        let ctx = can.getContext("2d")
+        //text location calculations go burrrr
+        ctx.fillStyle = 'rgb(' + this.color[0] + ',' + this.color[1] + ',' + this.color[2] + ')'
+
+        // Start with a large font size
+        let fontSize = 100*canvas.resolutionFactor;
+         // Set the font style
+        ctx.font = fontSize + 'px Verdana';
+        // Measure the text width and height
+        let textWidth = ctx.measureText(this.text).width;
+        let textHeight = fontSize; // Assuming constant height for simplicity
+
+        // Reduce font size until it fits within the specified area
+        while (textWidth > (this.width*canvas.resolutionFactor) || textHeight > (this.height*canvas.resolutionFactor)/1.5) {
+            fontSize--;
+            ctx.font = fontSize + 'px Verdana';
+            textWidth = ctx.measureText(this.text).width;
+            textHeight = fontSize;
+        }
+
+        // Calculate the position to center the text
+        const textX = (this.x*canvas.resolutionFactor) + ((this.width*canvas.resolutionFactor) - textWidth) / 2;
+        const textY = (this.y*canvas.resolutionFactor) + ((this.height*canvas.resolutionFactor) - textHeight) / 2 + fontSize * 0.8; // Adjust for baseline
+
+        // Draw the text
+        ctx.fillText(this.text, textX, textY);
+        
+    }
+}

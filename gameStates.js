@@ -61,6 +61,9 @@ export class GameState {
     logicFrame() {
     }
     resetState() {
+      if (this.name == "world") {
+        this.player = new Player(150,150)
+      }
       this.inputController = new InputController()
       this.removeButtons()
       this.drawController.resetElements()
@@ -231,7 +234,7 @@ export class World extends GameState {
         }
       }
       this.importTileMap(testMap)
-      this.createTile(7,13,false,0,(x,y) => {this.drawRect(x,y,100,100,[255,100,200]);if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.nextState = 0}})
+      this.createTile(7,13,false,0,(x,y) => {this.drawRect(x,y,100,100,[255,100,200]);if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.nextState = 2}})
       //npcs go here
       this.npcs.push(new NPC(600,600,["Here are the controls","WASD to move","I and K to zoom","And enter to talk!"]))
       this.npcs.push(new NPC(1200,600,["Wanna know a secret?","The R key does something cool","Just dont hold it down"]))
@@ -287,13 +290,18 @@ export class Dungeon extends GameState {
   constructor() {
       super("dungeon", new DrawController([
       new Canvas(0,0,0.25,1,"side"),
-      new Canvas(0.25,0,0.75,0.67,"main"),
-      new Canvas(0.25,0.67,0.75,0.33,"bottom")]));
+      new Canvas(0.25,0,0.75,0.76,"main"),
+      new Canvas(0.25,0.76,0.75,0.24,"bottom")]));
   }
-  logicFrame() {
-    if (this.iterations == 1) {
-      this.drawController.newCircle(0,100,200,50,[0,0,255])
-      this.drawController.newCircle(1,100,200,50,[0,0,255])
-    }
+  logicFrame(inputPacket) {
+    this.drawController.resetElements()
+    this.drawController.newRect(1,0,0,900,513,[123,193,194])
+    this.drawController.newRect(1,3,3,894,507,[255,255,255])
+    this.drawController.newRect(0,0,0,300,675,[21,193,194])
+    this.drawController.newRect(0,3,3,294,669,[255,255,255])
+    this.drawController.newRect(2,0,0,900,162,[123,32,194])
+    this.drawController.newRect(2,3,3,894,156,[255,255,255])
+    this.drawController.newText(0,10,10,280,100,[0,0,255],"View Stats")
+    this.drawController.newText(0,10,10,280,300,[0,0,255],"Inventory")
   }
 };
