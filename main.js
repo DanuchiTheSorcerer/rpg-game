@@ -1,4 +1,4 @@
-import { Title, Dungeon, World } from "./gameStates";
+import { Title, Dungeon, World, ThreeDimensionTest } from "./gameStates";
 
 class Game {
   constructor() {
@@ -13,6 +13,7 @@ class Game {
     this.gameStates.push(new Title())
     this.gameStates.push(new World())
     this.gameStates.push(new Dungeon())
+    this.gameStates.push(new ThreeDimensionTest())
   }
   loadGameState(newLoadedState) {
     //takes in a number

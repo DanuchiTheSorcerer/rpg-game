@@ -5,6 +5,7 @@ import { Player, NPC } from "./extraModules/creatures"
 import { StaticTile } from "./extraModules/gameTiles"
 import { Viewport } from "./extraModules/viewport"
 import { testMap } from "./tileMaps/testMap"
+import { DepthEngine } from "./extraModules/depthEngine"
 
 
 export class GameState {
@@ -305,3 +306,24 @@ export class Dungeon extends GameState {
     this.drawController.newText(0,10,10,280,300,[0,0,255],"Inventory")
   }
 };
+
+export class ThreeDimensionTest extends GameState {
+  constructor() {
+    super("three", new DrawController([
+      new Canvas(0,0,1,1,"main")
+    ]))
+    this.depthEngine = new DepthEngine()
+  }
+  logicFrame(inputPacket) {
+    let shapes = depthEngine.dimensionDownCube(2,0,0,-1,-1,-3,2)
+  }
+}
+
+// import { DepthEngine } from "./extraModules/depthEngine";
+// let depthEngine = new DepthEngine()
+// let shapes = depthEngine.dimensionDownCube(2,0,0,-1,-1,-3,2)
+// for (let i = 0;i < shapes.length;i++) {
+//   for (let j = 0;j < shapes[i].length;j++) {
+//     alert("Shape " + i + ": " + shapes[i][j].x + ", " + shapes[i][j].y)
+//   }
+// }
