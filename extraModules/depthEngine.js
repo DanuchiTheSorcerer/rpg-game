@@ -21,7 +21,7 @@ export class DepthEngine {
         let twoDimensionShapeSet = []
         if (topVertices[0][2]<0) {
             twoDimensionShapeSet.push(this.dimensionDownCubeFace(topVertices))
-            alert("top")
+            //alert("top")
         }
         //draw or dont draw the east side
         if (eastVertices[0][0]<0) {
@@ -43,15 +43,15 @@ export class DepthEngine {
             twoDimensionShapeSet.push(this.dimensionDownCubeFace(northVertices))
             //alert("north")
         }
-        for (let i = 0; i<4;i++) {
-            alert("Top Vertex " + i + ": " + topVertices[i][0] + ", " + topVertices[i][1] + ", " + topVertices[i][2])
-        }
+        // for (let i = 0; i<4;i++) {
+        //     alert("Top Vertex " + i + ": " + topVertices[i][0] + ", " + topVertices[i][1] + ", " + topVertices[i][2])
+        // }
         // for (let i = 0; i<4;i++) {
         //     alert("West Vertex " + i + ": " + westVertices[i][0] + ", " + westVertices[i][1] + ", " + westVertices[i][2])
+        // }s
+        // for (let i = 0; i<4;i++) {
+        //     alert("East Vertex " + i + ": " + eastVertices[i][0] + ", " + eastVertices[i][1] + ", " + eastVertices[i][2])
         // }
-        for (let i = 0; i<4;i++) {
-            alert("East Vertex " + i + ": " + eastVertices[i][0] + ", " + eastVertices[i][1] + ", " + eastVertices[i][2])
-        }
         // for (let i = 0; i<4;i++) {
         //     alert("South Vertex " + i + ": " + southVertices[i][0] + ", " + southVertices[i][1] + ", " + southVertices[i][2])
         // }
@@ -64,42 +64,19 @@ export class DepthEngine {
         return [this.dimensionDownVertex(vertices[0]),this.dimensionDownVertex(vertices[1]),this.dimensionDownVertex(vertices[2]),this.dimensionDownVertex(vertices[3])]
     }
     dimensionDownVertex(vertex) {
-        let clippedPoint = this.findIntersectionOfFOV(vertex[0],vertex[1],vertex[2])
+        let clippedPoint = this.clipVertex(vertex[0],vertex[1],vertex[2])
         let rx = clippedPoint.x
         let ry = clippedPoint.y
         let rz = clippedPoint.z
         //nearPlaneZ is another way of expressing FOV
         let nearPlaneZ = -600 * Math.sqrt(2)
-        return {x:rx*nearPlaneZ/rz,y:ry*nearPlaneZ/rz}
+        return {x:Math.floor(rx*nearPlaneZ/rz),y:Math.floor(ry*nearPlaneZ/rz)}
     }
-    findIntersectionOfFOV(rx, ry, rz) {
-        // Calculate the width and length at the given z (pyramid extends downward, so z is negative)
-        function w(z) {
-            return Math.sqrt(2) * Math.abs(z);
-        }
-
-        function l(z) {
-            return (9 * Math.sqrt(2) / 16) * Math.abs(z);
-        }
-
-        // Check if the point (rx, ry, rz) is inside or on the pyramid
-        if (Math.abs(rx) <= w(rz) / 2 && Math.abs(ry) <= l(rz) / 2 && rz <= 0) {
+    clipVertex(rx, ry, rz) {
+        if (rz <= 0) {
             return { x: rx, y: ry, z: rz };
+        } else {
+            return { x: rx, y: ry, z: -0.00001 };
         }
-
-        // Calculate the necessary z value to keep x within the pyramid
-        let z_from_x = -Math.abs(rx) / Math.sqrt(2);
-
-        // Calculate the necessary z value to keep y within the pyramid
-        let z_from_y = -Math.abs(ry) / ((9 * Math.sqrt(2)) / 32);
-
-        // Choose the more negative (smaller) z value to ensure the point is within the pyramid bounds
-        let z = Math.min(z_from_x, z_from_y);
-
-        // Recalculate x and y based on the chosen z value
-        let x = Math.sign(rx) * w(z) / 2;
-        let y = Math.sign(ry) * l(z) / 2;
-
-        return { x: x, y: y, z: z };
     }
 }

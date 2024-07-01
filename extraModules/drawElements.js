@@ -173,12 +173,18 @@ export class Polygon extends DrawElement {
         let can = document.getElementById(canvas.id)
         let ctx = can.getContext("2d")
 
-        ctx.strokeStyle = 'rgb(' + this.color[0] + ',' + this.color[1] + ',' + this.color[2] + ')'
+        ctx.fillStyle = 'rgb(' + this.color[0] + ',' + this.color[1] + ',' + this.color[2] + ')'
+        ctx.lineWidth = 3
         ctx.beginPath();
-        ctx.moveTo(this.polygonMap[0].x,this.polygonMap[0].y);
-        for (let i = 1;i < this.polygonMap;i++) {
-            ctx.lineTo(this.polygonMap[i].x,this.polygonMap[i].y)
+        ctx.moveTo((this.polygonMap[0].x+600)*canvas.resolutionFactor,(this.polygonMap[0].y+337.5)*canvas.resolutionFactor);
+        //alert((this.polygonMap[0].x+600)*canvas.resolutionFactor + " " + (this.polygonMap[0].y+337.5)*canvas.resolutionFactor)
+        for (let i = 1;i < this.polygonMap.length;i++) {
+            ctx.lineTo((this.polygonMap[i].x+600)*canvas.resolutionFactor,(this.polygonMap[i].y+337.5)*canvas.resolutionFactor)
+            //alert((this.polygonMap[i].x+600)*canvas.resolutionFactor + " " + (this.polygonMap[i].y+337.5)*canvas.resolutionFactor)
         }
+        ctx.lineTo((this.polygonMap[0].x+600)*canvas.resolutionFactor,(this.polygonMap[0].y+337.5)*canvas.resolutionFactor);
+        ctx.closePath();
+        ctx.fill()
         ctx.stroke();
     }
 }

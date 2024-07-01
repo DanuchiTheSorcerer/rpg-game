@@ -133,10 +133,10 @@ export class Title extends GameState {
         this.drawController.newButton(0,25,25,250,100,[127,0,255],"Go Back")
         this.addButton(25,25,250,100,() => {this.isOnOptions = false;this.removeButtons();
           this.pressedFunnyButton = false
-          this.addButton(300, 350, 600, 100,() => {this.nextState = 1});
+          this.addButton(300, 350, 600, 100,() => {this.nextState = 3});
           this.addButton(300,500,600,100, () => {
             this.pressedFunnyButton = true
-            this.addButton(300, 200, 600, 100,() => {this.nextState = 1;this.saveFile = null});
+            this.addButton(300, 200, 600, 100,() => {this.nextState = 3;this.saveFile = null});
           })
           this.addButton(25,550,250,100,() => {this.isOnOptions = true;this.removeButtons()})
         })
@@ -164,10 +164,10 @@ export class Title extends GameState {
       // on first run add the logic of the buttons
       if (this.iterations == 0) {
         this.pressedFunnyButton = false
-        this.addButton(300, 350, 600, 100,() => {this.nextState = 1});
+        this.addButton(300, 350, 600, 100,() => {this.nextState = 3});
         this.addButton(300,500,600,100, () => {
           this.pressedFunnyButton = true
-          this.addButton(300, 200, 600, 100,() => {this.nextState = 1;this.saveFile = null});
+          this.addButton(300, 200, 600, 100,() => {this.nextState = 3;this.saveFile = null});
         })
         this.addButton(25,550,250,100,() => {this.isOnOptions = true;this.removeButtons()})
       }
@@ -313,17 +313,43 @@ export class ThreeDimensionTest extends GameState {
       new Canvas(0,0,1,1,"main")
     ]))
     this.depthEngine = new DepthEngine()
+    this.camera = [8,3,10]
   }
   logicFrame(inputPacket) {
-    let shapes = depthEngine.dimensionDownCube(2,0,0,-1,-1,-3,2)
+    this.drawController.resetElements()
+      let cube1 = this.depthEngine.dimensionDownCube(this.camera[0],this.camera[1],this.camera[2],-1,-1,-3,2)
+      for (let i = 0; i < cube1.length;i++) {
+        this.drawController.newPolygon(0,cube1[i],[255,0,0])
+      }
+      let cube4 = this.depthEngine.dimensionDownCube(this.camera[0],this.camera[1],this.camera[2],-1,-1,-1,2)
+      for (let i = 0; i < cube4.length;i++) {
+        this.drawController.newPolygon(0,cube4[i],[255,0,0])
+      }
+      let cube2 = this.depthEngine.dimensionDownCube(this.camera[0],this.camera[1],this.camera[2],7,-1,-3,2)
+      for (let i = 0; i < cube2.length;i++) {
+        this.drawController.newPolygon(0,cube2[i],[255,0,0])
+      }
+      let cube3 = this.depthEngine.dimensionDownCube(this.camera[0],this.camera[1],this.camera[2],10,-1,-3,2)
+      for (let i = 0; i < cube3.length;i++) {
+        this.drawController.newPolygon(0,cube3[i],[255,0,0])
+      }
+    if (inputPacket.keys.indexOf("KeyS") != -1) {
+      this.camera = [this.camera[0],this.camera[1]+0.5,this.camera[2]]
+    }
+    if (inputPacket.keys.indexOf("KeyW") != -1) {
+      this.camera = [this.camera[0],this.camera[1]-0.5,this.camera[2]]
+    }
+    if (inputPacket.keys.indexOf("KeyD") != -1) {
+      this.camera = [this.camera[0]+0.5,this.camera[1],this.camera[2]]
+    }
+    if (inputPacket.keys.indexOf("KeyA") != -1) {
+      this.camera = [this.camera[0]-0.5,this.camera[1],this.camera[2]]
+    }
+    if (inputPacket.keys.indexOf("KeyI") != -1) {
+      this.camera = [this.camera[0],this.camera[1],this.camera[2]+0.5]
+    }
+    if (inputPacket.keys.indexOf("KeyK") != -1) {
+      this.camera = [this.camera[0],this.camera[1],this.camera[2]-0.5]
+    }
   }
 }
-
-// import { DepthEngine } from "./extraModules/depthEngine";
-// let depthEngine = new DepthEngine()
-// let shapes = depthEngine.dimensionDownCube(2,0,0,-1,-1,-3,2)
-// for (let i = 0;i < shapes.length;i++) {
-//   for (let j = 0;j < shapes[i].length;j++) {
-//     alert("Shape " + i + ": " + shapes[i][j].x + ", " + shapes[i][j].y)
-//   }
-// }
