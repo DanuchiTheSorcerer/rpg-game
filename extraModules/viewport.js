@@ -1,17 +1,17 @@
 export class Viewport {
     constructor() {
-        this.x = -600
-        this.y = -337.5
-        this.scale = 1
+        this.x = 600
+        this.y = 337.5
+        this.z = 700
     }
     moveTo(x,y) {
         this.x = x
         this.y = y
     }
     zoomIn() {
-        this.scale = this.scale * 1.1
+        this.z = this.z * 1.25
     }
     zoomOut() {
-        this.scale = this.scale / 1.1
+        this.z = this.z /1.25
     }
 }

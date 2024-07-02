@@ -174,7 +174,7 @@ export class Polygon extends DrawElement {
         let ctx = can.getContext("2d")
 
         ctx.fillStyle = 'rgb(' + this.color[0] + ',' + this.color[1] + ',' + this.color[2] + ')'
-        ctx.lineWidth = 3
+        ctx.lineWidth = canvas.resolutionFactor
         ctx.beginPath();
         ctx.moveTo((this.polygonMap[0].x+600)*canvas.resolutionFactor,(this.polygonMap[0].y+337.5)*canvas.resolutionFactor);
         //alert((this.polygonMap[0].x+600)*canvas.resolutionFactor + " " + (this.polygonMap[0].y+337.5)*canvas.resolutionFactor)

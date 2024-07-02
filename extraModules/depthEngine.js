@@ -70,7 +70,7 @@ export class DepthEngine {
         let rz = clippedPoint.z
         //nearPlaneZ is another way of expressing FOV
         let nearPlaneZ = -600 * Math.sqrt(2)
-        return {x:Math.floor(rx*nearPlaneZ/rz),y:Math.floor(ry*nearPlaneZ/rz)}
+        return {x:rx*nearPlaneZ/rz,y:ry*nearPlaneZ/rz}
     }
     clipVertex(rx, ry, rz) {
         if (rz <= 0) {
