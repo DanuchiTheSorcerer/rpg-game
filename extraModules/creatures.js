@@ -71,7 +71,6 @@ export class Creature {
         this.accelerate(-this.speed.x*this.friction,-this.speed.y*this.friction)
         this.rotation = Math.atan2(this.speed.y,this.speed.x)
         this.move(this.speed.x,this.speed.y,collision)
-        document.getElementById("console").innerText = Math.sqrt(this.speed.x*this.speed.x + this.speed.y*this.speed.y)
     }
     vectorToTileEdge(dx,dy) {
         //equation for vector x -> y:

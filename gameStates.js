@@ -2,7 +2,7 @@ import { InputController } from "./extraModules/inputController"
 import { DrawController } from "./extraModules/drawController"
 import { Canvas } from "./extraModules/canvas"
 import { Player, NPC } from "./extraModules/creatures"
-import { StaticTile } from "./extraModules/gameTiles"
+import { StaticTile, EmptyTile } from "./extraModules/gameTiles"
 import { Viewport } from "./extraModules/viewport"
 import { testMap } from "./tileMaps/testMap"
 import { DepthEngine } from "./extraModules/depthEngine"
@@ -189,37 +189,45 @@ export class World extends GameState {
     this.viewport = new Viewport()
     this.npcs = []
     this.lastInputPacket = this.inputController.getInputPacket()
-    this.renderDistance = localStorage.getItem("render")
+    this.renderDistance = parseInt(localStorage.getItem("render"))
     this.depthEngine = new DepthEngine()
   }
-  createTile(xLocation,yLocation,isWall,bounceFactor,func) {
-    this.tiles[xLocation][yLocation] = new StaticTile(xLocation,yLocation,isWall,bounceFactor,func)
+  createTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor) {
+    this.tiles[xLocation][yLocation] = new StaticTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor)
   }
   processTiles() {
     let ptx = this.player.tilePos.x
     let pty = this.player.tilePos.y
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
       for (let j = Math.max(0, pty - this.renderDistance);j<pty;j++) {
-        this.drawTile(this.tiles[i][j])
-        this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
+        if (!this.tiles[i][j].isEmpty) {
+          this.drawTile(this.tiles[i][j])
+          this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
+        }
       }
     }
     for (let i = Math.min(ptx+this.renderDistance,99);i>=ptx;i--) {
       for (let j = Math.max(0, pty - this.renderDistance);j<pty;j++) {
-        this.drawTile(this.tiles[i][j])
-        this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
+        if (!this.tiles[i][j].isEmpty) {
+          this.drawTile(this.tiles[i][j])
+          this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
+        }
       }
     }
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
       for (let j = Math.min(pty+this.renderDistance,99);j>=pty;j--) {
-        this.drawTile(this.tiles[i][j])
-        this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
+        if (!this.tiles[i][j].isEmpty) {
+          this.drawTile(this.tiles[i][j])
+          this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
+        }
       }
     }
     for (let i = Math.min(ptx+this.renderDistance,99);i>=ptx;i--) {
       for (let j = Math.min(pty+this.renderDistance,99);j>=pty;j--) {
-        this.drawTile(this.tiles[i][j])
-        this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
+        if (!this.tiles[i][j].isEmpty) {
+          this.drawTile(this.tiles[i][j])
+          this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
+        }
       }
     }
   }
@@ -231,10 +239,18 @@ export class World extends GameState {
   }
   drawTile(tile) {
     let camera = this.viewport
+    let zPos
     if (tile.isWall) {
-      let cube = this.depthEngine.dimensionDownCube(camera.x,camera.y,camera.z,tile.position.x*100-600,tile.position.y*100-337.5,100,100)
-      for (let i = 0; i < cube.length;i++) {
-        this.drawController.newPolygon(0,cube[i],[255,0,0])
+      zPos = 100
+    } else {
+      zPos = 0
+    }
+    let cube = this.depthEngine.dimensionDownCube(camera.x,camera.y,camera.z,tile.position.x*100-600,tile.position.y*100-337.5,zPos,100)
+    for (let i = 0; i < cube.length;i++) {
+      if (!i) {
+        this.drawController.newPolygon(0,cube[i],tile.topColor)
+      } else {
+        this.drawController.newPolygon(0,cube[i],tile.sideColor)
       }
     }
     
@@ -244,10 +260,10 @@ export class World extends GameState {
     for (let ry = 0;ry<map.length;ry++) {
       for (let rx = 0;rx<map[ry].length;rx++) {
         if (map[ry][rx] == 10) {
-          this.createTile(rx,ry,true,0,(x,y) => {})
+          this.createTile(rx,ry,true,0,(x,y) => {},[110,65,5],[50,150,50])
         }
         if (map[ry][rx] == 20) {
-          this.createTile(rx,ry,false,0,(x,y) => {})
+          this.createTile(rx,ry,false,0,(x,y) => {},[110,65,5],[50,150,50])
         }
       }
     }
@@ -260,14 +276,14 @@ export class World extends GameState {
       for (let i = 0;i<100;i++) {
         this.tiles[i] = []
         for (let j = 0;j<100;j++) {
-          this.createTile(i,j,false,0,(x,y) => {})
+          this.tiles[i][j] = new EmptyTile(i,j)
           if (i == 0 || j == 0 || i == 99 || j == 99) {
-            this.createTile(i,j,true,0,(x,y) => {})
+            this.createTile(i,j,true,0,(x,y) => {},[0,0,0],[0,0,0])
           }
         }
       }
       this.importTileMap(testMap)
-      this.createTile(7,13,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.nextState = 2}})
+      this.createTile(7,13,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.nextState = 2}},[0,0,0],[0,0,0])
       //npcs go here
       this.npcs.push(new NPC(600,600,["Here are the controls","WASD to move","I and K to zoom","And enter to talk!"]))
       this.npcs.push(new NPC(1200,600,["Wanna know a secret?","The R key does something cool","Just dont hold it down"]))

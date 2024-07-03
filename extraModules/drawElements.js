@@ -176,15 +176,15 @@ export class Polygon extends DrawElement {
         ctx.fillStyle = 'rgb(' + this.color[0] + ',' + this.color[1] + ',' + this.color[2] + ')'
         ctx.lineWidth = canvas.resolutionFactor
         ctx.beginPath();
-        ctx.moveTo((this.polygonMap[0].x+600)*canvas.resolutionFactor,(this.polygonMap[0].y+337.5)*canvas.resolutionFactor);
+        ctx.moveTo(Math.floor((this.polygonMap[0].x+600)*canvas.resolutionFactor),Math.floor((this.polygonMap[0].y+337.5)*canvas.resolutionFactor));
         //alert((this.polygonMap[0].x+600)*canvas.resolutionFactor + " " + (this.polygonMap[0].y+337.5)*canvas.resolutionFactor)
         for (let i = 1;i < this.polygonMap.length;i++) {
-            ctx.lineTo((this.polygonMap[i].x+600)*canvas.resolutionFactor,(this.polygonMap[i].y+337.5)*canvas.resolutionFactor)
+            ctx.lineTo(Math.floor((this.polygonMap[i].x+600)*canvas.resolutionFactor),Math.floor((this.polygonMap[i].y+337.5)*canvas.resolutionFactor))
             //alert((this.polygonMap[i].x+600)*canvas.resolutionFactor + " " + (this.polygonMap[i].y+337.5)*canvas.resolutionFactor)
         }
-        ctx.lineTo((this.polygonMap[0].x+600)*canvas.resolutionFactor,(this.polygonMap[0].y+337.5)*canvas.resolutionFactor);
+        ctx.lineTo(Math.floor((this.polygonMap[0].x+600)*canvas.resolutionFactor),Math.floor((this.polygonMap[0].y+337.5)*canvas.resolutionFactor));
         ctx.closePath();
         ctx.fill()
-        ctx.stroke();
+        //ctx.stroke();
     }
 }
