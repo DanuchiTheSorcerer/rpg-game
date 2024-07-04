@@ -6,6 +6,9 @@ import { StaticTile, EmptyTile } from "./extraModules/gameTiles"
 import { Viewport } from "./extraModules/viewport"
 import { testMap } from "./tileMaps/testMap"
 import { DepthEngine } from "./extraModules/depthEngine"
+import { clockTowerOne } from "./tileMaps/clockTowerOne"
+import { clockTowerThree } from "./tileMaps/clockTowerThree"
+import { clockTowerTwo } from "./tileMaps/clockTowerTwo"
 
 
 export class GameState {
@@ -63,7 +66,7 @@ export class GameState {
     }
     resetState() {
       if (this.name == "world") {
-        this.player = new Player(150,150)
+        this.player = new Player(800,800)
       }
       this.inputController = new InputController()
       this.removeButtons()
@@ -184,7 +187,7 @@ export class World extends GameState {
   constructor() {
       super("world", new DrawController([
         new Canvas(0,0,1,1,"main")]));
-      this.player = new Player(150,150)
+      this.player = new Player(800,800)
       this.tiles = []
     this.viewport = new Viewport()
     this.npcs = []
@@ -256,14 +259,23 @@ export class World extends GameState {
     
     
   }
-  importTileMap(map) {
+  importTileMap(map,dx,dy) {
     for (let ry = 0;ry<map.length;ry++) {
       for (let rx = 0;rx<map[ry].length;rx++) {
         if (map[ry][rx] == 10) {
-          this.createTile(rx,ry,true,0,(x,y) => {},[110,65,5],[50,150,50])
+          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[110,65,5],[50,150,50])
         }
         if (map[ry][rx] == 20) {
-          this.createTile(rx,ry,false,0,(x,y) => {},[110,65,5],[50,150,50])
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {},[110,65,5],[40, 212, 40])
+        }
+        if (map[ry][rx] == 21) {
+          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[97, 97, 97],[168, 168, 168])
+        }
+        if (map[ry][rx] == 11) {
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {},[255, 150, 150],[255, 150, 150])
+        }
+        if (map[ry][rx] == 12) {
+          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[0, 255, 0],[0, 255, 0])
         }
       }
     }
@@ -272,6 +284,7 @@ export class World extends GameState {
     this.drawController.resetElements()
     this.drawController.newRect(0,0,0,1200,675,[0,100,255])
     if (this.iterations ==0) {
+      //this.player.teleport(400,100)
       //add border tiles
       for (let i = 0;i<100;i++) {
         this.tiles[i] = []
@@ -282,8 +295,8 @@ export class World extends GameState {
           }
         }
       }
-      this.importTileMap(testMap)
-      this.createTile(7,13,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.nextState = 2}},[0,0,0],[0,0,0])
+      this.importTileMap(clockTowerThree,1,1)
+      this.createTile(7,13,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.nextState = 2}},[199, 12, 165],[199, 12, 165])
       //npcs go here
       this.npcs.push(new NPC(600,600,["Here are the controls","WASD to move","I and K to zoom","And enter to talk!"]))
       this.npcs.push(new NPC(1200,600,["Wanna know a secret?","The R key does something cool","Just dont hold it down"]))
@@ -330,7 +343,7 @@ export class World extends GameState {
     if (dialogue) {
       this.drawController.newButton(0,150,475,900,175,[40,117,76],dialogue)
     }
-    document.getElementById("console").innerText = this.player.tilePos.x + " " + this.player.tilePos.y
+    document.getElementById("console").innerText = this.player.tilePos.x + " " + this.player.tilePos.y + " " +  Math.floor(this.player.position.x) + " " + Math.floor(this.player.position.y)
     this.lastInputPacket = inputPacket
   }
 };
