@@ -2,7 +2,7 @@ import { InputController } from "./extraModules/inputController"
 import { DrawController } from "./extraModules/drawController"
 import { Canvas } from "./extraModules/canvas"
 import { Player, NPC } from "./extraModules/creatures"
-import { StaticTile, EmptyTile } from "./extraModules/gameTiles"
+import { StaticTile, EmptyTile, FloorTile } from "./extraModules/gameTiles"
 import { Viewport } from "./extraModules/viewport"
 import { testMap } from "./tileMaps/testMap"
 import { DepthEngine } from "./extraModules/depthEngine"
@@ -66,7 +66,7 @@ export class GameState {
     }
     resetState() {
       if (this.name == "world") {
-        this.player = new Player(800,800)
+        this.player = new Player(900,900)
       }
       this.inputController = new InputController()
       this.removeButtons()
@@ -185,18 +185,53 @@ export class Title extends GameState {
 
 export class World extends GameState {
   constructor() {
-      super("world", new DrawController([
-        new Canvas(0,0,1,1,"main")]));
-      this.player = new Player(800,800)
-      this.tiles = []
+    super("world", new DrawController([new Canvas(0,0,1,1,"main")]));
+    this.player = new Player(900,900)
+    this.tiles = []
+    this.floorTiles = []
     this.viewport = new Viewport()
     this.npcs = []
     this.lastInputPacket = this.inputController.getInputPacket()
     this.renderDistance = parseInt(localStorage.getItem("render"))
     this.depthEngine = new DepthEngine()
   }
-  createTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor) {
-    this.tiles[xLocation][yLocation] = new StaticTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor)
+  createTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor,height) {
+    this.tiles[xLocation][yLocation] = new StaticTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor,height)
+  }
+  createFloorTile(xLocation,yLocation,sideColor,topColor) {
+    this.floorTiles[xLocation][yLocation] = new FloorTile(xLocation,yLocation,sideColor,topColor)
+  }
+  drawFloorTiles() {
+    let ptx = this.player.tilePos.x
+    let pty = this.player.tilePos.y
+    for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
+      for (let j = Math.max(0, pty - this.renderDistance);j<pty;j++) {
+        if (!this.floorTiles[i][j].isEmpty) {
+          this.drawFloorTile(this.floorTiles[i][j])
+        }
+      }
+    }
+    for (let i = Math.min(ptx+this.renderDistance,99);i>=ptx;i--) {
+      for (let j = Math.max(0, pty - this.renderDistance);j<pty;j++) {
+        if (!this.floorTiles[i][j].isEmpty) {
+          this.drawFloorTile(this.floorTiles[i][j])
+        }
+      }
+    }
+    for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
+      for (let j = Math.min(pty+this.renderDistance,99);j>=pty;j--) {
+        if (!this.floorTiles[i][j].isEmpty) {
+          this.drawFloorTile(this.floorTiles[i][j])
+        }
+      }
+    }
+    for (let i = Math.min(ptx+this.renderDistance,99);i>=ptx;i--) {
+      for (let j = Math.min(pty+this.renderDistance,99);j>=pty;j--) {
+        if (!this.floorTiles[i][j].isEmpty) {
+          this.drawFloorTile(this.floorTiles[i][j])
+        }
+      }
+    }
   }
   processTiles() {
     let ptx = this.player.tilePos.x
@@ -242,13 +277,20 @@ export class World extends GameState {
   }
   drawTile(tile) {
     let camera = this.viewport
-    let zPos
-    if (tile.isWall) {
-      zPos = 100
-    } else {
-      zPos = 0
+    for (let j = 0;j<tile.height;j++) {
+      let cube = this.depthEngine.dimensionDownCube(camera.x,camera.y,camera.z,tile.position.x*100-600,tile.position.y*100-337.5,100+j*100,100)
+      for (let i = 0; i < cube.length;i++) {
+        if (!i) {
+          this.drawController.newPolygon(0,cube[i],tile.topColor)
+        } else {
+          this.drawController.newPolygon(0,cube[i],tile.sideColor)
+        }
+      }
     }
-    let cube = this.depthEngine.dimensionDownCube(camera.x,camera.y,camera.z,tile.position.x*100-600,tile.position.y*100-337.5,zPos,100)
+  }
+  drawFloorTile(tile) {
+    let camera = this.viewport
+    let cube = this.depthEngine.dimensionDownCube(camera.x,camera.y,camera.z,tile.position.x*100-600,tile.position.y*100-337.5,0,100)
     for (let i = 0; i < cube.length;i++) {
       if (!i) {
         this.drawController.newPolygon(0,cube[i],tile.topColor)
@@ -256,26 +298,24 @@ export class World extends GameState {
         this.drawController.newPolygon(0,cube[i],tile.sideColor)
       }
     }
-    
-    
   }
   importTileMap(map,dx,dy) {
     for (let ry = 0;ry<map.length;ry++) {
       for (let rx = 0;rx<map[ry].length;rx++) {
         if (map[ry][rx] == 10) {
-          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[110,65,5],[50,150,50])
+          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[110,65,5],[50,150,50],1)
         }
         if (map[ry][rx] == 20) {
-          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {},[110,65,5],[40, 212, 40])
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {},[110,65,5],[40, 212, 40],1)
         }
         if (map[ry][rx] == 21) {
-          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[97, 97, 97],[168, 168, 168])
+          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[97, 97, 97],[168, 168, 168],2)
         }
         if (map[ry][rx] == 11) {
-          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {},[255, 150, 150],[255, 150, 150])
+          this.createFloorTile(rx + dx,ry+dy,[255, 150, 150],[255, 150, 150])
         }
         if (map[ry][rx] == 12) {
-          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[0, 255, 0],[0, 255, 0])
+          this.createFloorTile(rx + dx,ry+dy,[0, 255, 0],[0, 255, 0])
         }
       }
     }
@@ -284,19 +324,20 @@ export class World extends GameState {
     this.drawController.resetElements()
     this.drawController.newRect(0,0,0,1200,675,[0,100,255])
     if (this.iterations ==0) {
-      //this.player.teleport(400,100)
       //add border tiles
       for (let i = 0;i<100;i++) {
         this.tiles[i] = []
+        this.floorTiles[i] = []
         for (let j = 0;j<100;j++) {
           this.tiles[i][j] = new EmptyTile(i,j)
+          this.floorTiles[i][j] = new EmptyTile(i,j)
           if (i == 0 || j == 0 || i == 99 || j == 99) {
-            this.createTile(i,j,true,0,(x,y) => {},[0,0,0],[0,0,0])
+            this.createTile(i,j,true,0,(x,y) => {},[0,0,0],[0,0,0],1)
           }
         }
       }
-      this.importTileMap(clockTowerThree,1,1)
-      this.createTile(7,13,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.nextState = 2}},[199, 12, 165],[199, 12, 165])
+      this.importTileMap(clockTowerOne,1,1)
+      this.createTile(7,13,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.nextState = 2}},[199, 12, 165],[199, 12, 165],1)
       //npcs go here
       this.npcs.push(new NPC(600,600,["Here are the controls","WASD to move","I and K to zoom","And enter to talk!"]))
       this.npcs.push(new NPC(1200,600,["Wanna know a secret?","The R key does something cool","Just dont hold it down"]))
@@ -326,6 +367,9 @@ export class World extends GameState {
     this.player.updatePos(this.tiles)
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
     //draw tiles
+    this.drawFloorTiles()
+    this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
+    this.drawCircle(this.player.position.x+20*Math.cos(this.player.rotation),this.player.position.y+20*Math.sin(this.player.rotation),5,[171,127,171]) // player eye
     this.processTiles()
     //draw npcs
     for (let i = 0;i<this.npcs.length;i++) {
@@ -333,8 +377,6 @@ export class World extends GameState {
       this.drawCircle(this.npcs[i].position.x,this.npcs[i].position.y,100,[255,127,63])
     }
     //draw player
-    this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
-    this.drawCircle(this.player.position.x+20*Math.cos(this.player.rotation),this.player.position.y+20*Math.sin(this.player.rotation),5,[171,127,171]) // player eye
     //dialogue logic
     if (inputPacket.keys.indexOf("Enter") && !this.lastInputPacket.keys.indexOf("Enter")) {
       this.player.updateDialogue(this.npcs)
