@@ -211,7 +211,7 @@ export class World extends GameState {
         }
       }
     }
-    for (let i = Math.min(ptx+this.renderDistance,99);i>=ptx;i--) {
+    for (let i = Math.min(ptx+this.renderDistance,999);i>=ptx;i--) {
       for (let j = Math.max(0, pty - this.renderDistance);j<pty;j++) {
         if (!this.floorTiles[i][j].isEmpty) {
           this.drawFloorTile(this.floorTiles[i][j])
@@ -219,14 +219,14 @@ export class World extends GameState {
       }
     }
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
-      for (let j = Math.min(pty+this.renderDistance,99);j>=pty;j--) {
+      for (let j = Math.min(pty+this.renderDistance,999);j>=pty;j--) {
         if (!this.floorTiles[i][j].isEmpty) {
           this.drawFloorTile(this.floorTiles[i][j])
         }
       }
     }
-    for (let i = Math.min(ptx+this.renderDistance,99);i>=ptx;i--) {
-      for (let j = Math.min(pty+this.renderDistance,99);j>=pty;j--) {
+    for (let i = Math.min(ptx+this.renderDistance,999);i>=ptx;i--) {
+      for (let j = Math.min(pty+this.renderDistance,999);j>=pty;j--) {
         if (!this.floorTiles[i][j].isEmpty) {
           this.drawFloorTile(this.floorTiles[i][j])
         }
@@ -244,7 +244,7 @@ export class World extends GameState {
         }
       }
     }
-    for (let i = Math.min(ptx+this.renderDistance,99);i>=ptx;i--) {
+    for (let i = Math.min(ptx+this.renderDistance,999);i>=ptx;i--) {
       for (let j = Math.max(0, pty - this.renderDistance);j<pty;j++) {
         if (!this.tiles[i][j].isEmpty) {
           this.drawTile(this.tiles[i][j])
@@ -253,15 +253,15 @@ export class World extends GameState {
       }
     }
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
-      for (let j = Math.min(pty+this.renderDistance,99);j>=pty;j--) {
+      for (let j = Math.min(pty+this.renderDistance,999);j>=pty;j--) {
         if (!this.tiles[i][j].isEmpty) {
           this.drawTile(this.tiles[i][j])
           this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
         }
       }
     }
-    for (let i = Math.min(ptx+this.renderDistance,99);i>=ptx;i--) {
-      for (let j = Math.min(pty+this.renderDistance,99);j>=pty;j--) {
+    for (let i = Math.min(ptx+this.renderDistance,999);i>=ptx;i--) {
+      for (let j = Math.min(pty+this.renderDistance,999);j>=pty;j--) {
         if (!this.tiles[i][j].isEmpty) {
           this.drawTile(this.tiles[i][j])
           this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
@@ -306,16 +306,37 @@ export class World extends GameState {
           this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[110,65,5],[50,150,50],1)
         }
         if (map[ry][rx] == 20) {
-          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {},[110,65,5],[40, 212, 40],1)
+          this.createFloorTile(rx + dx,ry+dy,[110,65,5],[40, 212, 40])
         }
         if (map[ry][rx] == 21) {
-          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[97, 97, 97],[168, 168, 168],2)
+          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[143, 125, 90],[201, 177, 129],15)
+        }
+        if (map[ry][rx] == 22) {
+          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[97, 97, 97],[168, 168, 168],6)
         }
         if (map[ry][rx] == 11) {
-          this.createFloorTile(rx + dx,ry+dy,[255, 150, 150],[255, 150, 150])
+          this.createFloorTile(rx + dx,ry+dy,[201, 177, 129],[201, 177, 129])
         }
         if (map[ry][rx] == 12) {
-          this.createFloorTile(rx + dx,ry+dy,[0, 255, 0],[0, 255, 0])
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {},[97, 97, 97],[168, 168, 168],2)
+        }
+        if (map[ry][rx] == 13) {
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.player.teleport(10550,450)}},[97, 97, 97],[168, 168, 168],1)
+        }
+        if (map[ry][rx] == 17) {
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.player.teleport(20550,450)}},[97, 97, 97],[168, 168, 168],1)
+        }
+        if (map[ry][rx] == 18) {
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.player.teleport(10350,1050)}},[97, 97, 97],[168, 168, 168],1)
+        }
+        if (map[ry][rx] == 14) {
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {},[97, 97, 97],[168, 168, 168],2)
+        }
+        if (map[ry][rx] == 15) {
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {},[97, 97, 97],[168, 168, 168],3)
+        }
+        if (map[ry][rx] == 16) {
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.player.teleport(350,1050)}},[97, 97, 97],[168, 168, 168],4)
         }
       }
     }
@@ -325,19 +346,20 @@ export class World extends GameState {
     this.drawController.newRect(0,0,0,1200,675,[0,100,255])
     if (this.iterations ==0) {
       //add border tiles
-      for (let i = 0;i<100;i++) {
+      for (let i = 0;i<1000;i++) {
         this.tiles[i] = []
         this.floorTiles[i] = []
-        for (let j = 0;j<100;j++) {
+        for (let j = 0;j<1000;j++) {
           this.tiles[i][j] = new EmptyTile(i,j)
           this.floorTiles[i][j] = new EmptyTile(i,j)
-          if (i == 0 || j == 0 || i == 99 || j == 99) {
+          if (i == 0 || j == 0 || i == 999 || j == 999) {
             this.createTile(i,j,true,0,(x,y) => {},[0,0,0],[0,0,0],1)
           }
         }
       }
       this.importTileMap(clockTowerOne,1,1)
-      this.createTile(7,13,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.nextState = 2}},[199, 12, 165],[199, 12, 165],1)
+      this.importTileMap(clockTowerTwo,101,1)
+      this.importTileMap(clockTowerThree,201,1)
       //npcs go here
       this.npcs.push(new NPC(600,600,["Here are the controls","WASD to move","I and K to zoom","And enter to talk!"]))
       this.npcs.push(new NPC(1200,600,["Wanna know a secret?","The R key does something cool","Just dont hold it down"]))

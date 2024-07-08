@@ -8,14 +8,15 @@ export class Creature {
         this.rotation = 0
         this.tilePos = {x:Math.floor(spawnX/100),y:Math.floor(spawnY/100)}
     }
-    teleport(dx,dy) {
-        this.position = {x:this.position.x+dx,y:this.position.y+dy}
+    teleport(x,y) {
+        this.position = {x:x,y:y}
+        this.tilePos = {x:Math.floor(this.position.x/100),y:Math.floor(this.position.y/100)}
     }
     move(dx,dy,collision) {
         let sideVector = this.vectorToTileEdge(dx,dy)
         //alert(sideVector.x + " " + sideVector.y + " " + sideVector.dir)
         let remainingVector = {x:dx-sideVector.x,y:dy-sideVector.y}
-        this.teleport(sideVector.x,sideVector.y)
+        this.position = {x:this.position.x+sideVector.x,y:this.position.y+sideVector.y}
         if (sideVector.dir == "left") {
             let bounce = collision[this.tilePos.x-1][this.tilePos.y].bounceFactor
             if (!collision[this.tilePos.x-1][this.tilePos.y].isWall) {
