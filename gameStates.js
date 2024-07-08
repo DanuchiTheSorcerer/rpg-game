@@ -1,7 +1,7 @@
 import { InputController } from "./extraModules/inputController"
 import { DrawController } from "./extraModules/drawController"
 import { Canvas } from "./extraModules/canvas"
-import { Player, NPC } from "./extraModules/creatures"
+import { Player } from "./extraModules/creatures"
 import { StaticTile, EmptyTile, FloorTile } from "./extraModules/gameTiles"
 import { Viewport } from "./extraModules/viewport"
 import { testMap } from "./tileMaps/testMap"
@@ -190,7 +190,6 @@ export class World extends GameState {
     this.tiles = []
     this.floorTiles = []
     this.viewport = new Viewport()
-    this.npcs = []
     this.lastInputPacket = this.inputController.getInputPacket()
     this.renderDistance = parseInt(localStorage.getItem("render"))
     this.depthEngine = new DepthEngine()
@@ -360,9 +359,6 @@ export class World extends GameState {
       this.importTileMap(clockTowerOne,1,1)
       this.importTileMap(clockTowerTwo,101,1)
       this.importTileMap(clockTowerThree,201,1)
-      //npcs go here
-      this.npcs.push(new NPC(600,600,["Here are the controls","WASD to move","I and K to zoom","And enter to talk!"]))
-      this.npcs.push(new NPC(1200,600,["Wanna know a secret?","The R key does something cool","Just dont hold it down"]))
     }
     let playerDx = 0
     let playerDy = 0
@@ -393,20 +389,6 @@ export class World extends GameState {
     this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
     this.drawCircle(this.player.position.x+20*Math.cos(this.player.rotation),this.player.position.y+20*Math.sin(this.player.rotation),5,[171,127,171]) // player eye
     this.processTiles()
-    //draw npcs
-    for (let i = 0;i<this.npcs.length;i++) {
-      this.npcs[i].updatePos(this.tiles)
-      this.drawCircle(this.npcs[i].position.x,this.npcs[i].position.y,100,[255,127,63])
-    }
-    //draw player
-    //dialogue logic
-    if (inputPacket.keys.indexOf("Enter") && !this.lastInputPacket.keys.indexOf("Enter")) {
-      this.player.updateDialogue(this.npcs)
-    }
-    let dialogue = this.player.getDialogue()
-    if (dialogue) {
-      this.drawController.newButton(0,150,475,900,175,[40,117,76],dialogue)
-    }
     document.getElementById("console").innerText = this.player.tilePos.x + " " + this.player.tilePos.y + " " +  Math.floor(this.player.position.x) + " " + Math.floor(this.player.position.y)
     this.lastInputPacket = inputPacket
   }

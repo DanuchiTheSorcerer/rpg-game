@@ -125,35 +125,4 @@ export class Player extends Creature {
         }
         this.accelerate(dx,dy)
     }
-    updateDialogue(npcs) {
-        if (this.dialogueStage == null) {
-            for (let i = 0;i<npcs.length;i++) {
-                let dx = this.position.x - npcs[i].position.x
-                let dy = this.position.y - npcs[i].position.y
-                let distance = Math.sqrt(dx*dx + dy*dy)
-                if (distance <= 200) {
-                    this.hearing = npcs[i].dialogue
-                    this.dialogueStage = 0
-                    return
-                }
-            }
-        } else {
-            this.dialogueStage++
-            if (this.dialogueStage == this.hearing.length) {
-                this.dialogueStage = null
-                this.hearing = []
-            }
-            return
-        }
-    }
-    getDialogue() {
-        return this.hearing[this.dialogueStage]
-    }
-}
-
-export class NPC extends Creature {
-    constructor(spawnX,spawnY,dialogue) {
-        super(spawnX, spawnY)
-        this.dialogue = dialogue
-    }
 }
