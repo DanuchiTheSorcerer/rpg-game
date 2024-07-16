@@ -79,4 +79,20 @@ export class DepthEngine {
             return { x: rx, y: ry, z: -0.00001 };
         }
     }
+    dimensionDownRect(cameraX,cameraY,cameraZ,x,y,width,height,depth) {
+        let rxCoord = x-cameraX
+        let ryCoord = y-cameraY
+        let rz = depth-cameraZ
+        let rxExtended = x + width - cameraX
+        let ryExtended = y + height - cameraY
+
+        let vertexCoord = this.dimensionDownVertex([rxCoord,ryCoord,rz])
+        let vertexExtended = this.dimensionDownVertex([rxExtended,ryExtended,rz])
+        return {
+            x:vertexCoord.x,
+            y:vertexCoord.y,
+            width:vertexExtended.x-vertexCoord.x,
+            height:vertexExtended.y-vertexCoord.y
+        }
+    }
 }
