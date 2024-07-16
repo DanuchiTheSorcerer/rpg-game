@@ -4,11 +4,11 @@ import { Canvas } from "./extraModules/canvas"
 import { Player } from "./extraModules/creatures"
 import { StaticTile, EmptyTile, FloorTile } from "./extraModules/gameTiles"
 import { Viewport } from "./extraModules/viewport"
-import { testMap } from "./tileMaps/testMap"
 import { DepthEngine } from "./extraModules/depthEngine"
 import { clockTowerOne } from "./tileMaps/clockTowerOne"
 import { clockTowerThree } from "./tileMaps/clockTowerThree"
 import { clockTowerTwo } from "./tileMaps/clockTowerTwo"
+import { field } from "./tileMaps/field"
 
 
 export class GameState {
@@ -342,7 +342,6 @@ export class World extends GameState {
   }
   logicFrame(inputPacket) {
     this.drawController.resetElements()
-    this.drawController.newRect(0,0,0,1200,675,[0,100,255])
     if (this.iterations ==0) {
       //add border tiles
       for (let i = 0;i<1000;i++) {
@@ -359,6 +358,7 @@ export class World extends GameState {
       this.importTileMap(clockTowerOne,1,1)
       this.importTileMap(clockTowerTwo,101,1)
       this.importTileMap(clockTowerThree,201,1)
+      this.importTileMap(field,17,1)
     }
     let playerDx = 0
     let playerDy = 0
@@ -374,17 +374,11 @@ export class World extends GameState {
     if (inputPacket.keys.indexOf("KeyA") != -1) {
       playerDx--
     }
-    if (inputPacket.keys.indexOf("KeyI") != -1) {
-      this.viewport.zoomOut()
-    }
-    if (inputPacket.keys.indexOf("KeyK") != -1) {
-      this.viewport.zoomIn()
-    }
     //update player
     this.player.walk(playerDx,playerDy)
     this.player.updatePos(this.tiles)
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
-    //draw tiles
+    //draw tiles and player
     this.drawFloorTiles()
     this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
     this.drawCircle(this.player.position.x+20*Math.cos(this.player.rotation),this.player.position.y+20*Math.sin(this.player.rotation),5,[171,127,171]) // player eye
