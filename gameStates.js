@@ -340,6 +340,10 @@ export class World extends GameState {
       }
     }
   }
+  drawSprite(x,y,z,width,height,sprite) {
+    let spriteDimensions = this.depthEngine.dimensionDownRect(this.viewport.x,this.viewport.y,this.viewport.z,x-600,y-337.5,width,height,z)
+    this.drawController.newSprite(0,spriteDimensions.x+600,spriteDimensions.y+337.5,spriteDimensions.width,sprite)
+  }
   logicFrame(inputPacket) {
     this.drawController.resetElements()
     if (this.iterations ==0) {
@@ -374,14 +378,25 @@ export class World extends GameState {
     if (inputPacket.keys.indexOf("KeyA") != -1) {
       playerDx--
     }
+    if (inputPacket.keys.indexOf("KeyI") != -1) {
+      this.viewport.zoomOut()
+    }
+    if (inputPacket.keys.indexOf("KeyK") != -1) {
+      this.viewport.zoomIn()
+    }
     //update player
     this.player.walk(playerDx,playerDy)
     this.player.updatePos(this.tiles)
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
     //draw tiles and player
     this.drawFloorTiles()
-    this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
-    this.drawCircle(this.player.position.x+20*Math.cos(this.player.rotation),this.player.position.y+20*Math.sin(this.player.rotation),5,[171,127,171]) // player eye
+
+
+    this.drawSprite(this.player.position.x-50,this.player.position.y-50,0,100,100,"../sprites/character.png")
+    
+
+    // this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
+    // this.drawCircle(this.player.position.x+20*Math.cos(this.player.rotation),this.player.position.y+20*Math.sin(this.player.rotation),5,[171,127,171]) // player eye
     this.processTiles()
     document.getElementById("console").innerText = this.player.tilePos.x + " " + this.player.tilePos.y + " " +  Math.floor(this.player.position.x) + " " + Math.floor(this.player.position.y)
     this.lastInputPacket = inputPacket

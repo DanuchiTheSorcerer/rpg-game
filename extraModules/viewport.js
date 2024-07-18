@@ -9,9 +9,9 @@ export class Viewport {
         this.y = y
     }
     zoomIn() {
-        this.z = this.z * 1.25
+        this.z = this.z / 1.25
     }
     zoomOut() {
-        this.z = this.z /1.25
+        this.z = this.z *1.25
     }
 }
