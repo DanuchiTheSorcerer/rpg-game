@@ -1,7 +1,7 @@
 export class Viewport {
     constructor() {
-        this.x = 600
-        this.y = 337.5
+        this.x = 1200
+        this.y = 675
         this.z = 2000
     }
     moveTo(x,y) {

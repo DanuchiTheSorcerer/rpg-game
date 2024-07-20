@@ -201,8 +201,8 @@ export class World extends GameState {
     this.floorTiles[xLocation][yLocation] = new FloorTile(xLocation,yLocation,sideColor,topColor)
   }
   drawFloorTiles() {
-    let ptx = this.player.tilePos.x
-    let pty = this.player.tilePos.y
+    let ptx = Math.floor((this.viewport.x+600)/100)
+    let pty = Math.floor((this.viewport.y+337.5)/100)
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
       for (let j = Math.max(0, pty - this.renderDistance);j<pty;j++) {
         if (!this.floorTiles[i][j].isEmpty) {
@@ -233,8 +233,8 @@ export class World extends GameState {
     }
   }
   processTiles() {
-    let ptx = this.player.tilePos.x
-    let pty = this.player.tilePos.y
+    let ptx = Math.floor((this.viewport.x+600)/100)
+    let pty = Math.floor((this.viewport.y+337.5)/100)
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
       for (let j = Math.max(0, pty - this.renderDistance);j<pty;j++) {
         if (!this.tiles[i][j].isEmpty) {
