@@ -185,7 +185,7 @@ export class Title extends GameState {
 
 export class World extends GameState {
   constructor() {
-    super("world", new DrawController([new Canvas(0,0,1,1,"main")]));
+    super("world", new DrawController([new Canvas(0.25,0,0.75,0.75,"main")]));
     this.player = new Player(900,900)
     this.tiles = []
     this.floorTiles = []
@@ -390,7 +390,6 @@ export class World extends GameState {
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
     //draw tiles and player
     this.drawFloorTiles()
-
 
     this.drawSprite(this.player.position.x-50,this.player.position.y-50,0,100,100,"../sprites/character.png")
     

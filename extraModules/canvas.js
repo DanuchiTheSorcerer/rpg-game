@@ -26,8 +26,8 @@ export class Canvas {
             left:${this.xRel * window.innerWidth}px;
             top:${this.yRel * (window.innerWidth*9/16) + (window.innerHeight - window.innerWidth*(9/16))/2}px;
             `;
-            canvas.width = 1200 * this.resolutionFactor * this.widthRel
-            canvas.height = 675 * this.resolutionFactor * this.heightRel
+            canvas.width = 1200 * this.resolutionFactor
+            canvas.height = 675 * this.resolutionFactor
         } else {
             canvas.style = `
             position:absolute;
@@ -39,8 +39,8 @@ export class Canvas {
             left:${this.xRel * (window.innerHeight*16/9) + (window.innerWidth - window.innerHeight*(16/9))/2}px;
             top:${this.yRel * window.innerHeight}px;
             `;
-            canvas.width = 1200 * this.resolutionFactor * this.widthRel
-            canvas.height = 675 * this.resolutionFactor * this.heightRel
+            canvas.width = 1200 * this.resolutionFactor
+            canvas.height = 675 * this.resolutionFactor
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height);   
     }
