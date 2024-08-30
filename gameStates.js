@@ -193,6 +193,7 @@ export class World extends GameState {
     this.lastInputPacket = this.inputController.getInputPacket()
     this.renderDistance = parseInt(localStorage.getItem("render"))
     this.depthEngine = new DepthEngine()
+    this.isInCombat = false
   }
   createTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor,height) {
     this.tiles[xLocation][yLocation] = new StaticTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor,height)
@@ -344,17 +345,29 @@ export class World extends GameState {
     let spriteDimensions = this.depthEngine.dimensionDownRect(this.viewport.x,this.viewport.y,this.viewport.z,x-600,y-337.5,width,height,z)
     this.drawController.newSprite(0,spriteDimensions.x+600,spriteDimensions.y+337.5,spriteDimensions.width,sprite)
   }
+  combat(mode) {
+    this.isInCombat = mode
+    if (!mode) {
+      this.drawController.canvases[0].xRel = 0
+      this.drawController.canvases[0].heightRel = 1
+      this.drawController.canvases[0].widthRel = 1
+    } else {
+      this.drawController.canvases[0].xRel = 0.25
+      this.drawController.canvases[0].heightRel = 0.75 
+      this.drawController.canvases[0].widthRel = 0.75
+      // if (this.drawController.canvases[0].xRel < 0.25) {
+      //   this.drawController.canvases[0].xRel += 0.008
+      // }
+      // if (this.drawController.canvases[0].heightRel > 0.75) {
+      //   this.drawController.canvases[0].heightRel -= 0.008
+      // }
+      // if (this.drawController.canvases[0].widthRel > 0.75) {
+      //   this.drawController.canvases[0].widthRel -= 0.008
+      // }
+    }
+  }
   logicFrame(inputPacket) {
     this.drawController.resetElements()
-    if (this.drawController.canvases[0].xRel < 0.25) {
-      this.drawController.canvases[0].xRel += 0.005
-    }
-    if (this.drawController.canvases[0].heightRel > 0.75) {
-      this.drawController.canvases[0].heightRel -= 0.005
-    }
-    if (this.drawController.canvases[0].widthRel > 0.75) {
-      this.drawController.canvases[0].widthRel -= 0.005
-    }
     if (this.iterations ==0) {
       //add border tiles
       for (let i = 0;i<1000;i++) {
@@ -401,6 +414,7 @@ export class World extends GameState {
     this.drawFloorTiles()
 
     this.drawSprite(this.player.position.x-50,this.player.position.y-50,0,100,100,"../sprites/character.png")
+    // this.drawSprite(2250,250,0,100,100,"../sprites/character.png")
     
 
     // this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
