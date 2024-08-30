@@ -351,10 +351,12 @@ export class World extends GameState {
       this.drawController.canvases[0].xRel = 0
       this.drawController.canvases[0].heightRel = 1
       this.drawController.canvases[0].widthRel = 1
+      this.renderDistance = parseInt(localStorage.getItem("render"))
     } else {
       this.drawController.canvases[0].xRel = 0.25
       this.drawController.canvases[0].heightRel = 0.75 
       this.drawController.canvases[0].widthRel = 0.75
+      this.renderDistance = 20
       // if (this.drawController.canvases[0].xRel < 0.25) {
       //   this.drawController.canvases[0].xRel += 0.008
       // }
@@ -388,23 +390,31 @@ export class World extends GameState {
     }
     let playerDx = 0
     let playerDy = 0
-    if (inputPacket.keys.indexOf("KeyS") != -1) {
-      playerDy++
-    }
-    if (inputPacket.keys.indexOf("KeyW") != -1) {
-      playerDy--
-    }
-    if (inputPacket.keys.indexOf("KeyD") != -1) {
-      playerDx++
-    }
-    if (inputPacket.keys.indexOf("KeyA") != -1) {
-      playerDx--
+    if (!this.isInCombat) {
+      if (inputPacket.keys.indexOf("KeyS") != -1) {
+        playerDy++
+      }
+      if (inputPacket.keys.indexOf("KeyW") != -1) {
+        playerDy--
+      }
+      if (inputPacket.keys.indexOf("KeyD") != -1) {
+        playerDx++
+      }
+      if (inputPacket.keys.indexOf("KeyA") != -1) {
+        playerDx--
+      }
     }
     if (inputPacket.keys.indexOf("KeyI") != -1) {
       this.viewport.zoomOut()
     }
     if (inputPacket.keys.indexOf("KeyK") != -1) {
       this.viewport.zoomIn()
+    }
+    if (inputPacket.keys.indexOf("KeyC") != -1) {
+      this.combat(true)
+    }
+    if (inputPacket.keys.indexOf("KeyV") != -1) {
+      this.combat(false)
     }
     //update player
     this.player.walk(playerDx,playerDy)
@@ -414,7 +424,7 @@ export class World extends GameState {
     this.drawFloorTiles()
 
     this.drawSprite(this.player.position.x-50,this.player.position.y-50,0,100,100,"../sprites/character.png")
-    // this.drawSprite(2250,250,0,100,100,"../sprites/character.png")
+    this.drawSprite(2250,250,0,100,100,"../sprites/character.png")
     
 
     // this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
