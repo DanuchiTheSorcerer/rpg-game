@@ -185,7 +185,7 @@ export class Title extends GameState {
 
 export class World extends GameState {
   constructor() {
-    super("world", new DrawController([new Canvas(0.25,0,0.75,0.75,"main")]));
+    super("world", new DrawController([new Canvas(0,0,1,1,"main")]));
     this.player = new Player(900,900)
     this.tiles = []
     this.floorTiles = []
@@ -346,6 +346,15 @@ export class World extends GameState {
   }
   logicFrame(inputPacket) {
     this.drawController.resetElements()
+    if (this.drawController.canvases[0].xRel < 0.25) {
+      this.drawController.canvases[0].xRel += 0.005
+    }
+    if (this.drawController.canvases[0].heightRel > 0.75) {
+      this.drawController.canvases[0].heightRel -= 0.005
+    }
+    if (this.drawController.canvases[0].widthRel > 0.75) {
+      this.drawController.canvases[0].widthRel -= 0.005
+    }
     if (this.iterations ==0) {
       //add border tiles
       for (let i = 0;i<1000;i++) {
