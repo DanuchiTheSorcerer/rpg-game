@@ -281,7 +281,9 @@ export class World extends GameState {
       let cube = this.depthEngine.dimensionDownCube(camera.x,camera.y,camera.z,tile.position.x*100-600,tile.position.y*100-337.5,100+j*100,100)
       for (let i = 0; i < cube.length;i++) {
         if (!i) {
-          this.drawController.newPolygon(0,cube[i],tile.topColor)
+          if (j == tile.height-1) {
+            this.drawController.newPolygon(0,cube[i],tile.topColor)
+          }
         } else {
           this.drawController.newPolygon(0,cube[i],tile.sideColor)
         }
@@ -294,9 +296,10 @@ export class World extends GameState {
     for (let i = 0; i < cube.length;i++) {
       if (!i) {
         this.drawController.newPolygon(0,cube[i],tile.topColor)
-      } else {
-        this.drawController.newPolygon(0,cube[i],tile.sideColor)
-      }
+      } 
+      // else {
+      //   this.drawController.newPolygon(0,cube[i],tile.sideColor)
+      // }
     }
   }
   importTileMap(map,dx,dy) {
@@ -357,6 +360,9 @@ export class World extends GameState {
       this.drawController.canvases[0].heightRel = 0.75 
       this.drawController.canvases[0].widthRel = 0.75
       this.renderDistance = 20
+      this.viewport.z = 2000
+      this.player.targetPos.x = this.player.position.x
+      this.player.targetPos.y = this.player.position.y
       // if (this.drawController.canvases[0].xRel < 0.25) {
       //   this.drawController.canvases[0].xRel += 0.008
       // }
@@ -369,6 +375,12 @@ export class World extends GameState {
     }
   }
   logicFrame(inputPacket) {
+    //document.getElementById("console").innerText = inputPacket.leftMouse + " " + this.lastInputPacket.leftMouse
+    // if (inputPacket.leftMouse && !this.lastInputPacket.leftMouse) {
+    //   document.getElementById("console").innerText = "click"
+    // } else {
+    //   document.getElementById("console").innerText = "no click"
+    // }
     this.drawController.resetElements()
     if (this.iterations ==0) {
       //add border tiles
@@ -403,34 +415,44 @@ export class World extends GameState {
       if (inputPacket.keys.indexOf("KeyA") != -1) {
         playerDx--
       }
-    }
-    if (inputPacket.keys.indexOf("KeyI") != -1) {
-      this.viewport.zoomOut()
-    }
-    if (inputPacket.keys.indexOf("KeyK") != -1) {
-      this.viewport.zoomIn()
-    }
-    if (inputPacket.keys.indexOf("KeyC") != -1) {
-      this.combat(true)
-    }
-    if (inputPacket.keys.indexOf("KeyV") != -1) {
-      this.combat(false)
+      if (inputPacket.keys.indexOf("KeyI") != -1) {
+        this.viewport.zoomOut()
+      }
+      if (inputPacket.keys.indexOf("KeyK") != -1) {
+        this.viewport.zoomIn()
+      }
+      if (inputPacket.keys.indexOf("KeyC") != -1) {
+        this.combat(true)
+      }
+    } else {
+      if (inputPacket.leftMouse && !this.lastInputPacket.leftMouse) {
+        this.player.targetPos.x = Math.floor(this.viewport.x + 600 + 2.99 * inputPacket.mouseX -2.99*751)
+        this.player.targetPos.y = Math.floor(this.viewport.y + 337.5 + 2.98 * inputPacket.mouseY -2.98*255)
+      }
+      if (inputPacket.keys.indexOf("KeyV") != -1) {
+        this.combat(false)
+      }
     }
     //update player
-    this.player.walk(playerDx,playerDy)
+    if (!this.isInCombat) {
+      this.player.walk(playerDx,playerDy)
+    } else {
+      this.player.walk(this.player.targetPos.x-this.player.position.x,this.player.targetPos.y-this.player.position.y)
+    }
     this.player.updatePos(this.tiles)
-    this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
+    if (!this.isInCombat) {
+      this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
+    }
     //draw tiles and player
     this.drawFloorTiles()
 
-    this.drawSprite(this.player.position.x-50,this.player.position.y-50,0,100,100,"../sprites/character.png")
+    this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
     this.drawSprite(2250,250,0,100,100,"../sprites/character.png")
     
+  
+    this.drawSprite(this.player.targetPos.x-25,this.player.targetPos.y-25,100,50,50,"../sprites/character.png")
 
-    // this.drawCircle(this.player.position.x,this.player.position.y,25,[255,255,0])
-    // this.drawCircle(this.player.position.x+20*Math.cos(this.player.rotation),this.player.position.y+20*Math.sin(this.player.rotation),5,[171,127,171]) // player eye
     this.processTiles()
-    document.getElementById("console").innerText = this.player.tilePos.x + " " + this.player.tilePos.y + " " +  Math.floor(this.player.position.x) + " " + Math.floor(this.player.position.y)
     this.lastInputPacket = inputPacket
   }
 };
@@ -438,19 +460,17 @@ export class World extends GameState {
 export class Dungeon extends GameState {
   constructor() {
       super("dungeon", new DrawController([
-      new Canvas(0,0,0.25,1,"side"),
-      new Canvas(0.25,0,0.75,0.76,"main"),
-      new Canvas(0.25,0.76,0.75,0.24,"bottom")]));
+      new Canvas(0,0,1,1,"side")]));
   }
   logicFrame(inputPacket) {
     this.drawController.resetElements()
-    this.drawController.newRect(1,0,0,900,513,[123,193,194])
-    this.drawController.newRect(1,3,3,894,507,[255,255,255])
-    this.drawController.newRect(0,0,0,300,675,[21,193,194])
-    this.drawController.newRect(0,3,3,294,669,[255,255,255])
-    this.drawController.newRect(2,0,0,900,162,[123,32,194])
-    this.drawController.newRect(2,3,3,894,156,[255,255,255])
-    this.drawController.newText(0,10,10,280,100,[0,0,255],"View Stats")
-    this.drawController.newText(0,10,10,280,300,[0,0,255],"Inventory")
+    this.drawController.newRect(0,0,0,300,675,[123,193,194])
+    this.drawController.newRect(0,0,3,294,669,[255,255,255])
+    this.drawController.newRect(0,0,0,1200,675,[21,193,194])
+    this.drawController.newRect(0,12,3,1188,669,[255,255,255])
+    this.drawController.newRect(0,300,450,900,1200,[123,32,194])
+    this.drawController.newRect(0,303,453,1194,669,[255,255,255])
+    this.drawController.newText(0,10,10,290,60,[0,0,255],"View Stats")
+    this.drawController.newText(0,10,70,290,120,[0,0,255],"Inventory")
   }
 };

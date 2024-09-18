@@ -2,7 +2,7 @@ export class DepthEngine {
     constructor() {
         //returns 2d vertices of transformed 3d objects from a top down view given a camera (x,y,z)
     }
-    dimensionDownCube(cameraX,cameraY,cameraZ,cubeX,cubeY,cubeZ,cubeLength) {
+    dimensionDownCube(cameraX,cameraY,cameraZ,cubeX,cubeY,cubeZ,cubeLength,topToggle) {
         //IMPORTANT!!!! Z is the HEIGHT
         let relativeX = cubeX - cameraX
         let relativeY = cubeY - cameraY
@@ -24,22 +24,22 @@ export class DepthEngine {
             //alert("top")
         }
         //draw or dont draw the east side
-        if (eastVertices[0][0]<0) {
+        if (eastVertices[0][0]<0 && topToggle) {
             twoDimensionShapeSet.push(this.dimensionDownCubeFace(eastVertices))
             //alert("east")
         }
         //draw or dont draw the west side
-        if (westVertices[0][0]>0) {
+        if (westVertices[0][0]>0 && topToggle) {
             twoDimensionShapeSet.push(this.dimensionDownCubeFace(westVertices))  
             //alert("west")
         }
         //draw or dont draw the south side
-        if (southVertices[0][1]<0) {
+        if (southVertices[0][1]<0 && topToggle) {
             twoDimensionShapeSet.push(this.dimensionDownCubeFace(southVertices))
             //alert("south")
         }
         //draw or dont draw the north side
-        if (northVertices[0][1]>0) {
+        if (northVertices[0][1]>0 && topToggle) {
             twoDimensionShapeSet.push(this.dimensionDownCubeFace(northVertices))
             //alert("north")
         }

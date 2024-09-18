@@ -7,6 +7,7 @@ export class Creature {
         this.friction = 0.2
         this.rotation = 0
         this.tilePos = {x:Math.floor(spawnX/100),y:Math.floor(spawnY/100)}
+        this.targetPos = {x:0,y:0}
     }
     teleport(x,y) {
         this.position = {x:x,y:y}
@@ -72,6 +73,11 @@ export class Creature {
         this.accelerate(-this.speed.x*this.friction,-this.speed.y*this.friction)
         this.rotation = Math.atan2(this.speed.y,this.speed.x)
         this.move(this.speed.x,this.speed.y,collision)
+        if (Math.floor(this.targetPos.x/100) == this.tilePos.x && Math.floor(this.targetPos.y/100) == this.tilePos.y) {
+            this.targetPos = this.position
+            this.speed.x = 0
+            this.speed.y = 0
+        }
     }
     vectorToTileEdge(dx,dy) {
         //equation for vector x -> y:
