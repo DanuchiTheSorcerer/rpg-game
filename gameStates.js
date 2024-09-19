@@ -359,24 +359,9 @@ export class World extends GameState {
       this.viewport.z = 2000
       this.player.targetPos.x = this.player.position.x
       this.player.targetPos.y = this.player.position.y
-      // if (this.drawController.canvases[0].xRel < 0.25) {
-      //   this.drawController.canvases[0].xRel += 0.008
-      // }
-      // if (this.drawController.canvases[0].heightRel > 0.75) {
-      //   this.drawController.canvases[0].heightRel -= 0.008
-      // }
-      // if (this.drawController.canvases[0].widthRel > 0.75) {
-      //   this.drawController.canvases[0].widthRel -= 0.008
-      // }
     }
   }
   logicFrame(inputPacket) {
-    //document.getElementById("console").innerText = inputPacket.leftMouse + " " + this.lastInputPacket.leftMouse
-    // if (inputPacket.leftMouse && !this.lastInputPacket.leftMouse) {
-    //   document.getElementById("console").innerText = "click"
-    // } else {
-    //   document.getElementById("console").innerText = "no click"
-    // }
     this.drawController.resetElements()
     if (this.iterations ==0) {
       //add border tiles
@@ -436,9 +421,7 @@ export class World extends GameState {
       this.player.walk(this.player.targetPos.x-this.player.position.x,this.player.targetPos.y-this.player.position.y)
     }
     this.player.updatePos(this.tiles)
-    if (!this.isInCombat) {
-      this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
-    }
+    this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
     //draw tiles and player
     this.drawFloorTiles()
 
@@ -450,6 +433,7 @@ export class World extends GameState {
 
     this.processTiles()
     this.lastInputPacket = inputPacket
+    document.getElementById('console').innerText = this.player.position.x + ' ' + this.player.position.y
   }
 };
 
