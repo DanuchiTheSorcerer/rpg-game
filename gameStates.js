@@ -1,7 +1,7 @@
 import { InputController } from "./extraModules/inputController"
 import { DrawController } from "./extraModules/drawController"
 import { Canvas } from "./extraModules/canvas"
-import { Player } from "./extraModules/creatures"
+import { Creature, Player } from "./extraModules/creatures"
 import { StaticTile, EmptyTile, FloorTile } from "./extraModules/gameTiles"
 import { Viewport } from "./extraModules/viewport"
 import { DepthEngine } from "./extraModules/depthEngine"
@@ -68,6 +68,7 @@ export class GameState {
     resetState() {
       if (this.name == "world") {
         this.player = new Player(900,900)
+        this.enemy = new Creature(1800,1800)
       }
       this.inputController = new InputController()
       this.removeButtons()
@@ -188,6 +189,7 @@ export class World extends GameState {
   constructor() {
     super("world", new DrawController([new Canvas(0,0,1,1,"main")]));
     this.player = new Player(900,900)
+    this.enemy = new Creature(1800,1800)
     this.tiles = []
     this.floorTiles = []
     this.viewport = new Viewport()
@@ -362,30 +364,10 @@ export class World extends GameState {
       this.player.targetPos.y = this.player.position.y
     }
   }
-  logicFrame(inputPacket) {
-    this.drawController.resetElements()
-    if (this.iterations ==0) {
-      //add border tiles
-      for (let i = 0;i<1000;i++) {
-        this.tiles[i] = []
-        this.floorTiles[i] = []
-        for (let j = 0;j<1000;j++) {
-          this.tiles[i][j] = new EmptyTile(i,j)
-          this.floorTiles[i][j] = new EmptyTile(i,j)
-          if (i == 0 || j == 0 || i == 999 || j == 999) {
-            this.createTile(i,j,true,0,(x,y) => {},[0,0,0],[0,0,0],1)
-          }
-        }
-      }
-      this.importTileMap(clockTowerOne,1,1)
-      this.importTileMap(clockTowerTwo,101,1)
-      this.importTileMap(clockTowerThree,201,1)
-      this.importTileMap(field,17,1)
-      this.importTileMap(field2,1,17)
-    }
-    let playerDx = 0
-    let playerDy = 0
-    if (!this.isInCombat) {
+  tickPlayer(inputPacket,combat) {
+    if (combat) {
+      let playerDx = 0
+      let playerDy = 0
       if (inputPacket.keys.indexOf("KeyS") != -1) {
         playerDy++
       }
@@ -407,6 +389,14 @@ export class World extends GameState {
       if (inputPacket.keys.indexOf("KeyC") != -1) {
         this.combat(true)
       }
+      this.player.walk(playerDx,playerDy)
+      if (Math.floor(this.player.targetPos.x/100) == this.player.tilePos.x && Math.floor(this.player.targetPos.y/100) == this.player.tilePos.y) {
+        this.player.targetPos.x = this.player.position.x
+        this.player.targetPos.y = this.player.position.y
+        this.player.speed.x = 0
+        this.player.speed.y = 0
+      }
+      this.player.updatePos(this.tiles)
     } else {
       if (inputPacket.leftMouse && !this.lastInputPacket.leftMouse) {
         this.player.targetPos.x = Math.floor(this.viewport.x + 600 + 2.99 * inputPacket.mouseX -2.99*751)
@@ -414,26 +404,50 @@ export class World extends GameState {
       }
       if (inputPacket.keys.indexOf("KeyV") != -1) {
         this.combat(false)
-      }
-    }
-    //update player
-    if (!this.isInCombat) {
-      this.player.walk(playerDx,playerDy)
-    } else {
+      }      
       this.player.walk(this.player.targetPos.x-this.player.position.x,this.player.targetPos.y-this.player.position.y)
+      this.player.updatePos(this.tiles)
     }
-    this.player.updatePos(this.tiles)
-    if (this.isInCombat && Math.floor(this.player.targetPos.x/100) == this.player.tilePos.x && Math.floor(this.player.targetPos.y/100) == this.player.tilePos.y) {
-      this.player.targetPos.x = this.player.position.x
-      this.player.targetPos.y = this.player.position.y
-      this.player.speed.x = 0
-      this.player.speed.y = 0
+  }
+  tickCreatures() {
+
+  }
+  logicFrame(inputPacket) {
+    this.drawController.resetElements()
+    if (this.iterations ==0) {
+      //add border tiles
+      for (let i = 0;i<1000;i++) {
+        this.tiles[i] = []
+        this.floorTiles[i] = []
+        for (let j = 0;j<1000;j++) {
+          this.tiles[i][j] = new EmptyTile(i,j)
+          this.floorTiles[i][j] = new EmptyTile(i,j)
+          if (i == 0 || j == 0 || i == 999 || j == 999) {
+            this.createTile(i,j,true,0,(x,y) => {},[0,0,0],[0,0,0],1)
+          }
+        }
+      }
+      this.importTileMap(clockTowerOne,1,1)
+      this.importTileMap(clockTowerTwo,101,1)
+      this.importTileMap(clockTowerThree,201,1)
+      this.importTileMap(field,17,1)
+      this.importTileMap(field2,1,17)
     }
+    
+
+    if (this.isInCombat) {
+
+    } else {
+      this.tickPlayer(inputPacket,false)
+    }
+    
+    
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
+    //update creature
     //draw tiles and player
     this.drawFloorTiles()
 
-    this.drawSprite(this.player.position.y-50,this.player.position.x-50,100,100,100,"../sprites/evilCharacter.png")
+    this.drawSprite(this.enemy.position.x-50,this.enemy.position.y-50,100,100,100,"../sprites/evilCharacter.png")
     this.drawSprite(this.player.targetPos.y-25,this.player.targetPos.x-25,100,50,50,"../sprites/character.png")
     this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
     this.drawSprite(2250,250,100,100,100,"../sprites/character.png")

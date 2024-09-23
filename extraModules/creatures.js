@@ -105,15 +105,6 @@ export class Creature {
         }
         return {x:dx,y:dy,dir:null}
     }
-}
-
-export class Player extends Creature {
-    constructor(spawnX,spawnY) {
-        super(spawnX,spawnY)
-        this.inventory = []
-        this.dialogueStage = null
-        this.hearing = []
-    }
     walk(rx,ry) {
         let direction = Math.atan2(ry,rx)
         let dx = this.movementSpeedFactor*Math.cos(direction)
@@ -123,5 +114,17 @@ export class Player extends Creature {
             dy = 0
         }
         this.accelerate(dx,dy)
+    }
+}
+
+export class Player extends Creature {
+    constructor(spawnX,spawnY) {
+        super(spawnX,spawnY)
+    }
+}
+
+export class Enemy extends Creature {
+    constructor(spawnX, spawnY) {
+        super(spawnX,spawnY)
     }
 }
