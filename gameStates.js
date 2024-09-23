@@ -428,37 +428,18 @@ export class World extends GameState {
       this.player.targetPos.y = this.player.position.y
       this.player.speed.x = 0
       this.player.speed.y = 0
-  }
+    }
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
     //draw tiles and player
     this.drawFloorTiles()
 
-        this.drawSprite(this.player.targetPos.x-25,this.player.targetPos.y-25,100,50,50,"../sprites/character.png")
-        this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
+    this.drawSprite(this.player.position.y-50,this.player.position.x-50,100,100,100,"../sprites/evilCharacter.png")
+    this.drawSprite(this.player.targetPos.y-25,this.player.targetPos.x-25,100,50,50,"../sprites/character.png")
+    this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
     this.drawSprite(2250,250,100,100,100,"../sprites/character.png")
-    
-  
 
     this.processTiles()
     this.lastInputPacket = inputPacket
     document.getElementById('console').innerText = this.player.tilePos.x + ' ' + this.player.tilePos.y
-  }
-};
-
-export class Dungeon extends GameState {
-  constructor() {
-      super("dungeon", new DrawController([
-      new Canvas(0,0,1,1,"side")]));
-  }
-  logicFrame(inputPacket) {
-    this.drawController.resetElements()
-    this.drawController.newRect(0,0,0,300,675,[123,193,194])
-    this.drawController.newRect(0,0,3,294,669,[255,255,255])
-    this.drawController.newRect(0,0,0,1200,675,[21,193,194])
-    this.drawController.newRect(0,12,3,1188,669,[255,255,255])
-    this.drawController.newRect(0,300,450,900,1200,[123,32,194])
-    this.drawController.newRect(0,303,453,1194,669,[255,255,255])
-    this.drawController.newText(0,10,10,290,60,[0,0,255],"View Stats")
-    this.drawController.newText(0,10,70,290,120,[0,0,255],"Inventory")
   }
 };
