@@ -9,6 +9,7 @@ import { clockTowerOne } from "./tileMaps/clockTowerOne"
 import { clockTowerThree } from "./tileMaps/clockTowerThree"
 import { clockTowerTwo } from "./tileMaps/clockTowerTwo"
 import { field } from "./tileMaps/field"
+import { field2 } from "./tileMaps/field2"
 
 
 export class GameState {
@@ -308,7 +309,7 @@ export class World extends GameState {
           this.createFloorTile(rx + dx,ry+dy,[110,65,5],[40, 212, 40])
         }
         if (map[ry][rx] == 21) {
-          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[143, 125, 90],[201, 177, 129],15)
+          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[143, 125, 90],[201, 177, 129],10)
         }
         if (map[ry][rx] == 22) {
           this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[97, 97, 97],[168, 168, 168],6)
@@ -380,6 +381,7 @@ export class World extends GameState {
       this.importTileMap(clockTowerTwo,101,1)
       this.importTileMap(clockTowerThree,201,1)
       this.importTileMap(field,17,1)
+      this.importTileMap(field2,1,17)
     }
     let playerDx = 0
     let playerDy = 0
@@ -421,19 +423,25 @@ export class World extends GameState {
       this.player.walk(this.player.targetPos.x-this.player.position.x,this.player.targetPos.y-this.player.position.y)
     }
     this.player.updatePos(this.tiles)
+    if (this.isInCombat && Math.floor(this.player.targetPos.x/100) == this.player.tilePos.x && Math.floor(this.player.targetPos.y/100) == this.player.tilePos.y) {
+      this.player.targetPos.x = this.player.position.x
+      this.player.targetPos.y = this.player.position.y
+      this.player.speed.x = 0
+      this.player.speed.y = 0
+  }
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
     //draw tiles and player
     this.drawFloorTiles()
 
-    this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
-    this.drawSprite(2250,250,0,100,100,"../sprites/character.png")
+        this.drawSprite(this.player.targetPos.x-25,this.player.targetPos.y-25,100,50,50,"../sprites/character.png")
+        this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
+    this.drawSprite(2250,250,100,100,100,"../sprites/character.png")
     
   
-    this.drawSprite(this.player.targetPos.x-25,this.player.targetPos.y-25,100,50,50,"../sprites/character.png")
 
     this.processTiles()
     this.lastInputPacket = inputPacket
-    document.getElementById('console').innerText = this.player.position.x + ' ' + this.player.position.y
+    document.getElementById('console').innerText = this.player.tilePos.x + ' ' + this.player.tilePos.y
   }
 };
 

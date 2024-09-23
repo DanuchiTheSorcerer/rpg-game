@@ -71,12 +71,6 @@ export class Creature {
     updatePos(collision) {
         this.accelerate(-this.speed.x*this.friction,-this.speed.y*this.friction)
         this.move(this.speed.x,this.speed.y,collision)
-        if (Math.floor(this.targetPos.x/100) == this.tilePos.x && Math.floor(this.targetPos.y/100) == this.tilePos.y) {
-            this.targetPos.x = this.position.x
-            this.targetPos.y = this.position.y
-            this.speed.x = 0
-            this.speed.y = 0
-        }
     }
     vectorToTileEdge(dx,dy) {
         //equation for vector x -> y:
