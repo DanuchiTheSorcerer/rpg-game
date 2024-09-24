@@ -204,7 +204,7 @@ export class World extends GameState {
   createFloorTile(xLocation,yLocation,sideColor,topColor) {
     this.floorTiles[xLocation][yLocation] = new FloorTile(xLocation,yLocation,sideColor,topColor)
   }
-  drawFloorTiles() {
+  render() {
     let ptx = Math.floor((this.viewport.x+600)/100)
     let pty = Math.floor((this.viewport.y+337.5)/100)
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
@@ -235,16 +235,19 @@ export class World extends GameState {
         }
       }
     }
-  }
-  processTiles() {
-    let ptx = Math.floor((this.viewport.x+600)/100)
-    let pty = Math.floor((this.viewport.y+337.5)/100)
+
+    this.drawSprite(this.enemy.position.x-50,this.enemy.position.y-50,100,100,100,"../sprites/evilCharacter.png")
+    this.drawSprite(this.player.targetPos.x-25,this.player.targetPos.y-25,100,50,50,"../sprites/character.png")
+    this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
+    this.drawSprite(2250,250,100,100,100,"../sprites/character.png")
+
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
       for (let j = Math.max(0, pty - this.renderDistance);j<pty;j++) {
         if (!this.tiles[i][j].isEmpty) {
           this.drawTile(this.tiles[i][j])
           this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
         }
+        
       }
     }
     for (let i = Math.min(ptx+this.renderDistance,999);i>=ptx;i--) {
@@ -441,18 +444,9 @@ export class World extends GameState {
       this.tickPlayer(inputPacket,false)
     }
     
-    
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
-    //update creature
-    //draw tiles and player
-    this.drawFloorTiles()
+    this.render()
 
-    this.drawSprite(this.enemy.position.x-50,this.enemy.position.y-50,100,100,100,"../sprites/evilCharacter.png")
-    this.drawSprite(this.player.targetPos.x-25,this.player.targetPos.y-25,100,50,50,"../sprites/character.png")
-    this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
-    this.drawSprite(2250,250,100,100,100,"../sprites/character.png")
-
-    this.processTiles()
     this.lastInputPacket = inputPacket
     document.getElementById('console').innerText = this.player.tilePos.x + ' ' + this.player.tilePos.y
   }
