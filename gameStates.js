@@ -275,12 +275,6 @@ export class World extends GameState {
       }
     }
   }
-  drawCircle(x,y,radius,color) {
-    this.drawController.newCircle(0,(x - this.viewport.x),(y - this.viewport.y),radius,color)
-  }
-  drawRect(x,y,width,height,color) {
-    this.drawController.newRect(0,(x - this.viewport.x),(y - this.viewport.y),width,height,color)
-  }
   drawTile(tile) {
     let camera = this.viewport
     for (let j = 0;j<tile.height;j++) {
