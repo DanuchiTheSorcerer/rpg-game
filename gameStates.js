@@ -365,7 +365,7 @@ export class World extends GameState {
     }
   }
   tickPlayer(inputPacket,combat) {
-    if (combat) {
+    if (!combat) {
       let playerDx = 0
       let playerDy = 0
       if (inputPacket.keys.indexOf("KeyS") != -1) {
@@ -390,23 +390,23 @@ export class World extends GameState {
         this.combat(true)
       }
       this.player.walk(playerDx,playerDy)
-      if (Math.floor(this.player.targetPos.x/100) == this.player.tilePos.x && Math.floor(this.player.targetPos.y/100) == this.player.tilePos.y) {
-        this.player.targetPos.x = this.player.position.x
-        this.player.targetPos.y = this.player.position.y
-        this.player.speed.x = 0
-        this.player.speed.y = 0
-      }
       this.player.updatePos(this.tiles)
     } else {
       if (inputPacket.leftMouse && !this.lastInputPacket.leftMouse) {
         this.player.targetPos.x = Math.floor(this.viewport.x + 600 + 2.99 * inputPacket.mouseX -2.99*751)
         this.player.targetPos.y = Math.floor(this.viewport.y + 337.5 + 2.98 * inputPacket.mouseY -2.98*255)
-      }
-      if (inputPacket.keys.indexOf("KeyV") != -1) {
-        this.combat(false)
-      }      
+      } 
+      if (Math.floor(this.player.targetPos.x/100) == this.player.tilePos.x && Math.floor(this.player.targetPos.y/100) == this.player.tilePos.y) {
+        this.player.targetPos.x = this.player.position.x
+        this.player.targetPos.y = this.player.position.y
+        this.player.speed.x = 0
+        this.player.speed.y = 0
+      }     
       this.player.walk(this.player.targetPos.x-this.player.position.x,this.player.targetPos.y-this.player.position.y)
       this.player.updatePos(this.tiles)
+      if (inputPacket.keys.indexOf("KeyV") != -1) {
+        this.combat(false)
+      }
     }
   }
   tickCreatures() {
@@ -434,9 +434,9 @@ export class World extends GameState {
       this.importTileMap(field2,1,17)
     }
     
-
+    
     if (this.isInCombat) {
-
+      this.tickPlayer(inputPacket,true)
     } else {
       this.tickPlayer(inputPacket,false)
     }
@@ -448,7 +448,7 @@ export class World extends GameState {
     this.drawFloorTiles()
 
     this.drawSprite(this.enemy.position.x-50,this.enemy.position.y-50,100,100,100,"../sprites/evilCharacter.png")
-    this.drawSprite(this.player.targetPos.y-25,this.player.targetPos.x-25,100,50,50,"../sprites/character.png")
+    this.drawSprite(this.player.targetPos.x-25,this.player.targetPos.y-25,100,50,50,"../sprites/character.png")
     this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
     this.drawSprite(2250,250,100,100,100,"../sprites/character.png")
 
