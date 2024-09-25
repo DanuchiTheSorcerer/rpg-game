@@ -187,7 +187,7 @@ export class Title extends GameState {
 
 export class World extends GameState {
   constructor() {
-    super("world", new DrawController([new Canvas(0,0,1,1,"main")]));
+    super("world", new DrawController([new Canvas(0,0,1,1,"main"),new Canvas(0,0,0,0,"side"),new Canvas(0,0,0,0,"bottom")]));
     this.player = new Player(900,900)
     this.enemy = new Creature(1800,1800)
     this.tiles = []
@@ -347,14 +347,28 @@ export class World extends GameState {
   combat(mode) {
     this.isInCombat = mode
     if (!mode) {
+      //leave combat
       this.drawController.canvases[0].xRel = 0
       this.drawController.canvases[0].heightRel = 1
       this.drawController.canvases[0].widthRel = 1
+      this.drawController.canvases[1].heightRel = 0
+      this.drawController.canvases[1].widthRel = 0
+      this.drawController.canvases[2].xRel = 0
+      this.drawController.canvases[2].yRel = 0
+      this.drawController.canvases[2].widthRel = 0
+      this.drawController.canvases[2].heightRel = 0
       this.renderDistance = parseInt(localStorage.getItem("render"))
     } else {
+      //enter combat
       this.drawController.canvases[0].xRel = 0.25
       this.drawController.canvases[0].heightRel = 0.75 
       this.drawController.canvases[0].widthRel = 0.75
+      this.drawController.canvases[1].heightRel = 1
+      this.drawController.canvases[1].widthRel = 0.25
+      this.drawController.canvases[2].xRel = 0.25
+      this.drawController.canvases[2].yRel = 0.75
+      this.drawController.canvases[2].widthRel = 0.75
+      this.drawController.canvases[2].heightRel = 0.25
       this.renderDistance = 20
       this.viewport.z = 2000
       this.player.targetPos.x = this.player.position.x
