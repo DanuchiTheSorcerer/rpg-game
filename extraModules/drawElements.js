@@ -48,7 +48,7 @@ export class Button extends Rect {
             inputPacket.mouseY > (this.y) + canvas.yRel * 675 && 
             inputPacket.mouseX < (this.x) + (this.width) + canvas.xRel * 1200 && 
             inputPacket.mouseY < (this.y) + (this.height) + canvas.yRel * 675) {
-            //ctx.fillStyle = `rgb(${this.color[0]*0.75},${this.color[1]*0.75},${this.color[2]*0.75})`
+            ctx.fillStyle = `rgb(${this.color[0]*0.75},${this.color[1]*0.75},${this.color[2]*0.75})`
         }
         ctx.fillRect((this.x*canvas.resolutionFactor),
                 (this.y*canvas.resolutionFactor),
