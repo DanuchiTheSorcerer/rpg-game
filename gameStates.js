@@ -237,7 +237,12 @@ export class World extends GameState {
     }
 
     this.drawSprite(this.enemy.position.x-50,this.enemy.position.y-50,100,100,100,"../sprites/evilCharacter.png")
-    this.drawSprite(this.player.targetPos.x-25,this.player.targetPos.y-25,100,50,50,"../sprites/character.png")
+    if (this.isInCombat) {
+      this.drawSprite(this.player.targetPos.x-25,this.player.targetPos.y-25,100,50,50,"../sprites/character.png")
+      this.drawController.newRect(1,0,0,1200,675,[100,100,100])
+      this.drawController.newRect(1,40,10,1120,655,[81, 139, 145])
+      this.drawController.newSprite(1,200,25,800,"../sprites/hourglass.png")
+    }
     this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
     this.drawSprite(2250,250,100,100,100,"../sprites/character.png")
 
@@ -444,7 +449,6 @@ export class World extends GameState {
       this.importTileMap(field,17,1)
       this.importTileMap(field2,1,17)
     }
-    
     
     if (this.isInCombat) {
       this.tickPlayer(inputPacket,true)
