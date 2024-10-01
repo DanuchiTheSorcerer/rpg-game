@@ -7,6 +7,7 @@ export class Creature {
         this.friction = 0.2
         this.tilePos = {x:Math.floor(spawnX/100),y:Math.floor(spawnY/100)}
         this.targetPos = {x:0,y:0}
+        this.actions = 0
     }
     teleport(x,y) {
         this.position = {x:x,y:y}
