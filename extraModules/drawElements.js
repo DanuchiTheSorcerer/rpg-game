@@ -140,7 +140,7 @@ export class Text extends DrawElement {
         ctx.fillStyle = 'rgb(' + this.color[0] + ',' + this.color[1] + ',' + this.color[2] + ')';
 
         // Start with a large font size
-        let fontSize = 100 * canvas.resolutionFactor;
+        let fontSize = 50 * canvas.resolutionFactor;
         ctx.font = fontSize + 'px Verdana';
 
         // Measure the text dimensions
@@ -156,7 +156,7 @@ export class Text extends DrawElement {
             (textWidth * widthRel > (this.width * canvas.resolutionFactor)) ||
             (textHeight * heightRel > (this.height * canvas.resolutionFactor) / 1.5)
         ) {
-            fontSize--;
+            fontSize -= 5;
             ctx.font = fontSize + 'px Verdana';
             textWidth = ctx.measureText(this.text).width;
             textHeight = fontSize;

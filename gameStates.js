@@ -242,7 +242,9 @@ export class World extends GameState {
       this.drawController.newRect(1,0,0,1200,675,[100,100,100])
       this.drawController.newRect(1,40,10,1120,655,[81, 139, 145])
       this.drawController.newSprite(1,200,25,800,"../sprites/hourglass.png")
-      this.drawController.newText(1,40,250,1120,100,[255,255,255],"Actions: num")
+      this.drawController.newText(1,450,200,350,100,[255,255,255],"69%")
+      this.drawController.newText(1,60,250,1080,100,[255,255,255],"Actions: 1")
+      this.drawController.newText(1,60,300,1080,100,[255,255,255],"Move Distance: 100m")
     }
     this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
     this.drawSprite(2250,250,100,100,100,"../sprites/character.png")
