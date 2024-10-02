@@ -248,7 +248,7 @@ export class World extends GameState {
       this.drawController.newSprite(1,200,25,800,"../sprites/hourglass.png")
       this.drawController.newText(1,450,200,350,100,[255,255,255],"69%")
       this.drawController.newText(1,60,250,1080,100,[255,255,255],"Actions: " + this.player.actions)
-      this.drawController.newText(1,60,300,1080,100,[255,255,255],"Move Distance: " + Math.floor(this.player.movementSpeed) + "m")
+      this.drawController.newText(1,60,300,1080,100,[255,255,255],"Move Distance: " + Math.floor(this.player.movementSpeed*10)/10 + "m")
     }
     this.drawSprite(this.enemy.position.x-50,this.enemy.position.y-50,100,100,100,"../sprites/evilCharacter.png")
     this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
@@ -388,38 +388,43 @@ export class World extends GameState {
       this.player.targetPos.y = this.player.position.y
     }
   }
-  tickPlayer(inputPacket,combat) {
-    while (this.player.warp >= 100) {
-      this.player.actions++
-      this.player.warp -= 100
+  tickPlayer(inputPacket) {
+    let playerDx = 0
+    let playerDy = 0
+    if (inputPacket.keys.indexOf("KeyS") != -1) {
+      playerDy++
     }
-    if (!combat) {
-      let playerDx = 0
-      let playerDy = 0
-      if (inputPacket.keys.indexOf("KeyS") != -1) {
-        playerDy++
+    if (inputPacket.keys.indexOf("KeyW") != -1) {
+      playerDy--
+    }
+    if (inputPacket.keys.indexOf("KeyD") != -1) {
+      playerDx++
+    }
+    if (inputPacket.keys.indexOf("KeyA") != -1) {
+      playerDx--
+    }
+    if (inputPacket.keys.indexOf("KeyI") != -1) {
+      this.viewport.zoomOut()
+    }
+    if (inputPacket.keys.indexOf("KeyK") != -1) {
+      this.viewport.zoomIn()
+    }
+    if (inputPacket.keys.indexOf("KeyC") != -1) {
+      this.combat(true)
+    }
+    this.player.walk(playerDx,playerDy)
+    this.player.updatePos(this.tiles)
+  }
+  tickCreatures() {
+    this.player.movementSpeed = 7.5
+    this.playerTurn = true
+  }
+  runCombatTurn(inputPacket) {
+    if (this.playerTurn) {
+      while (this.player.warp >= 100) {
+        this.player.actions++
+        this.player.warp -= 100
       }
-      if (inputPacket.keys.indexOf("KeyW") != -1) {
-        playerDy--
-      }
-      if (inputPacket.keys.indexOf("KeyD") != -1) {
-        playerDx++
-      }
-      if (inputPacket.keys.indexOf("KeyA") != -1) {
-        playerDx--
-      }
-      if (inputPacket.keys.indexOf("KeyI") != -1) {
-        this.viewport.zoomOut()
-      }
-      if (inputPacket.keys.indexOf("KeyK") != -1) {
-        this.viewport.zoomIn()
-      }
-      if (inputPacket.keys.indexOf("KeyC") != -1) {
-        this.combat(true)
-      }
-      this.player.walk(playerDx,playerDy)
-      this.player.updatePos(this.tiles)
-    } else {
       let potentialTarget = {x:Math.floor(this.viewport.x + 600 + 2.99 * inputPacket.mouseX -2.99*751),y:Math.floor(this.viewport.y + 337.5 + 2.98 * inputPacket.mouseY -2.98*255)}
       if (inputPacket.leftMouse && !this.lastInputPacket.leftMouse
           && Math.sqrt((potentialTarget.x-this.player.position.x)*(potentialTarget.x-this.player.position.x) + (potentialTarget.y-this.player.position.y)*(potentialTarget.y-this.player.position.y))/100 <= this.player.movementSpeed) {
@@ -440,11 +445,9 @@ export class World extends GameState {
       if (inputPacket.keys.indexOf("KeyE") != -1) {
         this.playerTurn = false
       }
-    }
-  }
-  tickCreatures() {
-    this.player.movementSpeed = 7.5
-    this.playerTurn = true
+    } else {
+      this.tickCreatures()
+    } 
   }
   logicFrame(inputPacket) {
     this.drawController.resetElements()
@@ -469,14 +472,9 @@ export class World extends GameState {
     }
     
     if (this.isInCombat) {
-      if (this.playerTurn) {
-        this.tickPlayer(inputPacket,true)
-      } else {
-        this.tickCreatures()
-      } 
+      this.runCombatTurn(inputPacket)
     } else {
-      this.tickPlayer(inputPacket,false)
-      this.tickCreatures()
+      this.tickPlayer(inputPacket)
     }
     
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
