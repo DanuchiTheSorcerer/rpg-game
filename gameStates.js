@@ -428,10 +428,9 @@ export class World extends GameState {
         this.player.movementSpeed -= Math.sqrt((potentialTarget.x-this.player.position.x)*(potentialTarget.x-this.player.position.x) + (potentialTarget.y-this.player.position.y)*(potentialTarget.y-this.player.position.y))/100
       } 
       if (Math.floor(this.player.targetPos.x/100) == this.player.tilePos.x && Math.floor(this.player.targetPos.y/100) == this.player.tilePos.y) {
+        this.player.teleport(this.player.targetPos.x,this.player.targetPos.y)
         this.player.targetPos.x = this.player.position.x
         this.player.targetPos.y = this.player.position.y
-        this.player.speed.x = 0
-        this.player.speed.y = 0
       }     
       this.player.walk(this.player.targetPos.x-this.player.position.x,this.player.targetPos.y-this.player.position.y)
       this.player.updatePos(this.tiles)
@@ -444,7 +443,7 @@ export class World extends GameState {
     }
   }
   tickCreatures() {
-    this.player.movementSpeed = 10
+    this.player.movementSpeed = 7.5
     this.playerTurn = true
   }
   logicFrame(inputPacket) {

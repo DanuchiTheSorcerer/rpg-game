@@ -9,7 +9,7 @@ export class Creature {
         this.targetPos = {x:0,y:0}
         this.actions = 0
         this.warp = 1000
-        this.movementSpeed = 10
+        this.movementSpeed = 7.5
     }
     teleport(x,y) {
         this.position = {x:x,y:y}
