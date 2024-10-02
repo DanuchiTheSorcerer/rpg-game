@@ -197,6 +197,7 @@ export class World extends GameState {
     this.renderDistance = parseInt(localStorage.getItem("render"))
     this.depthEngine = new DepthEngine()
     this.isInCombat = false
+    this.playerTurn = true
   }
   createTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor,height) {
     this.tiles[xLocation][yLocation] = new StaticTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor,height)
@@ -236,16 +237,20 @@ export class World extends GameState {
       }
     }
 
-    this.drawSprite(this.enemy.position.x-50,this.enemy.position.y-50,100,100,100,"../sprites/evilCharacter.png")
     if (this.isInCombat) {
+      if (this.playerTurn) {
+        let size = this.player.movementSpeed * 100
+        this.drawSprite(this.player.position.x-size,this.player.position.y-size,100,size*2,size*2,"../sprites/moveDistanceMarker.png")
+      }
       this.drawSprite(this.player.targetPos.x-25,this.player.targetPos.y-25,100,50,50,"../sprites/character.png")
       this.drawController.newRect(1,0,0,1200,675,[100,100,100])
       this.drawController.newRect(1,40,10,1120,655,[81, 139, 145])
       this.drawController.newSprite(1,200,25,800,"../sprites/hourglass.png")
       this.drawController.newText(1,450,200,350,100,[255,255,255],"69%")
       this.drawController.newText(1,60,250,1080,100,[255,255,255],"Actions: " + this.player.actions)
-      this.drawController.newText(1,60,300,1080,100,[255,255,255],"Move Distance: 100m")
+      this.drawController.newText(1,60,300,1080,100,[255,255,255],"Move Distance: " + Math.floor(this.player.movementSpeed) + "m")
     }
+    this.drawSprite(this.enemy.position.x-50,this.enemy.position.y-50,100,100,100,"../sprites/evilCharacter.png")
     this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
     this.drawSprite(2250,250,100,100,100,"../sprites/character.png")
 
@@ -384,6 +389,10 @@ export class World extends GameState {
     }
   }
   tickPlayer(inputPacket,combat) {
+    while (this.player.warp >= 100) {
+      this.player.actions++
+      this.player.warp -= 100
+    }
     if (!combat) {
       let playerDx = 0
       let playerDy = 0
@@ -411,9 +420,12 @@ export class World extends GameState {
       this.player.walk(playerDx,playerDy)
       this.player.updatePos(this.tiles)
     } else {
-      if (inputPacket.leftMouse && !this.lastInputPacket.leftMouse) {
-        this.player.targetPos.x = Math.floor(this.viewport.x + 600 + 2.99 * inputPacket.mouseX -2.99*751)
-        this.player.targetPos.y = Math.floor(this.viewport.y + 337.5 + 2.98 * inputPacket.mouseY -2.98*255)
+      let potentialTarget = {x:Math.floor(this.viewport.x + 600 + 2.99 * inputPacket.mouseX -2.99*751),y:Math.floor(this.viewport.y + 337.5 + 2.98 * inputPacket.mouseY -2.98*255)}
+      if (inputPacket.leftMouse && !this.lastInputPacket.leftMouse
+          && Math.sqrt((potentialTarget.x-this.player.position.x)*(potentialTarget.x-this.player.position.x) + (potentialTarget.y-this.player.position.y)*(potentialTarget.y-this.player.position.y))/100 <= this.player.movementSpeed) {
+        this.player.targetPos.x = potentialTarget.x
+        this.player.targetPos.y = potentialTarget.y
+        this.player.movementSpeed -= Math.sqrt((potentialTarget.x-this.player.position.x)*(potentialTarget.x-this.player.position.x) + (potentialTarget.y-this.player.position.y)*(potentialTarget.y-this.player.position.y))/100
       } 
       if (Math.floor(this.player.targetPos.x/100) == this.player.tilePos.x && Math.floor(this.player.targetPos.y/100) == this.player.tilePos.y) {
         this.player.targetPos.x = this.player.position.x
@@ -426,10 +438,14 @@ export class World extends GameState {
       if (inputPacket.keys.indexOf("KeyV") != -1) {
         this.combat(false)
       }
+      if (inputPacket.keys.indexOf("KeyE") != -1) {
+        this.playerTurn = false
+      }
     }
   }
   tickCreatures() {
-
+    this.player.movementSpeed = 10
+    this.playerTurn = true
   }
   logicFrame(inputPacket) {
     this.drawController.resetElements()
@@ -454,9 +470,14 @@ export class World extends GameState {
     }
     
     if (this.isInCombat) {
-      this.tickPlayer(inputPacket,true)
+      if (this.playerTurn) {
+        this.tickPlayer(inputPacket,true)
+      } else {
+        this.tickCreatures()
+      } 
     } else {
       this.tickPlayer(inputPacket,false)
+      this.tickCreatures()
     }
     
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
