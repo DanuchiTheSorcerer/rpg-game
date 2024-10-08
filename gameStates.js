@@ -238,7 +238,7 @@ export class World extends GameState {
     }
 
     if (this.isInCombat) {
-      if (this.playerTurn) {
+      if (this.player.currentAction == "move") {
         let size = this.player.movementSpeed * 100
         this.drawSprite(this.player.position.x-size,this.player.position.y-size,100,size*2,size*2,"../sprites/moveDistanceMarker.png")
       }
@@ -246,9 +246,10 @@ export class World extends GameState {
       this.drawController.newRect(1,0,0,1200,675,[100,100,100])
       this.drawController.newRect(1,40,10,1120,655,[81, 139, 145])
       this.drawController.newSprite(1,200,25,800,"../sprites/hourglass.png")
-      this.drawController.newText(1,450,200,350,100,[255,255,255],"69%")
+      this.drawController.newText(1,450,200,350,100,[255,255,255],this.player.warp + "%")
       this.drawController.newText(1,60,250,1080,100,[255,255,255],"Actions: " + this.player.actions)
       this.drawController.newText(1,60,300,1080,100,[255,255,255],"Move Distance: " + Math.floor(this.player.movementSpeed*10)/10 + "m")
+      this.drawController.newText(2,0,0,1200,675,[0,0,0],"Action: " + this.player.currentAction)
     }
     this.drawSprite(this.enemy.position.x-50,this.enemy.position.y-50,100,100,100,"../sprites/evilCharacter.png")
     this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
@@ -416,37 +417,21 @@ export class World extends GameState {
     this.player.updatePos(this.tiles)
   }
   tickCreatures() {
-    this.player.movementSpeed = 7.5
-    this.playerTurn = true
+
   }
   runCombatTurn(inputPacket) {
     if (this.playerTurn) {
-      while (this.player.warp >= 100) {
-        this.player.actions++
-        this.player.warp -= 100
-      }
-      let potentialTarget = {x:Math.floor(this.viewport.x + 600 + 2.99 * inputPacket.mouseX -2.99*751),y:Math.floor(this.viewport.y + 337.5 + 2.98 * inputPacket.mouseY -2.98*255)}
-      if (inputPacket.leftMouse && !this.lastInputPacket.leftMouse
-          && Math.sqrt((potentialTarget.x-this.player.position.x)*(potentialTarget.x-this.player.position.x) + (potentialTarget.y-this.player.position.y)*(potentialTarget.y-this.player.position.y))/100 <= this.player.movementSpeed) {
-        this.player.targetPos.x = potentialTarget.x
-        this.player.targetPos.y = potentialTarget.y
-        this.player.movementSpeed -= Math.sqrt((potentialTarget.x-this.player.position.x)*(potentialTarget.x-this.player.position.x) + (potentialTarget.y-this.player.position.y)*(potentialTarget.y-this.player.position.y))/100
-      } 
-      if (Math.floor(this.player.targetPos.x/100) == this.player.tilePos.x && Math.floor(this.player.targetPos.y/100) == this.player.tilePos.y) {
-        this.player.teleport(this.player.targetPos.x,this.player.targetPos.y)
-        this.player.targetPos.x = this.player.position.x
-        this.player.targetPos.y = this.player.position.y
-      }     
-      this.player.walk(this.player.targetPos.x-this.player.position.x,this.player.targetPos.y-this.player.position.y)
-      this.player.updatePos(this.tiles)
+      this.player.takeTurn(inputPacket,this.viewport)
       if (inputPacket.keys.indexOf("KeyV") != -1) {
         this.combat(false)
       }
       if (inputPacket.keys.indexOf("KeyE") != -1) {
         this.playerTurn = false
       }
+      this.player.walk(this.player.targetPos.x-this.player.position.x,this.player.targetPos.y-this.player.position.y)
+      this.player.updatePos(this.tiles)
     } else {
-      this.tickCreatures()
+      this.playerTurn = true
     } 
   }
   logicFrame(inputPacket) {

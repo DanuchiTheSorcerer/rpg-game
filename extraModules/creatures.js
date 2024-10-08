@@ -9,7 +9,8 @@ export class Creature {
         this.targetPos = {x:0,y:0}
         this.actions = 0
         this.warp = 1000
-        this.movementSpeed = 7.5
+        this.movementSpeed = 0
+        this.currentAction = null
     }
     teleport(x,y) {
         this.position = {x:x,y:y}
@@ -123,6 +124,38 @@ export class Creature {
 export class Player extends Creature {
     constructor(spawnX,spawnY) {
         super(spawnX,spawnY)
+    }
+    takeTurn(inputPacket,viewport) {
+        while (this.warp >= 100) {
+            this.actions++
+            this.warp -= 100
+          }
+        if (this.currentAction == null) {
+            if (inputPacket.keys.indexOf("KeyM") != -1) {
+                this.currentAction = "move"
+            }
+        }
+        if (this.currentAction == "move") {
+            if (this.movementSpeed <= 0.5) {
+                this.movementSpeed += 7.5
+                this.actions--
+            }
+            this.moveAction(inputPacket,viewport)
+        }
+        if (Math.floor(this.targetPos.x/100) == this.tilePos.x && Math.floor(this.targetPos.y/100) == this.tilePos.y) {
+            this.teleport(this.targetPos.x,this.targetPos.y)
+            this.targetPos.x = this.position.x
+            this.targetPos.y = this.position.y
+          }     
+    }
+    moveAction(inputPacket,viewport) {
+        let potentialTarget = {x:Math.floor(viewport.x + 600 + 2.99 * inputPacket.mouseX -2.99*751),y:Math.floor(viewport.y + 337.5 + 2.98 * inputPacket.mouseY -2.98*255)}
+        if (inputPacket.leftMouse && Math.sqrt((potentialTarget.x-this.position.x)*(potentialTarget.x-this.position.x) + (potentialTarget.y-this.position.y)*(potentialTarget.y-this.position.y))/100 <= this.movementSpeed) {
+          this.targetPos.x = potentialTarget.x
+          this.targetPos.y = potentialTarget.y
+          this.movementSpeed -= Math.sqrt((potentialTarget.x-this.position.x)*(potentialTarget.x-this.position.x) + (potentialTarget.y-this.position.y)*(potentialTarget.y-this.position.y))/100
+          this.currentAction = null
+        } 
     }
 }
 
