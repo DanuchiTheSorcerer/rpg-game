@@ -1,7 +1,7 @@
 import { InputController } from "./extraModules/inputController"
 import { DrawController } from "./extraModules/drawController"
 import { Canvas } from "./extraModules/canvas"
-import { Creature, Player } from "./extraModules/creatures"
+import { Creature, Player, Enemy } from "./extraModules/creatures"
 import { StaticTile, EmptyTile, FloorTile } from "./extraModules/gameTiles"
 import { Viewport } from "./extraModules/viewport"
 import { DepthEngine } from "./extraModules/depthEngine"
@@ -68,7 +68,7 @@ export class GameState {
     resetState() {
       if (this.name == "world") {
         this.player = new Player(900,900)
-        this.enemy = new Creature(1800,1800)
+        this.enemy = new Enemy(1800,1800)
       }
       this.inputController = new InputController()
       this.removeButtons()
@@ -189,7 +189,7 @@ export class World extends GameState {
   constructor() {
     super("world", new DrawController([new Canvas(0,0,1,1,"main"),new Canvas(0,0,0,0,"side"),new Canvas(0,0,0,0,"bottom")]));
     this.player = new Player(900,900)
-    this.enemy = new Creature(1800,1800)
+    this.enemy = new Enemy(1800,1800)
     this.tiles = []
     this.floorTiles = []
     this.viewport = new Viewport()
@@ -249,6 +249,11 @@ export class World extends GameState {
       this.drawController.newText(1,450,200,350,100,[255,255,255],this.player.warp + "%")
       this.drawController.newText(1,60,250,1080,100,[255,255,255],"Actions: " + this.player.actions)
       this.drawController.newText(1,60,300,1080,100,[255,255,255],"Move Distance: " + Math.floor(this.player.movementSpeed*10)/10 + "m")
+      if (this.playerTurn) {
+        this.drawController.newRect(2,0,0,1200,675,[100,100,255])
+      } else {
+        this.drawController.newRect(2,0,0,1200,675,[255,0,0])
+      }
       this.drawController.newText(2,0,0,1200,675,[0,0,0],"Action: " + this.player.currentAction)
     }
     this.drawSprite(this.enemy.position.x-50,this.enemy.position.y-50,100,100,100,"../sprites/evilCharacter.png")
@@ -427,11 +432,17 @@ export class World extends GameState {
       }
       if (inputPacket.keys.indexOf("KeyE") != -1) {
         this.playerTurn = false
+        this.enemy.actions++
       }
       this.player.walk(this.player.targetPos.x-this.player.position.x,this.player.targetPos.y-this.player.position.y)
       this.player.updatePos(this.tiles)
     } else {
-      this.playerTurn = true
+      this.enemy.takeTurn(this.player)
+      this.enemy.walk(this.enemy.targetPos.x-this.enemy.position.x,this.enemy.targetPos.y-this.enemy.position.y)
+      this.enemy.updatePos(this.tiles)
+      if (this.enemy.currentAction == null) {
+        this.playerTurn = true
+      }
     } 
   }
   logicFrame(inputPacket) {
@@ -466,6 +477,6 @@ export class World extends GameState {
     this.render()
 
     this.lastInputPacket = inputPacket
-    document.getElementById('console').innerText = this.player.tilePos.x + ' ' + this.player.tilePos.y
+    //document.getElementById('console').innerText = this.enemy.actions
   }
 };

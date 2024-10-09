@@ -136,7 +136,7 @@ export class Player extends Creature {
             }
         }
         if (this.currentAction == "move") {
-            if (this.movementSpeed <= 0.5) {
+            if (this.movementSpeed <= 0.5 && this.actions > 0) {
                 this.movementSpeed += 7.5
                 this.actions--
             }
@@ -162,5 +162,50 @@ export class Player extends Creature {
 export class Enemy extends Creature {
     constructor(spawnX, spawnY) {
         super(spawnX,spawnY)
+        this.targetSet = false
+    }
+    takeTurn(player) {
+        if (this.currentAction == null) {
+            if (player.tilePos.x != this.tilePos.x && player.tilePos.y != this.tilePos.y) {
+                this.currentAction = "move"
+             }
+        }
+        if (this.currentAction == "move") {
+            let distanceToPlayer = Math.sqrt((player.position.x-this.position.x)*(player.position.x-this.position.x) + (player.position.y-this.position.y)*(player.position.y-this.position.y))/100
+            this.moveAction(player,distanceToPlayer)
+            //document.getElementById("console").innerText = distanceToPlayer
+        }
+    }
+    moveAction(player,distance) {
+        if (this.movementSpeed >= distance) {
+            this.targetPos.x = player.position.x
+            this.targetPos.y = player.position.y
+            this.movementSpeed -= distance
+            this.targetSet = true
+        } else if (this.actions > 0) {
+            if (this.movementSpeed + 7.5 >= distance) {
+                this.movementSpeed += 7.5
+                this.actions--
+                this.targetPos.x = player.position.x
+                this.targetPos.y = player.position.y
+                this.movementSpeed -= distance
+                this.targetSet = true
+            } else {
+                this.movementSpeed += 7.5
+                this.actions--
+                let playerAngle = Math.atan2(player.position.y-this.position.y,player.position.x- this.position.x)
+                this.targetPos.x = Math.cos(playerAngle) * this.movementSpeed * 100 + this.position.x
+                this.targetPos.y = Math.sin(playerAngle) * this.movementSpeed * 100 + this.position.y
+                this.movementSpeed = 0
+                this.targetSet = true
+            }
+        }
+        document.getElementById("console").innerText = Math.floor(this.targetPos.x) + " " + Math.floor(this.targetPos.y)
+        if (!(!(Math.floor(this.targetPos.x/100) == this.tilePos.x && Math.floor(this.targetPos.y/100) == this.tilePos.y) && this.targetSet)) {
+            this.currentAction = null
+            this.targetSet = false
+            this.targetPos.x = this.position.x
+            this.targetPos.y = this.position.y
+        }
     }
 }
