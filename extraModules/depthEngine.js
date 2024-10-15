@@ -2,44 +2,45 @@ export class DepthEngine {
     constructor() {
         //returns 2d vertices of transformed 3d objects from a top down view given a camera (x,y,z)
     }
-    dimensionDownCube(cameraX,cameraY,cameraZ,cubeX,cubeY,cubeZ,cubeLength,cull) {
+    dimensionDownCube(cameraX,cameraY,cameraZ,cubeX,cubeY,cubeZ,cubeLength,heightOveride) {
+        heightOveride = heightOveride || cubeLength
         //IMPORTANT!!!! Z is the HEIGHT
         let relativeX = cubeX - cameraX
         let relativeY = cubeY - cameraY
         let relativeZ = cubeZ - cameraZ
         //Define vertices for each face
-        let topVertices = [[relativeX,relativeY,relativeZ+cubeLength],[relativeX+cubeLength,relativeY,relativeZ+cubeLength],[relativeX+cubeLength,relativeY+cubeLength,relativeZ+cubeLength],[relativeX,relativeY+cubeLength,relativeZ+cubeLength]]
-        let westVertices = [[relativeX,relativeY,relativeZ],[relativeX,relativeY+cubeLength,relativeZ],[relativeX,relativeY+cubeLength,relativeZ+cubeLength],[relativeX,relativeY,relativeZ+cubeLength]]
-        let eastVertices = [[relativeX+cubeLength,relativeY,relativeZ],[relativeX+cubeLength,relativeY+cubeLength,relativeZ],[relativeX+cubeLength,relativeY+cubeLength,relativeZ+cubeLength],[relativeX+cubeLength,relativeY,relativeZ+cubeLength]]
-        let northVertices = [[relativeX,relativeY,relativeZ],[relativeX+cubeLength,relativeY,relativeZ],[relativeX+cubeLength,relativeY,relativeZ+cubeLength],[relativeX,relativeY,relativeZ+cubeLength]]
-        let southVertices = [[relativeX,relativeY+cubeLength,relativeZ],[relativeX+cubeLength,relativeY+cubeLength,relativeZ],[relativeX+cubeLength,relativeY+cubeLength,relativeZ+cubeLength],[relativeX,relativeY+cubeLength,relativeZ+cubeLength]]
+        let topVertices = [[relativeX,relativeY,relativeZ+heightOveride],[relativeX+cubeLength,relativeY,relativeZ+heightOveride],[relativeX+cubeLength,relativeY+cubeLength,relativeZ+heightOveride],[relativeX,relativeY+cubeLength,relativeZ+heightOveride]]
+        let westVertices = [[relativeX,relativeY,relativeZ],[relativeX,relativeY+cubeLength,relativeZ],[relativeX,relativeY+cubeLength,relativeZ+heightOveride],[relativeX,relativeY,relativeZ+heightOveride]]
+        let eastVertices = [[relativeX+cubeLength,relativeY,relativeZ],[relativeX+cubeLength,relativeY+cubeLength,relativeZ],[relativeX+cubeLength,relativeY+cubeLength,relativeZ+heightOveride],[relativeX+cubeLength,relativeY,relativeZ+heightOveride]]
+        let northVertices = [[relativeX,relativeY,relativeZ],[relativeX+cubeLength,relativeY,relativeZ],[relativeX+cubeLength,relativeY,relativeZ+heightOveride],[relativeX,relativeY,relativeZ+heightOveride]]
+        let southVertices = [[relativeX,relativeY+cubeLength,relativeZ],[relativeX+cubeLength,relativeY+cubeLength,relativeZ],[relativeX+cubeLength,relativeY+cubeLength,relativeZ+heightOveride],[relativeX,relativeY+cubeLength,relativeZ+heightOveride]]
 
         // for the following note that because we are dealing strictly with tiled squares the dot products reduce down substantially
         
         //draw or dont draw the top side
 
         let twoDimensionShapeSet = []
-        if (topVertices[0][2]<0&& cull !== "top") {
+        if (topVertices[0][2]<0) {
             twoDimensionShapeSet.push(this.dimensionDownCubeFace(topVertices))
             //alert("top")
         }
         //draw or dont draw the east side
-        if (eastVertices[0][0]<0 &&cull !== "side") {
+        if (eastVertices[0][0]<0) {
             twoDimensionShapeSet.push(this.dimensionDownCubeFace(eastVertices))
             //alert("east")
         }
         //draw or dont draw the west side
-        if (westVertices[0][0]>0 &&cull !== "side") {
+        if (westVertices[0][0]>0) {
             twoDimensionShapeSet.push(this.dimensionDownCubeFace(westVertices))  
             //alert("west")
         }
         //draw or dont draw the south side
-        if (southVertices[0][1]<0 &&cull !== "side") {
+        if (southVertices[0][1]<0) {
             twoDimensionShapeSet.push(this.dimensionDownCubeFace(southVertices))
             //alert("south")
         }
         //draw or dont draw the north side
-        if (northVertices[0][1]>0 &&cull !== "side") {
+        if (northVertices[0][1]>0) {
             twoDimensionShapeSet.push(this.dimensionDownCubeFace(northVertices))
             //alert("north")
         }

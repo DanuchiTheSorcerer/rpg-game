@@ -313,6 +313,15 @@ export class World extends GameState {
   }
   drawTile(tile) {
     let camera = this.viewport
+    let cube = this.depthEngine.dimensionDownCube(camera.x,camera.y,camera.z,tile.position.x*100-600,tile.position.y*100-337.5,100,100,tile.height*100)
+    for (let i = 0; i < cube.length;i++) {
+      if (i==0) {
+        this.drawController.newPolygon(0,cube[i],tile.topColor)
+      } else {
+        this.drawController.newPolygon(0,cube[i],tile.sideColor)
+      }
+    }
+    /*let camera = this.viewport
     for (let j = 0;j<tile.height;j++) {
       let cube
       if (j ==tile.height-1) {
@@ -327,11 +336,11 @@ export class World extends GameState {
           this.drawController.newPolygon(0,cube[i],tile.sideColor)
         }
       }
-    }
+    }*/
   }
   drawFloorTile(tile) {
     let camera = this.viewport
-    let cube = this.depthEngine.dimensionDownCube(camera.x,camera.y,camera.z,tile.position.x*100-600,tile.position.y*100-337.5,0,100,"side")
+    let cube = this.depthEngine.dimensionDownCube(camera.x,camera.y,camera.z,tile.position.x*100-600,tile.position.y*100-337.5,0,100)
     this.drawController.newPolygon(0,cube[0],tile.topColor)
   }
   importTileMap(map,dx,dy) {
