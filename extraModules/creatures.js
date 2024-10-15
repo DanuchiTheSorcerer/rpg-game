@@ -200,8 +200,7 @@ export class Enemy extends Creature {
                 this.targetSet = true
             }
         }
-        document.getElementById("console").innerText = Math.floor(this.targetPos.x) + " " + Math.floor(this.targetPos.y)
-        if (!(!(Math.floor(this.targetPos.x/100) == this.tilePos.x && Math.floor(this.targetPos.y/100) == this.tilePos.y) && this.targetSet)) {
+        if (!(!(Math.sqrt(Math.pow(this.targetPos.x-this.position.x,2)+Math.pow(this.targetPos.y-this.position.y,2)) <= 5) && this.targetSet)) {
             this.currentAction = null
             this.targetSet = false
             this.targetPos.x = this.position.x

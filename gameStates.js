@@ -205,6 +205,23 @@ export class World extends GameState {
   createFloorTile(xLocation,yLocation,sideColor,topColor) {
     this.floorTiles[xLocation][yLocation] = new FloorTile(xLocation,yLocation,sideColor,topColor)
   }
+  bottomCanvasText() {
+    let text 
+    if (this.playerTurn) {
+      if (this.player.currentAction != null) {
+        text = "Performing " + this.player.currentAction
+      } else {
+        text = " "
+      }
+    } else {
+      if (this.enemy.currentAction != null) {
+      text = "Enemy is performing " + this.enemy.currentAction
+      } else {
+        text = " "
+      }
+    }
+    return text
+  }
   render() {
     let ptx = Math.floor((this.viewport.x+600)/100)
     let pty = Math.floor((this.viewport.y+337.5)/100)
@@ -254,7 +271,7 @@ export class World extends GameState {
       } else {
         this.drawController.newRect(2,0,0,1200,675,[255,0,0])
       }
-      this.drawController.newText(2,0,0,1200,675,[0,0,0],"Action: " + this.player.currentAction)
+      this.drawController.newText(2,0,0,1200,675,[0,0,0],this.bottomCanvasText())
     }
     this.drawSprite(this.enemy.position.x-50,this.enemy.position.y-50,100,100,100,"../sprites/evilCharacter.png")
     this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
@@ -477,6 +494,5 @@ export class World extends GameState {
     this.render()
 
     this.lastInputPacket = inputPacket
-    //document.getElementById('console').innerText = this.enemy.actions
   }
 };
