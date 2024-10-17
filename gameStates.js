@@ -347,7 +347,7 @@ export class World extends GameState {
     for (let ry = 0;ry<map.length;ry++) {
       for (let rx = 0;rx<map[ry].length;rx++) {
         if (map[ry][rx] == 10) {
-          this.createTile(rx + dx,ry+dy,true,0,(x,y) => {},[110,65,5],[50,150,50],1)
+          this.createTile(rx + dx,ry+dy,true,1,(x,y) => {},[110,65,5],[50,150,50],1)
         }
         if (map[ry][rx] == 20) {
           this.createFloorTile(rx + dx,ry+dy,[110,65,5],[40, 212, 40])
@@ -456,7 +456,7 @@ export class World extends GameState {
       if (inputPacket.keys.indexOf("KeyV") != -1) {
         this.combat(false)
       }
-      if (inputPacket.keys.indexOf("KeyE") != -1) {
+      if (inputPacket.keys.indexOf("KeyE") != -1 && this.player.currentAction == null) {
         this.playerTurn = false
         this.enemy.actions++
       }
