@@ -22,6 +22,10 @@ export class GameState {
       this.iterations = 0
       this.logicInterval = null
       this.buttons = []
+      this.frameCount = 0
+      this.fps = 0
+      this.tps = 0
+      this.tickCount = 0
     }
     load(callback) {
       // reset state and then set the callback for when the state ends
@@ -32,9 +36,9 @@ export class GameState {
       this.startLogicUpdate()
     }
     updateFrame(callback) {
+      this.frameCount++
       // Perform rendering updates
       this.drawController.refreshAll(this.inputController.getInputPacket());
-  
       // Check if the state should end
       if (this.nextState == null) {
         requestAnimationFrame(() => this.updateFrame(callback));
@@ -48,12 +52,19 @@ export class GameState {
       this.logicInterval = setInterval(() => {
         this.runLogic();
       }, interval);
+      this.frameCountInterval = setInterval(() => {
+        this.fps = this.frameCount;
+        this.frameCount = 0
+        this.tps = this.tickCount;
+        this.tickCount = 0
+      },1000)
     }
   
     runLogic() {
       let inputPacket = this.inputController.getInputPacket();
       this.logicFrame(inputPacket);
       this.iterations++;
+      this.tickCount++;
     }
   
     stopLogicUpdate() {
@@ -66,6 +77,8 @@ export class GameState {
     logicFrame() {
     }
     resetState() {
+      let d = new Date()
+      this.time = d.getTime()
       if (this.name == "world") {
         this.player = new Player(900,900)
         this.enemy = new Enemy(1800,1800)
@@ -503,5 +516,6 @@ export class World extends GameState {
     this.render()
 
     this.lastInputPacket = inputPacket
+    document.getElementById("console").innerText = this.fps + " " + this.tps
   }
 };
