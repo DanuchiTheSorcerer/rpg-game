@@ -161,7 +161,7 @@ export class Title extends GameState {
         this.drawController.newButton(0,400,300,100,50,[127,0,255],"RD 4")
         this.drawController.newButton(0,525,300,100,50,[127,0,255],"RD 5")
         this.addButton(25,300,100,50,() => {localStorage.setItem("render","8")})
-        this.addButton(150,300,100,50,() => {localStorage.setItem("render","20")})
+        this.addButton(150,300,100,50,() => {localStorage.setItem("render","16")})
         this.addButton(275,300,100,50,() => {localStorage.setItem("render","45")})
         this.addButton(400,300,100,50,() => {localStorage.setItem("render","70")})
         this.addButton(525,300,100,50,() => {localStorage.setItem("render","90")})
@@ -226,28 +226,28 @@ export class World extends GameState {
     let ptx = Math.floor((this.viewport.x+600)/100)
     let pty = Math.floor((this.viewport.y+337.5)/100)
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
-      for (let j = Math.max(0, pty - this.renderDistance);j<pty;j++) {
+      for (let j = Math.max(0, pty - this.renderDistance/2);j<pty;j++) {
         if (!this.floorTiles[i][j].isEmpty) {
           this.drawFloorTile(this.floorTiles[i][j])
         }
       }
     }
     for (let i = Math.min(ptx+this.renderDistance,999);i>=ptx;i--) {
-      for (let j = Math.max(0, pty - this.renderDistance);j<pty;j++) {
+      for (let j = Math.max(0, pty - this.renderDistance/2);j<pty;j++) {
         if (!this.floorTiles[i][j].isEmpty) {
           this.drawFloorTile(this.floorTiles[i][j])
         }
       }
     }
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
-      for (let j = Math.min(pty+this.renderDistance,999);j>=pty;j--) {
+      for (let j = Math.min(pty+this.renderDistance/2,999);j>=pty;j--) {
         if (!this.floorTiles[i][j].isEmpty) {
           this.drawFloorTile(this.floorTiles[i][j])
         }
       }
     }
     for (let i = Math.min(ptx+this.renderDistance,999);i>=ptx;i--) {
-      for (let j = Math.min(pty+this.renderDistance,999);j>=pty;j--) {
+      for (let j = Math.min(pty+this.renderDistance/2,999);j>=pty;j--) {
         if (!this.floorTiles[i][j].isEmpty) {
           this.drawFloorTile(this.floorTiles[i][j])
         }
@@ -278,7 +278,7 @@ export class World extends GameState {
     this.drawSprite(2250,250,100,100,100,"../sprites/character.png")
 
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
-      for (let j = Math.max(0, pty - this.renderDistance);j<pty;j++) {
+      for (let j = Math.max(0, pty - this.renderDistance/2);j<pty;j++) {
         if (!this.tiles[i][j].isEmpty) {
           this.drawTile(this.tiles[i][j])
           this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
@@ -287,7 +287,7 @@ export class World extends GameState {
       }
     }
     for (let i = Math.min(ptx+this.renderDistance,999);i>=ptx;i--) {
-      for (let j = Math.max(0, pty - this.renderDistance);j<pty;j++) {
+      for (let j = Math.max(0, pty - this.renderDistance/2);j<pty;j++) {
         if (!this.tiles[i][j].isEmpty) {
           this.drawTile(this.tiles[i][j])
           this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
@@ -295,7 +295,7 @@ export class World extends GameState {
       }
     }
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
-      for (let j = Math.min(pty+this.renderDistance,999);j>=pty;j--) {
+      for (let j = Math.min(pty+this.renderDistance/2,999);j>=pty;j--) {
         if (!this.tiles[i][j].isEmpty) {
           this.drawTile(this.tiles[i][j])
           this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
@@ -303,7 +303,7 @@ export class World extends GameState {
       }
     }
     for (let i = Math.min(ptx+this.renderDistance,999);i>=ptx;i--) {
-      for (let j = Math.min(pty+this.renderDistance,999);j>=pty;j--) {
+      for (let j = Math.min(pty+this.renderDistance/2,999);j>=pty;j--) {
         if (!this.tiles[i][j].isEmpty) {
           this.drawTile(this.tiles[i][j])
           this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
