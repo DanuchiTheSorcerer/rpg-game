@@ -23,22 +23,27 @@ export class GameState {
       this.logicInterval = null
       this.buttons = []
       this.frameCount = 0
-      this.fps = 0
-      this.tps = 0
+      this.fps = 60
+      this.tps = 60
       this.tickCount = 0
+      this.logicRunning = false
     }
     load(callback) {
-      // reset state and then set the callback for when the state ends
       this.resetState();
-      this.updateFrame(() => {
-        callback();
-      });
-      this.startLogicUpdate()
+      this.startLogicUpdate();
+      this.updateFrame(callback);
     }
+    
     updateFrame(callback) {
-      this.frameCount++
-      // Perform rendering updates
-      this.drawController.refreshAll(this.inputController.getInputPacket());
+      // Perform rendering updates if the frame count is at a reasonable rate
+      if ((this.tps >35  && this.iterations%2 == 0)||(this.tps>55)||(this.tps>20 && this.iterations%3 == 0)) {
+        this.frameCount++
+        if (this.name == "world" && this.iterations >= 1) {
+          this.drawController.resetElements()
+          this.render(); // Perform rendering 
+        }
+        this.drawController.refreshAll(this.inputController.getInputPacket())
+      }
       // Check if the state should end
       if (this.nextState == null) {
         requestAnimationFrame(() => this.updateFrame(callback));
@@ -47,26 +52,30 @@ export class GameState {
         callback();
       }
     }
+    
     startLogicUpdate(interval = 1000 / 60) {
-      // Start logic updates at a fixed interval (e.g., 60 times per second)
       this.logicInterval = setInterval(() => {
         this.runLogic();
       }, interval);
+    
       this.frameCountInterval = setInterval(() => {
-        this.fps = this.frameCount;
-        this.frameCount = 0
-        this.tps = this.tickCount;
-        this.tickCount = 0
-      },1000)
+        this.fps = this.frameCount*4;
+        this.frameCount = 0;
+        this.tps = this.tickCount*4;
+        this.tickCount = 0;
+        document.getElementById("console").innerText = "fps: " + this.fps + " " + "tps: " + this.tps
+       }, 250);
     }
-  
+    
     runLogic() {
+      this.logicRunning = true
       let inputPacket = this.inputController.getInputPacket();
       this.logicFrame(inputPacket);
       this.iterations++;
       this.tickCount++;
+      this.logicRunning = false
     }
-  
+    
     stopLogicUpdate() {
       // Stop the logic updates
       if (this.logicInterval) {
@@ -485,7 +494,6 @@ export class World extends GameState {
     } 
   }
   logicFrame(inputPacket) {
-    this.drawController.resetElements()
     if (this.iterations ==0) {
       //add border tiles
       for (let i = 0;i<1000;i++) {
@@ -513,9 +521,7 @@ export class World extends GameState {
     }
     
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
-    this.render()
 
     this.lastInputPacket = inputPacket
-    document.getElementById("console").innerText = this.fps + " " + this.tps
   }
 };
