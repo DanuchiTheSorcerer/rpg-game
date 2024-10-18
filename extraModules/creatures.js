@@ -131,7 +131,7 @@ export class Player extends Creature {
             this.warp -= 100
           }
         if (this.currentAction == null) {
-            if (inputPacket.keys.indexOf("KeyM") != -1) {
+            if (inputPacket.keys.indexOf("KeyM") != -1 && (this.movementSpeed>=0.5 || this.actions>0)) {
                 this.currentAction = "move"
             }
         }

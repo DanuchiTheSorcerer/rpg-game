@@ -44,7 +44,7 @@ export class GameState {
         }
         this.drawController.refreshAll(this.inputController.getInputPacket())
       }
-      // Check if the state should end
+        // Check if the state should end
       if (this.nextState == null) {
         requestAnimationFrame(() => this.updateFrame(callback));
       } else {
