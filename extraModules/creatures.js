@@ -2,15 +2,23 @@ export class Creature {
     constructor(spawnX,spawnY) {
         this.position = {x:spawnX,y:spawnY}
         this.speed = {x:0,y:0}
-        this.movementSpeedFactor = 5
+        this.movementSpeedFactor = 3
         // movementSpeedFactor / friction - movementSpeedFactor = terminal velocity
         this.friction = 0.2
         this.tilePos = {x:Math.floor(spawnX/100),y:Math.floor(spawnY/100)}
         this.targetPos = {x:0,y:0}
         this.actions = 0
         this.warp = 1000
+        this.stance = 50
         this.movementSpeed = 0
         this.currentAction = null
+    }
+    startTurn() {}
+    takeHit(dmg) {
+        this.stance -= dmg
+    }
+    getDamage() {
+        return Math.floor(Math.random() * 51)
     }
     teleport(x,y) {
         this.position = {x:x,y:y}
@@ -125,6 +133,13 @@ export class Player extends Creature {
     constructor(spawnX,spawnY) {
         super(spawnX,spawnY)
     }
+    startTurn() {
+        if (this.stance <= 90) {
+            this.stance += 10
+        } else {
+            this.stance = 100
+        }
+    }
     takeTurn(inputPacket,viewport) {
         while (this.warp >= 100) {
             this.actions++
@@ -163,6 +178,14 @@ export class Enemy extends Creature {
     constructor(spawnX, spawnY) {
         super(spawnX,spawnY)
         this.targetSet = false
+    }
+    startTurn() {
+        if (this.stance <= 90) {
+            this.stance += 10
+        } else {
+            this.stance = 100
+        }
+        this.actions++
     }
     takeTurn(player) {
         if (this.currentAction == null) {

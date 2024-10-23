@@ -63,7 +63,7 @@ export class GameState {
         this.frameCount = 0;
         this.tps = this.tickCount*4;
         this.tickCount = 0;
-        document.getElementById("console").innerText = "fps: " + this.fps + " " + "tps: " + this.tps
+        //document.getElementById("console").innerText = "fps: " + this.fps + " " + "tps: " + this.tps
        }, 250);
     }
     
@@ -287,7 +287,8 @@ export class World extends GameState {
       this.drawController.newSprite(1,200,25,800,"../sprites/hourglass.png")
       this.drawController.newText(1,450,200,350,100,[255,255,255],this.player.warp + "%")
       this.drawController.newText(1,60,250,1080,100,[255,255,255],"Actions: " + this.player.actions)
-      this.drawController.newText(1,60,300,1080,100,[255,255,255],"Move Distance: " + Math.floor(this.player.movementSpeed*10)/10 + "m")
+      this.drawController.newText(1,60,300,1080,100,[255,255,255],"Stance: " + this.player.stance + "%")
+      this.drawController.newText(1,60,350,1080,100,[255,255,255],"Move Distance: " + Math.floor(this.player.movementSpeed*10)/10 + "m")
       if (this.playerTurn) {
         this.drawController.newRect(2,0,0,1200,675,[100,100,255])
       } else {
@@ -425,6 +426,7 @@ export class World extends GameState {
       this.drawController.canvases[2].widthRel = 0
       this.drawController.canvases[2].heightRel = 0
       this.renderDistance = parseInt(localStorage.getItem("render"))
+      this.playerTurn = false
     } else {
       //enter combat
       this.drawController.canvases[0].xRel = 0.25
@@ -440,6 +442,10 @@ export class World extends GameState {
       this.viewport.z = 2000
       this.player.targetPos.x = this.player.position.x
       this.player.targetPos.y = this.player.position.y
+      this.player.stance = 40
+      this.enemy.stance = 40
+      this.playerTurn = true
+      this.player.startTurn()
     }
   }
   tickPlayer(inputPacket) {
@@ -479,8 +485,8 @@ export class World extends GameState {
         this.combat(false)
       }
       if (inputPacket.keys.indexOf("KeyE") != -1 && this.player.currentAction == null) {
+        this.enemy.startTurn()
         this.playerTurn = false
-        this.enemy.actions++
       }
       this.player.walk(this.player.targetPos.x-this.player.position.x,this.player.targetPos.y-this.player.position.y)
       this.player.updatePos(this.tiles)
@@ -489,6 +495,7 @@ export class World extends GameState {
       this.enemy.walk(this.enemy.targetPos.x-this.enemy.position.x,this.enemy.targetPos.y-this.enemy.position.y)
       this.enemy.updatePos(this.tiles)
       if (this.enemy.currentAction == null) {
+        this.player.startTurn()
         this.playerTurn = true
       }
     } 
