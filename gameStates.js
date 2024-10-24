@@ -484,7 +484,7 @@ export class World extends GameState {
       if (inputPacket.keys.indexOf("KeyV") != -1) {
         this.combat(false)
       }
-      if (inputPacket.keys.indexOf("KeyE") != -1 && this.player.currentAction == null) {
+      if (!(inputPacket.keys.indexOf("KeyE") != -1 || !(this.lastInputPacket.keys.indexOf("KeyE") != -1)) && this.player.currentAction == null) {
         this.enemy.startTurn()
         this.playerTurn = false
       }
@@ -528,7 +528,6 @@ export class World extends GameState {
     }
     
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
-
     this.lastInputPacket = inputPacket
   }
 };

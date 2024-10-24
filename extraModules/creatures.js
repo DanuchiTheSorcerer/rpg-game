@@ -191,13 +191,21 @@ export class Enemy extends Creature {
         if (this.currentAction == null) {
             if (player.tilePos.x != this.tilePos.x && player.tilePos.y != this.tilePos.y) {
                 this.currentAction = "move"
+             } else {
+                this.currentAction = "attack"
              }
         }
         if (this.currentAction == "move") {
-            let distanceToPlayer = Math.sqrt((player.position.x-this.position.x)*(player.position.x-this.position.x) + (player.position.y-this.position.y)*(player.position.y-this.position.y))/100
+            let distanceToPlayer = Math.sqrt((player.position.x-this.position.x)**2 + (player.position.y-this.position.y)**2)/100
             this.moveAction(player,distanceToPlayer)
-            //document.getElementById("console").innerText = distanceToPlayer
+        } else if (this.currentAction == "attack") {
+            this.attackAction(player)
         }
+    }
+    attackAction(player) {
+        this.actions--
+        player.takeHit(this.getDamage())
+        this.currentAction = null
     }
     moveAction(player,distance) {
         if (this.movementSpeed >= distance) {
