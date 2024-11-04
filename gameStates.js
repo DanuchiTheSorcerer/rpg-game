@@ -480,7 +480,7 @@ export class World extends GameState {
   }
   runCombatTurn(inputPacket) {
     if (this.playerTurn) {
-      this.player.takeTurn(inputPacket,this.viewport)
+      this.player.takeTurn(inputPacket,this.viewport,this.enemy)
       if (inputPacket.keys.indexOf("KeyV") != -1) {
         this.combat(false)
       }
@@ -529,5 +529,6 @@ export class World extends GameState {
     
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
     this.lastInputPacket = inputPacket
+    document.getElementById("console").innerText = this.enemy.stance
   }
 };

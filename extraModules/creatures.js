@@ -140,7 +140,7 @@ export class Player extends Creature {
             this.stance = 100
         }
     }
-    takeTurn(inputPacket,viewport) {
+    takeTurn(inputPacket,viewport,enemy) {
         while (this.warp >= 100) {
             this.actions++
             this.warp -= 100
@@ -148,6 +148,10 @@ export class Player extends Creature {
         if (this.currentAction == null) {
             if (inputPacket.keys.indexOf("KeyM") != -1 && (this.movementSpeed>=0.5 || this.actions>0)) {
                 this.currentAction = "move"
+            }
+            if (inputPacket.keys.indexOf("KeyK") != -1 && Math.sqrt((this.position.x-enemy.positon.x)**2 + (this.position.y-enemy.position.y)**2) <= 50 && this.actions >0) {
+                alert("e")
+                this.currentAction = "attack"
             }
         }
         if (this.currentAction == "move") {
@@ -157,11 +161,19 @@ export class Player extends Creature {
             }
             this.moveAction(inputPacket,viewport)
         }
+        if (this.currentAction == "attack") {
+            this.attackAction(enemy)
+        }
         if (Math.floor(this.targetPos.x/100) == this.tilePos.x && Math.floor(this.targetPos.y/100) == this.tilePos.y) {
             this.teleport(this.targetPos.x,this.targetPos.y)
             this.targetPos.x = this.position.x
             this.targetPos.y = this.position.y
           }     
+    }
+    attackAction(enemy) {
+        enemy.takeHit(this.getDamage())
+        this.currentAction = null
+        this.actions--
     }
     moveAction(inputPacket,viewport) {
         let potentialTarget = {x:Math.floor(viewport.x + 600 + 2.99 * inputPacket.mouseX -2.99*751),y:Math.floor(viewport.y + 337.5 + 2.98 * inputPacket.mouseY -2.98*255)}
