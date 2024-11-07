@@ -83,7 +83,7 @@ export class GameState {
         this.logicInterval = null;
       }
     }
-    logicFrame() {
+    logicFrame(i) {
     }
     resetState() {
       let d = new Date()
@@ -480,7 +480,7 @@ export class World extends GameState {
   }
   runCombatTurn(inputPacket) {
     if (this.playerTurn) {
-      this.player.takeTurn(inputPacket,this.viewport,this.enemy)
+      this.player.takeTurn(inputPacket,this.viewport,this.enemy,this.lastInputPacket)
       if (inputPacket.keys.indexOf("KeyV") != -1) {
         this.combat(false)
       }

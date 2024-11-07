@@ -140,17 +140,16 @@ export class Player extends Creature {
             this.stance = 100
         }
     }
-    takeTurn(inputPacket,viewport,enemy) {
+    takeTurn(inputPacket,viewport,enemy,lastInputPacket) {
         while (this.warp >= 100) {
             this.actions++
             this.warp -= 100
           }
         if (this.currentAction == null) {
+            
             if (inputPacket.keys.indexOf("KeyM") != -1 && (this.movementSpeed>=0.5 || this.actions>0)) {
                 this.currentAction = "move"
-            }
-            if (inputPacket.keys.indexOf("KeyK") != -1 && Math.sqrt((this.position.x-enemy.positon.x)**2 + (this.position.y-enemy.position.y)**2) <= 50 && this.actions >0) {
-                alert("e")
+            } else if ((inputPacket.keys.indexOf("KeyK") != -1) ^ (lastInputPacket.keys.indexOf("KeyK") != -1) && Math.sqrt((this.position.x-enemy.position.x)**2 + (this.position.y-enemy.position.y)**2) <= 50 && this.actions >0) {
                 this.currentAction = "attack"
             }
         }
@@ -177,10 +176,10 @@ export class Player extends Creature {
     }
     moveAction(inputPacket,viewport) {
         let potentialTarget = {x:Math.floor(viewport.x + 600 + 2.99 * inputPacket.mouseX -2.99*751),y:Math.floor(viewport.y + 337.5 + 2.98 * inputPacket.mouseY -2.98*255)}
-        if (inputPacket.leftMouse && Math.sqrt((potentialTarget.x-this.position.x)*(potentialTarget.x-this.position.x) + (potentialTarget.y-this.position.y)*(potentialTarget.y-this.position.y))/100 <= this.movementSpeed) {
+        if (inputPacket.leftMouse && Math.sqrt((potentialTarget.x-this.position.x)**2 + (potentialTarget.y-this.position.y)**2)/100 <= this.movementSpeed) {
           this.targetPos.x = potentialTarget.x
           this.targetPos.y = potentialTarget.y
-          this.movementSpeed -= Math.sqrt((potentialTarget.x-this.position.x)*(potentialTarget.x-this.position.x) + (potentialTarget.y-this.position.y)*(potentialTarget.y-this.position.y))/100
+          this.movementSpeed -= Math.sqrt((potentialTarget.x-this.position.x)**2 + (potentialTarget.y-this.position.y)**2)/100
           this.currentAction = null
         } 
     }
@@ -200,15 +199,15 @@ export class Enemy extends Creature {
         this.actions++
     }
     takeTurn(player) {
+        let distanceToPlayer = Math.sqrt((player.position.x-this.position.x)**2 + (player.position.y-this.position.y)**2)/100
         if (this.currentAction == null) {
-            if (player.tilePos.x != this.tilePos.x && player.tilePos.y != this.tilePos.y) {
+            if (distanceToPlayer >= 0.5) {
                 this.currentAction = "move"
              } else {
                 this.currentAction = "attack"
              }
         }
         if (this.currentAction == "move") {
-            let distanceToPlayer = Math.sqrt((player.position.x-this.position.x)**2 + (player.position.y-this.position.y)**2)/100
             this.moveAction(player,distanceToPlayer)
         } else if (this.currentAction == "attack") {
             this.attackAction(player)

@@ -21,7 +21,7 @@ export class InputController {
         this.mouseY = e.clientY;
     }
     keyDown(e) {
-        if (!e.repeat) {
+        if (!e.repeat && !this.keys.includes(e.code)) {
             this.keys.push(e.code)
         }
     }
@@ -57,9 +57,9 @@ export class InputController {
             }
         }
         //let console = Math.floor(returnValue.mouseX) + " " + Math.floor(returnValue.mouseY) + " " + returnValue.leftMouse
-        //console = ""
-        //for (let i = 0;i<this.keys.length;i++) {console = console + this.keys[i] + " "}
-        //document.getElementById("console").innerText = console
+        // let console = ""
+        // for (let i = 0;i<this.keys.length;i++) {console = console + this.keys[i] + ","}
+        // document.getElementById("console").innerText = console
         return returnValue
     }
 }
