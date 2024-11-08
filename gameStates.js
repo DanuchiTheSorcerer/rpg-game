@@ -70,7 +70,7 @@ export class GameState {
     runLogic() {
       this.logicRunning = true
       let inputPacket = this.inputController.getInputPacket();
-      this.logicFrame(inputPacket);
+      this.logicFrame(JSON.parse(JSON.stringify(inputPacket)));
       this.iterations++;
       this.tickCount++;
       this.logicRunning = false
@@ -528,7 +528,10 @@ export class World extends GameState {
     }
     
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
-    this.lastInputPacket = inputPacket
-    document.getElementById("console").innerText = this.enemy.stance
+    if (this.lastInputPacket.keys.length != inputPacket.keys.length) {
+      alert("e")
+    }
+    this.lastInputPacket = JSON.parse(JSON.stringify(inputPacket))
+    //document.getElementById("console").innerText = this.enemy.stance
   }
 };
