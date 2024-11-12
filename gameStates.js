@@ -277,6 +277,7 @@ export class World extends GameState {
     }
 
     if (this.isInCombat) {
+      this.drawText(this.enemy.position.x-50,this.enemy.position.y-100,100,100,50,this.enemy.stance+ "%")
       if (this.player.currentAction == "move") {
         let size = this.player.movementSpeed * 100
         this.drawSprite(this.player.position.x-size,this.player.position.y-size,100,size*2,size*2,"../sprites/moveDistanceMarker.png")
@@ -289,6 +290,7 @@ export class World extends GameState {
       this.drawController.newText(1,60,250,1080,100,[255,255,255],"Actions: " + this.player.actions)
       this.drawController.newText(1,60,300,1080,100,[255,255,255],"Stance: " + this.player.stance + "%")
       this.drawController.newText(1,60,350,1080,100,[255,255,255],"Move Distance: " + Math.floor(this.player.movementSpeed*10)/10 + "m")
+      
       if (this.playerTurn) {
         this.drawController.newRect(2,0,0,1200,675,[100,100,255])
       } else {
@@ -411,6 +413,10 @@ export class World extends GameState {
   drawSprite(x,y,z,width,height,sprite) {
     let spriteDimensions = this.depthEngine.dimensionDownRect(this.viewport.x,this.viewport.y,this.viewport.z,x-600,y-337.5,width,height,z)
     this.drawController.newSprite(0,spriteDimensions.x+600,spriteDimensions.y+337.5,spriteDimensions.width,sprite)
+  }
+  drawText(x,y,z,width,height,text) {
+    let textDimensions = this.depthEngine.dimensionDownRect(this.viewport.x,this.viewport.y,this.viewport.z,x-600,y-337.5,width,height,z)
+    this.drawController.newText(0,textDimensions.x+600,textDimensions.y+337.5,textDimensions.width,textDimensions.height,[0,0,0],text)
   }
   combat(mode) {
     this.isInCombat = mode
