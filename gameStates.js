@@ -484,7 +484,7 @@ export class World extends GameState {
       if (inputPacket.keys.indexOf("KeyV") != -1) {
         this.combat(false)
       }
-      if (!(inputPacket.keys.indexOf("KeyE") != -1 || !(this.lastInputPacket.keys.indexOf("KeyE") != -1)) && this.player.currentAction == null) {
+      if (inputPacket.keys.indexOf("KeyE") != -1 && !(this.lastInputPacket.keys.indexOf("KeyE") != -1) && this.player.currentAction == null) {
         this.enemy.startTurn()
         this.playerTurn = false
       }
@@ -494,7 +494,7 @@ export class World extends GameState {
       this.enemy.takeTurn(this.player)
       this.enemy.walk(this.enemy.targetPos.x-this.enemy.position.x,this.enemy.targetPos.y-this.enemy.position.y)
       this.enemy.updatePos(this.tiles)
-      if (this.enemy.currentAction == null) {
+      if (this.enemy.currentAction == null && this.enemy.actions == 0) {
         this.player.startTurn()
         this.playerTurn = true
       }
@@ -528,10 +528,7 @@ export class World extends GameState {
     }
     
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
-    if (this.lastInputPacket.keys.length != inputPacket.keys.length) {
-      alert("e")
-    }
     this.lastInputPacket = JSON.parse(JSON.stringify(inputPacket))
-    //document.getElementById("console").innerText = this.enemy.stance
+    document.getElementById("console").innerText = this.enemy.stance
   }
 };

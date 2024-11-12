@@ -149,7 +149,7 @@ export class Player extends Creature {
             
             if (inputPacket.keys.indexOf("KeyM") != -1 && (this.movementSpeed>=0.5 || this.actions>0)) {
                 this.currentAction = "move"
-            } else if ((inputPacket.keys.indexOf("KeyK") != -1) ^ (lastInputPacket.keys.indexOf("KeyK") != -1) && Math.sqrt((this.position.x-enemy.position.x)**2 + (this.position.y-enemy.position.y)**2) <= 50 && this.actions >0) {
+            } else if (inputPacket.keys.indexOf("KeyK") != -1 && !(lastInputPacket.keys.indexOf("KeyK") != -1) && Math.sqrt((this.position.x-enemy.position.x)**2 + (this.position.y-enemy.position.y)**2) <= 50 && this.actions >0) {
                 this.currentAction = "attack"
             }
         }
@@ -219,27 +219,29 @@ export class Enemy extends Creature {
         this.currentAction = null
     }
     moveAction(player,distance) {
-        if (this.movementSpeed >= distance) {
-            this.targetPos.x = player.position.x
-            this.targetPos.y = player.position.y
-            this.movementSpeed -= distance
-            this.targetSet = true
-        } else if (this.actions > 0) {
-            if (this.movementSpeed + 7.5 >= distance) {
-                this.movementSpeed += 7.5
-                this.actions--
+        if (!this.targetSet) {
+            if (this.movementSpeed >= distance) {
                 this.targetPos.x = player.position.x
                 this.targetPos.y = player.position.y
                 this.movementSpeed -= distance
                 this.targetSet = true
-            } else {
-                this.movementSpeed += 7.5
-                this.actions--
-                let playerAngle = Math.atan2(player.position.y-this.position.y,player.position.x- this.position.x)
-                this.targetPos.x = Math.cos(playerAngle) * this.movementSpeed * 100 + this.position.x
-                this.targetPos.y = Math.sin(playerAngle) * this.movementSpeed * 100 + this.position.y
-                this.movementSpeed = 0
-                this.targetSet = true
+            } else if (this.actions > 0) {
+                if (this.movementSpeed + 7.5 >= distance) {
+                    this.movementSpeed += 7.5
+                    this.actions--
+                    this.targetPos.x = player.position.x
+                    this.targetPos.y = player.position.y
+                    this.movementSpeed -= distance
+                    this.targetSet = true
+                } else {
+                    this.movementSpeed += 7.5
+                    this.actions--
+                    let playerAngle = Math.atan2(player.position.y-this.position.y,player.position.x- this.position.x)
+                    this.targetPos.x = Math.cos(playerAngle) * this.movementSpeed * 100 + this.position.x
+                    this.targetPos.y = Math.sin(playerAngle) * this.movementSpeed * 100 + this.position.y
+                    this.movementSpeed = 0
+                    this.targetSet = true
+                }
             }
         }
         if (!(!(Math.sqrt(Math.pow(this.targetPos.x-this.position.x,2)+Math.pow(this.targetPos.y-this.position.y,2)) <= 5) && this.targetSet)) {
