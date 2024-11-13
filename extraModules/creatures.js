@@ -10,15 +10,19 @@ export class Creature {
         this.actions = 0
         this.warp = 1000
         this.stance = 50
+        this.baseDefense = 0
+        this.baseDamage = 0
         this.movementSpeed = 0
         this.currentAction = null
     }
     startTurn() {}
     takeHit(dmg) {
-        this.stance -= dmg
+        if (dmg - this.baseDefense > 0) {
+            this.stance -= (dmg - this.baseDefense)
+        }
     }
     getDamage() {
-        return Math.floor(Math.random() * 51)
+        return Math.floor(Math.random() * 51) + this.baseDamage
     }
     teleport(x,y) {
         this.position = {x:x,y:y}
@@ -132,6 +136,7 @@ export class Creature {
 export class Player extends Creature {
     constructor(spawnX,spawnY) {
         super(spawnX,spawnY)
+        this.baseDefense = 5
     }
     startTurn() {
         if (this.stance <= 90) {

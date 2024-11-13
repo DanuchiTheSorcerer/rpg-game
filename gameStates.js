@@ -220,6 +220,7 @@ export class World extends GameState {
     this.depthEngine = new DepthEngine()
     this.isInCombat = false
     this.playerTurn = true
+    this.isStatsMenuOpen = false
   }
   createTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor,height) {
     this.tiles[xLocation][yLocation] = new StaticTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor,height)
@@ -334,6 +335,14 @@ export class World extends GameState {
           this.tiles[i][j].func(this.tiles[i][j].position.x*100,this.tiles[i][j].position.y*100)
         }
       }
+    }
+    if (this.isStatsMenuOpen) {
+      this.drawController.newRect(0,104,100,992,475,[0, 0, 0])
+      this.drawController.newRect(0,110,105,980,465,[50,50,50])
+      let variance = 10*Math.sin(Math.PI*this.iterations/300)
+      this.drawController.newSprite(0,130-variance,200-variance,250+variance*2,"./sprites/character.png")
+      this.drawController.newText(0,375,150,400,100,[255,255,255],"Base DEF: " +this.player.baseDefense)
+      this.drawController.newText(0,375,225,400,100,[255,255,255],"Base ATK: " +this.player.baseDamage)
     }
   }
   drawTile(tile) {
@@ -533,6 +542,10 @@ export class World extends GameState {
       this.tickPlayer(inputPacket)
     }
     
+    if (inputPacket.keys.indexOf("KeyR") && !this.lastInputPacket.keys.indexOf("KeyR")) {
+      this.isStatsMenuOpen = !this.isStatsMenuOpen
+    }
+
     this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
     this.lastInputPacket = JSON.parse(JSON.stringify(inputPacket))
     document.getElementById("console").innerText = this.enemy.stance
