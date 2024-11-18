@@ -27,6 +27,7 @@ export class GameState {
       this.tps = 60
       this.tickCount = 0
       this.logicRunning = false
+      this.pauseTimer = 0
     }
     load(callback) {
       this.resetState();
@@ -69,9 +70,13 @@ export class GameState {
     
     runLogic() {
       this.logicRunning = true
-      let inputPacket = this.inputController.getInputPacket();
-      this.logicFrame(JSON.parse(JSON.stringify(inputPacket)));
-      this.iterations++;
+      if (!this.pauseTimer) {
+        let inputPacket = this.inputController.getInputPacket();
+        this.logicFrame(JSON.parse(JSON.stringify(inputPacket)));
+        this.iterations++;
+      } else {
+        this.pauseTimer -= 1
+      }
       this.tickCount++;
       this.logicRunning = false
     }
@@ -89,7 +94,7 @@ export class GameState {
       let d = new Date()
       this.time = d.getTime()
       if (this.name == "world") {
-        this.creatures = [new Player(900,900),new Enemy(1800,1800)]
+        this.creatures = [new Player(900,900),new Enemy(1800,1800),new Enemy(1800,900)]
       }
       this.inputController = new InputController()
       this.removeButtons()
@@ -209,7 +214,7 @@ export class Title extends GameState {
 export class World extends GameState {
   constructor() {
     super("world", new DrawController([new Canvas(0,0,1,1,"main"),new Canvas(0,0,0,0,"side"),new Canvas(0,0,0,0,"bottom")]));
-    this.creatures = [new Player(900,900),new Enemy(1800,1800)]
+    this.creatures = [new Player(900,900),new Enemy(1800,1800),new Enemy(1800,900)]
     this.tiles = []
     this.floorTiles = []
     this.viewport = new Viewport()
@@ -235,8 +240,8 @@ export class World extends GameState {
         text = " "
       }
     } else {
-      if (this.creatures[1].currentAction != null) {
-      text = "Enemy is performing " + this.creatures[1].currentAction
+      if (this.creatures[this.creatureTurn].currentAction != null) {
+      text = "Enemy " + this.creatureTurn + " is performing " + this.creatures[1].currentAction
       } else {
         text = " "
       }
@@ -276,7 +281,9 @@ export class World extends GameState {
     }
 
     if (this.isInCombat) {
-      this.drawText(this.creatures[1].position.x-50,this.creatures[1].position.y-100,100,100,50,this.creatures[1].stance+ "%")
+      for (let i = 1;i<this.creatures.length;i++) {
+        this.drawText(this.creatures[i].position.x-50,this.creatures[i].position.y-100,100,100,50,this.creatures[i].stance+ "%")
+      }
       if (this.creatures[0].currentAction == "move") {
         let size = this.creatures[0].movementSpeed * 100
         this.drawSprite(this.creatures[0].position.x-size,this.creatures[0].position.y-size,100,size*2,size*2,"../sprites/moveDistanceMarker.png")
@@ -297,9 +304,11 @@ export class World extends GameState {
       }
       this.drawController.newText(2,0,0,1200,675,[0,0,0],this.bottomCanvasText())
     }
-    this.drawSprite(this.creatures[1].position.x-50,this.creatures[1].position.y-50,100,100,100,"../sprites/evilCharacter.png")
+
+    for (let i = 1;i<this.creatures.length;i++) {
+      this.drawSprite(this.creatures[i].position.x-50,this.creatures[i].position.y-50,100,100,100,"../sprites/evilCharacter.png")
+    }
     this.drawSprite(this.creatures[0].position.x-50,this.creatures[0].position.y-50,100,100,100,"../sprites/character.png")
-    this.drawSprite(2250,250,100,100,100,"../sprites/character.png")
 
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
       for (let j = Math.max(0, pty - this.renderDistance/2);j<pty;j++) {
@@ -455,8 +464,9 @@ export class World extends GameState {
       this.viewport.z = 2000
       this.creatures[0].targetPos.x = this.creatures[0].position.x
       this.creatures[0].targetPos.y = this.creatures[0].position.y
-      this.creatures[0].stance = 40
-      this.creatures[1].stance = 40
+      for (let i = 0;i<this.creatures.length;i++) {
+        this.creatures[i].stance = 40
+      }
       this.creatureTurn = 0
       this.creatures[0].startTurn()
     }
@@ -510,13 +520,15 @@ export class World extends GameState {
     }
     if (end) {
       if (this.creatureTurn + 1 == this.creatures.length) {
+        this.pauseTimer = 60
         this.creatureTurn = 0
         this.creatures[this.creatureTurn].startTurn()
       } else {
-        this.creatureTurn += 1
+        this.pauseTimer = 60
+        this.creatureTurn +=1
         this.creatures[this.creatureTurn].startTurn()
       }
-    }
+    }    
   }
   logicFrame(inputPacket) {
     if (this.iterations ==0) {
@@ -551,6 +563,6 @@ export class World extends GameState {
 
     this.viewport.moveTo(this.creatures[this.creatureTurn].position.x-600,this.creatures[this.creatureTurn].position.y-337.5)
     this.lastInputPacket = JSON.parse(JSON.stringify(inputPacket))
-    //document.getElementById("console").innerText = this.tps + " " + this.fps
+    document.getElementById("console").innerText = this.tps + " " + this.fps
   }
 };

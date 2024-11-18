@@ -206,7 +206,6 @@ export class Enemy extends Creature {
     takeTurn(creatures) {
         let player = creatures[0]
         let distanceToPlayer = Math.sqrt((player.position.x-this.position.x)**2 + (player.position.y-this.position.y)**2)/100
-        document.getElementById("console").innerText = distanceToPlayer
         if (this.currentAction == null) {
             if (distanceToPlayer >= 0.5) {
                 this.currentAction = "move"
