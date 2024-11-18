@@ -145,7 +145,7 @@ export class Player extends Creature {
             this.stance = 100
         }
     }
-    takeTurn(inputPacket,viewport,enemy,lastInputPacket) {
+    takeTurn(creatures,inputPacket,lastInputPacket,viewport) {
         while (this.warp >= 100) {
             this.actions++
             this.warp -= 100
@@ -154,7 +154,7 @@ export class Player extends Creature {
             
             if (inputPacket.keys.indexOf("KeyM") != -1 && (this.movementSpeed>=0.5 || this.actions>0)) {
                 this.currentAction = "move"
-            } else if (inputPacket.keys.indexOf("KeyK") != -1 && !(lastInputPacket.keys.indexOf("KeyK") != -1) && Math.sqrt((this.position.x-enemy.position.x)**2 + (this.position.y-enemy.position.y)**2) <= 50 && this.actions >0) {
+            } else if (inputPacket.keys.indexOf("KeyK") != -1 && !(lastInputPacket.keys.indexOf("KeyK") != -1) && Math.sqrt((this.position.x-creatures[1].position.x)**2 + (this.position.y-creatures[1].position.y)**2) <= 50 && this.actions >0) {
                 this.currentAction = "attack"
             }
         }
@@ -166,7 +166,7 @@ export class Player extends Creature {
             this.moveAction(inputPacket,viewport)
         }
         if (this.currentAction == "attack") {
-            this.attackAction(enemy)
+            this.attackAction(creatures[1])
         }
         if (Math.floor(this.targetPos.x/100) == this.tilePos.x && Math.floor(this.targetPos.y/100) == this.tilePos.y) {
             this.teleport(this.targetPos.x,this.targetPos.y)
@@ -203,8 +203,10 @@ export class Enemy extends Creature {
         }
         this.actions++
     }
-    takeTurn(player) {
+    takeTurn(creatures) {
+        let player = creatures[0]
         let distanceToPlayer = Math.sqrt((player.position.x-this.position.x)**2 + (player.position.y-this.position.y)**2)/100
+        document.getElementById("console").innerText = distanceToPlayer
         if (this.currentAction == null) {
             if (distanceToPlayer >= 0.5) {
                 this.currentAction = "move"

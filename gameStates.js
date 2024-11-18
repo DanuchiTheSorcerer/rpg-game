@@ -89,8 +89,7 @@ export class GameState {
       let d = new Date()
       this.time = d.getTime()
       if (this.name == "world") {
-        this.player = new Player(900,900)
-        this.enemy = new Enemy(1800,1800)
+        this.creatures = [new Player(900,900),new Enemy(1800,1800)]
       }
       this.inputController = new InputController()
       this.removeButtons()
@@ -210,8 +209,7 @@ export class Title extends GameState {
 export class World extends GameState {
   constructor() {
     super("world", new DrawController([new Canvas(0,0,1,1,"main"),new Canvas(0,0,0,0,"side"),new Canvas(0,0,0,0,"bottom")]));
-    this.player = new Player(900,900)
-    this.enemy = new Enemy(1800,1800)
+    this.creatures = [new Player(900,900),new Enemy(1800,1800)]
     this.tiles = []
     this.floorTiles = []
     this.viewport = new Viewport()
@@ -219,8 +217,8 @@ export class World extends GameState {
     this.renderDistance = parseInt(localStorage.getItem("render"))
     this.depthEngine = new DepthEngine()
     this.isInCombat = false
-    this.playerTurn = true
     this.isStatsMenuOpen = false
+    this.creatureTurn = 0
   }
   createTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor,height) {
     this.tiles[xLocation][yLocation] = new StaticTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor,height)
@@ -230,15 +228,15 @@ export class World extends GameState {
   }
   bottomCanvasText() {
     let text 
-    if (this.playerTurn) {
-      if (this.player.currentAction != null) {
-        text = "Performing " + this.player.currentAction
+    if (!this.creatureTurn) {
+      if (this.creatures[0].currentAction != null) {
+        text = "Performing " + this.creatures[0].currentAction
       } else {
         text = " "
       }
     } else {
-      if (this.enemy.currentAction != null) {
-      text = "Enemy is performing " + this.enemy.currentAction
+      if (this.creatures[1].currentAction != null) {
+      text = "Enemy is performing " + this.creatures[1].currentAction
       } else {
         text = " "
       }
@@ -278,29 +276,29 @@ export class World extends GameState {
     }
 
     if (this.isInCombat) {
-      this.drawText(this.enemy.position.x-50,this.enemy.position.y-100,100,100,50,this.enemy.stance+ "%")
-      if (this.player.currentAction == "move") {
-        let size = this.player.movementSpeed * 100
-        this.drawSprite(this.player.position.x-size,this.player.position.y-size,100,size*2,size*2,"../sprites/moveDistanceMarker.png")
+      this.drawText(this.creatures[1].position.x-50,this.creatures[1].position.y-100,100,100,50,this.creatures[1].stance+ "%")
+      if (this.creatures[0].currentAction == "move") {
+        let size = this.creatures[0].movementSpeed * 100
+        this.drawSprite(this.creatures[0].position.x-size,this.creatures[0].position.y-size,100,size*2,size*2,"../sprites/moveDistanceMarker.png")
       }
-      this.drawSprite(this.player.targetPos.x-25,this.player.targetPos.y-25,100,50,50,"../sprites/character.png")
+      this.drawSprite(this.creatures[0].targetPos.x-25,this.creatures[0].targetPos.y-25,100,50,50,"../sprites/character.png")
       this.drawController.newRect(1,0,0,1200,675,[100,100,100])
       this.drawController.newRect(1,40,10,1120,655,[81, 139, 145])
       this.drawController.newSprite(1,200,25,800,"../sprites/hourglass.png")
-      this.drawController.newText(1,450,200,350,100,[255,255,255],this.player.warp + "%")
-      this.drawController.newText(1,60,250,1080,100,[255,255,255],"Actions: " + this.player.actions)
-      this.drawController.newText(1,60,300,1080,100,[255,255,255],"Stance: " + this.player.stance + "%")
-      this.drawController.newText(1,60,350,1080,100,[255,255,255],"Move Distance: " + Math.floor(this.player.movementSpeed*10)/10 + "m")
+      this.drawController.newText(1,450,200,350,100,[255,255,255],this.creatures[0].warp + "%")
+      this.drawController.newText(1,60,250,1080,100,[255,255,255],"Actions: " + this.creatures[0].actions)
+      this.drawController.newText(1,60,300,1080,100,[255,255,255],"Stance: " + this.creatures[0].stance + "%")
+      this.drawController.newText(1,60,350,1080,100,[255,255,255],"Move Distance: " + Math.floor(this.creatures[0].movementSpeed*10)/10 + "m")
       
-      if (this.playerTurn) {
+      if (!this.creatureTurn) {
         this.drawController.newRect(2,0,0,1200,675,[100,100,255])
       } else {
         this.drawController.newRect(2,0,0,1200,675,[255,0,0])
       }
       this.drawController.newText(2,0,0,1200,675,[0,0,0],this.bottomCanvasText())
     }
-    this.drawSprite(this.enemy.position.x-50,this.enemy.position.y-50,100,100,100,"../sprites/evilCharacter.png")
-    this.drawSprite(this.player.position.x-50,this.player.position.y-50,100,100,100,"../sprites/character.png")
+    this.drawSprite(this.creatures[1].position.x-50,this.creatures[1].position.y-50,100,100,100,"../sprites/evilCharacter.png")
+    this.drawSprite(this.creatures[0].position.x-50,this.creatures[0].position.y-50,100,100,100,"../sprites/character.png")
     this.drawSprite(2250,250,100,100,100,"../sprites/character.png")
 
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
@@ -341,8 +339,8 @@ export class World extends GameState {
       this.drawController.newRect(0,110,105,980,465,[50,50,50])
       let variance = 10*Math.sin(Math.PI*this.iterations/300)
       this.drawController.newSprite(0,130-variance,200-variance,250+variance*2,"./sprites/character.png")
-      this.drawController.newText(0,375,150,400,100,[255,255,255],"Base DEF: " +this.player.baseDefense)
-      this.drawController.newText(0,375,225,400,100,[255,255,255],"Base ATK: " +this.player.baseDamage)
+      this.drawController.newText(0,375,150,400,100,[255,255,255],"Base DEF: " +this.creatures[0].baseDefense)
+      this.drawController.newText(0,375,225,400,100,[255,255,255],"Base ATK: " +this.creatures[0].baseDamage)
     }
   }
   drawTile(tile) {
@@ -399,13 +397,13 @@ export class World extends GameState {
           this.createTile(rx + dx,ry+dy,false,0,(x,y) => {},[97, 97, 97],[168, 168, 168],2)
         }
         if (map[ry][rx] == 13) {
-          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.player.teleport(10550,450)}},[97, 97, 97],[168, 168, 168],1)
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {if (this.creatures[0].tilePos.x == x/100 && this.creatures[0].tilePos.y == y/100) {this.creatures[0].teleport(10550,450)}},[97, 97, 97],[168, 168, 168],1)
         }
         if (map[ry][rx] == 17) {
-          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.player.teleport(20550,450)}},[97, 97, 97],[168, 168, 168],1)
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {if (this.creatures[0].tilePos.x == x/100 && this.creatures[0].tilePos.y == y/100) {this.creatures[0].teleport(20550,450)}},[97, 97, 97],[168, 168, 168],1)
         }
         if (map[ry][rx] == 18) {
-          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.player.teleport(10350,1050)}},[97, 97, 97],[168, 168, 168],1)
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {if (this.creatures[0].tilePos.x == x/100 && this.creatures[0].tilePos.y == y/100) {this.creatures[0].teleport(10350,1050)}},[97, 97, 97],[168, 168, 168],1)
         }
         if (map[ry][rx] == 14) {
           this.createTile(rx + dx,ry+dy,false,0,(x,y) => {},[97, 97, 97],[168, 168, 168],2)
@@ -414,7 +412,7 @@ export class World extends GameState {
           this.createTile(rx + dx,ry+dy,false,0,(x,y) => {},[97, 97, 97],[168, 168, 168],3)
         }
         if (map[ry][rx] == 16) {
-          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {if (this.player.tilePos.x == x/100 && this.player.tilePos.y == y/100) {this.player.teleport(350,1050)}},[97, 97, 97],[168, 168, 168],4)
+          this.createTile(rx + dx,ry+dy,false,0,(x,y) => {if (this.creatures[0].tilePos.x == x/100 && this.creatures[0].tilePos.y == y/100) {this.creatures[0].teleport(350,1050)}},[97, 97, 97],[168, 168, 168],4)
         }
       }
     }
@@ -441,7 +439,7 @@ export class World extends GameState {
       this.drawController.canvases[2].widthRel = 0
       this.drawController.canvases[2].heightRel = 0
       this.renderDistance = parseInt(localStorage.getItem("render"))
-      this.playerTurn = false
+      this.creatureTurn = 0
     } else {
       //enter combat
       this.drawController.canvases[0].xRel = 0.25
@@ -455,12 +453,12 @@ export class World extends GameState {
       this.drawController.canvases[2].heightRel = 0.25
       this.renderDistance = 20
       this.viewport.z = 2000
-      this.player.targetPos.x = this.player.position.x
-      this.player.targetPos.y = this.player.position.y
-      this.player.stance = 40
-      this.enemy.stance = 40
-      this.playerTurn = true
-      this.player.startTurn()
+      this.creatures[0].targetPos.x = this.creatures[0].position.x
+      this.creatures[0].targetPos.y = this.creatures[0].position.y
+      this.creatures[0].stance = 40
+      this.creatures[1].stance = 40
+      this.creatureTurn = 0
+      this.creatures[0].startTurn()
     }
   }
   tickPlayer(inputPacket) {
@@ -487,33 +485,38 @@ export class World extends GameState {
     if (inputPacket.keys.indexOf("KeyC") != -1) {
       this.combat(true)
     }
-    this.player.walk(playerDx,playerDy)
-    this.player.updatePos(this.tiles)
+    this.creatures[0].walk(playerDx,playerDy)
+    this.creatures[0].updatePos(this.tiles)
   }
   tickCreatures() {
 
   }
   runCombatTurn(inputPacket) {
-    if (this.playerTurn) {
-      this.player.takeTurn(inputPacket,this.viewport,this.enemy,this.lastInputPacket)
+    this.creatures[this.creatureTurn].takeTurn(this.creatures,inputPacket,this.lastInputPacket,this.viewport)
+    this.creatures[this.creatureTurn].walk(this.creatures[this.creatureTurn].targetPos.x-this.creatures[this.creatureTurn].position.x,this.creatures[this.creatureTurn].targetPos.y-this.creatures[this.creatureTurn].position.y)
+    this.creatures[this.creatureTurn].updatePos(this.tiles)
+    let end = false
+    if (this.creatureTurn) {
+      if (this.creatures[this.creatureTurn].currentAction == null && this.creatures[this.creatureTurn].actions == 0) {
+        end = true
+      }
+    } else {
       if (inputPacket.keys.indexOf("KeyV") != -1) {
         this.combat(false)
       }
-      if (inputPacket.keys.indexOf("KeyE") != -1 && !(this.lastInputPacket.keys.indexOf("KeyE") != -1) && this.player.currentAction == null) {
-        this.enemy.startTurn()
-        this.playerTurn = false
+      if (inputPacket.keys.indexOf("KeyE") != -1 && !(this.lastInputPacket.keys.indexOf("KeyE") != -1) && this.creatures[0].currentAction == null) {
+        end = true
       }
-      this.player.walk(this.player.targetPos.x-this.player.position.x,this.player.targetPos.y-this.player.position.y)
-      this.player.updatePos(this.tiles)
-    } else {
-      this.enemy.takeTurn(this.player)
-      this.enemy.walk(this.enemy.targetPos.x-this.enemy.position.x,this.enemy.targetPos.y-this.enemy.position.y)
-      this.enemy.updatePos(this.tiles)
-      if (this.enemy.currentAction == null && this.enemy.actions == 0) {
-        this.player.startTurn()
-        this.playerTurn = true
+    }
+    if (end) {
+      if (this.creatureTurn + 1 == this.creatures.length) {
+        this.creatureTurn = 0
+        this.creatures[this.creatureTurn].startTurn()
+      } else {
+        this.creatureTurn += 1
+        this.creatures[this.creatureTurn].startTurn()
       }
-    } 
+    }
   }
   logicFrame(inputPacket) {
     if (this.iterations ==0) {
@@ -546,8 +549,8 @@ export class World extends GameState {
       this.isStatsMenuOpen = !this.isStatsMenuOpen
     }
 
-    this.viewport.moveTo(this.player.position.x-600,this.player.position.y-337.5)
+    this.viewport.moveTo(this.creatures[this.creatureTurn].position.x-600,this.creatures[this.creatureTurn].position.y-337.5)
     this.lastInputPacket = JSON.parse(JSON.stringify(inputPacket))
-    document.getElementById("console").innerText = this.enemy.stance
+    //document.getElementById("console").innerText = this.tps + " " + this.fps
   }
 };
