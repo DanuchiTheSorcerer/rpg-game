@@ -35,6 +35,10 @@ export class Button extends Rect {
     draw(canvas,inputPacket) {
         let can = document.getElementById(canvas.id)
         let ctx = can.getContext("2d")
+        let mouseInput = {
+            x:(inputPacket.mouseX-1200*canvas.xRel)/canvas.widthRel,
+            y:(inputPacket.mouseY-675*canvas.yRel)/canvas.heightRel
+        }
         ctx.fillStyle = "black"
         //big brain scaing of rectangle
         ctx.fillRect(((this.x-2)*canvas.resolutionFactor),
@@ -44,58 +48,59 @@ export class Button extends Rect {
         //set color
         ctx.fillStyle = `rgb(${this.color[0]},${this.color[1]},${this.color[2]})`
         //change the appearance if it is being pressed
-        if (inputPacket.mouseX > (this.x) + canvas.xRel * 1200 && 
-            inputPacket.mouseY > (this.y) + canvas.yRel * 675 && 
-            inputPacket.mouseX < (this.x) + (this.width) + canvas.xRel * 1200 && 
-            inputPacket.mouseY < (this.y) + (this.height) + canvas.yRel * 675) {
+        if (mouseInput.x > (this.x) && 
+            mouseInput.y > (this.y) && 
+            mouseInput.x < (this.x) + (this.width)  && 
+            mouseInput.y < (this.y) + (this.height)) {
             ctx.fillStyle = `rgb(${this.color[0]*0.75},${this.color[1]*0.75},${this.color[2]*0.75})`
         }
         ctx.fillRect((this.x*canvas.resolutionFactor),
                 (this.y*canvas.resolutionFactor),
                 (this.width*canvas.resolutionFactor),
                 (this.height*canvas.resolutionFactor))
-        //text location calculations go burrrr
-        ctx.fillStyle = "black"
+         // Set the fill color for the text
+         ctx.fillStyle = 'black';
 
-        let fontSize = 50 * canvas.resolutionFactor;
-        ctx.font = fontSize + 'px Verdana';
-
-        // Measure the text dimensions
-        let textWidth = ctx.measureText(this.text).width;
-        let textHeight = fontSize; // Assuming constant height
-
-        // Incorporate canvas.widthRel and canvas.heightRel to stretch/compress text
-        let widthRel =  1/ canvas.widthRel;  // Default to 1 if not provided
-        let heightRel =  1 / canvas.heightRel;  // Default to 1 if not provided
-
-        // Reduce font size until it fits within the rectangle
-        while (
-            (textWidth * widthRel > (this.width * canvas.resolutionFactor)) ||
-            (textHeight * heightRel > (this.height * canvas.resolutionFactor) / 1.5)
-        ) {
-            fontSize -= 5;
-            ctx.font = fontSize + 'px Verdana';
-            textWidth = ctx.measureText(this.text).width;
-            textHeight = fontSize;
-        }
-
-        // Apply the stretching/compression to the text's width and height
-        textWidth *= widthRel;
-        textHeight *= heightRel;
-
-        // Calculate the position to center the text
-        const textX = (this.x * canvas.resolutionFactor) + ((this.width * canvas.resolutionFactor) - textWidth) / 2;
-        const textY = (this.y * canvas.resolutionFactor) + ((this.height * canvas.resolutionFactor) - textHeight) / 2 + fontSize * 0.8;
-
-        // Set transform for text stretching
-        ctx.save();
-        ctx.scale(widthRel, heightRel);
-
-        // Draw the text with adjusted position and scaling
-        ctx.fillText(this.text, textX / widthRel, textY / heightRel);
-
-        // Restore the canvas state to avoid affecting subsequent drawings
-        ctx.restore();
+         // Start with a large font size
+         let fontSize = 50 * canvas.resolutionFactor;
+         ctx.font = fontSize + 'px Verdana';
+ 
+         // Measure the text dimensions
+         let textWidth = ctx.measureText(this.text).width;
+         let textHeight = fontSize; // Assuming constant height
+ 
+         // Incorporate canvas.widthRel and canvas.heightRel to stretch/compress text
+         let widthRel =  1/ canvas.widthRel;  // Default to 1 if not provided
+         let heightRel =  1 / canvas.heightRel;  // Default to 1 if not provided
+ 
+         // Reduce font size until it fits within the rectangle
+         while (
+             (textWidth * widthRel > (this.width * canvas.resolutionFactor)) ||
+             (textHeight * heightRel > (this.height * canvas.resolutionFactor) / 1.5)
+         ) {
+             fontSize -= 5;
+             ctx.font = fontSize + 'px Verdana';
+             textWidth = ctx.measureText(this.text).width;
+             textHeight = fontSize;
+         }
+ 
+         // Apply the stretching/compression to the text's width and height
+         textWidth *= widthRel;
+         textHeight *= heightRel;
+ 
+         // Calculate the position to center the text
+         const textX = (this.x * canvas.resolutionFactor) + ((this.width * canvas.resolutionFactor) - textWidth) / 2;
+         const textY = (this.y * canvas.resolutionFactor) + ((this.height * canvas.resolutionFactor) - textHeight) / 2 + fontSize * 0.8 / canvas.heightRel;
+ 
+         // Set transform for text stretching
+         ctx.save();
+         ctx.scale(widthRel, heightRel);
+ 
+         // Draw the text with adjusted position and scaling
+         ctx.fillText(this.text, textX / widthRel, textY / heightRel);
+ 
+         // Restore the canvas state to avoid affecting subsequent drawings
+         ctx.restore();
     }
 }
 

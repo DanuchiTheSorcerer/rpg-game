@@ -449,6 +449,7 @@ export class World extends GameState {
       this.drawController.canvases[2].heightRel = 0
       this.renderDistance = parseInt(localStorage.getItem("render"))
       this.creatureTurn = 0
+      this.removeButtons()
     } else {
       //enter combat
       this.drawController.canvases[0].xRel = 0.25
@@ -517,6 +518,7 @@ export class World extends GameState {
       if (inputPacket.keys.indexOf("KeyE") != -1 && !(this.lastInputPacket.keys.indexOf("KeyE") != -1) && this.creatures[0].currentAction == null) {
         end = true
       }
+      this.removeButtons()
     }
     if (end) {
       if (this.creatureTurn + 1 == this.creatures.length) {
@@ -531,6 +533,7 @@ export class World extends GameState {
     }    
   }
   logicFrame(inputPacket) {
+    this.drawController.canvases[2].heightRel = inputPacket.mouseX/1200
     if (this.iterations ==0) {
       //add border tiles
       for (let i = 0;i<1000;i++) {
