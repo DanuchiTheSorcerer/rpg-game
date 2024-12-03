@@ -239,9 +239,10 @@ export class World extends GameState {
       } else {
         text = " "
       }
+      text = " "
     } else {
       if (this.creatures[this.creatureTurn].currentAction != null) {
-      text = "Enemy " + this.creatureTurn + " is performing " + this.creatures[1].currentAction
+      text = "Enemy " + this.creatureTurn + " is performing " + this.creatures[this.creatureTurn].currentAction
       } else {
         text = " "
       }
@@ -251,6 +252,7 @@ export class World extends GameState {
   render() {
     let ptx = Math.floor((this.viewport.x+600)/100)
     let pty = Math.floor((this.viewport.y+337.5)/100)
+    //floor tiles
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
       for (let j = Math.max(0, pty - this.renderDistance/2);j<pty;j++) {
         if (!this.floorTiles[i][j].isEmpty) {
@@ -281,14 +283,18 @@ export class World extends GameState {
     }
 
     if (this.isInCombat) {
+      //enemy stance indicators
       for (let i = 1;i<this.creatures.length;i++) {
         this.drawText(this.creatures[i].position.x-50,this.creatures[i].position.y-100,100,100,50,this.creatures[i].stance+ "%")
       }
+      //movement circle sprite
       if (this.creatures[0].currentAction == "move") {
         let size = this.creatures[0].movementSpeed * 100
         this.drawSprite(this.creatures[0].position.x-size,this.creatures[0].position.y-size,100,size*2,size*2,"../sprites/moveDistanceMarker.png")
       }
+      //movement target sprite
       this.drawSprite(this.creatures[0].targetPos.x-25,this.creatures[0].targetPos.y-25,100,50,50,"../sprites/character.png")
+      //combat left bar sprites
       this.drawController.newRect(1,0,0,1200,675,[100,100,100])
       this.drawController.newRect(1,40,10,1120,655,[81, 139, 145])
       this.drawController.newSprite(1,200,25,800,"../sprites/hourglass.png")
@@ -296,20 +302,23 @@ export class World extends GameState {
       this.drawController.newText(1,60,250,1080,100,[255,255,255],"Actions: " + this.creatures[0].actions)
       this.drawController.newText(1,60,300,1080,100,[255,255,255],"Stance: " + this.creatures[0].stance + "%")
       this.drawController.newText(1,60,350,1080,100,[255,255,255],"Move Distance: " + Math.floor(this.creatures[0].movementSpeed*10)/10 + "m")
-      
+      //bottom bar color
       if (!this.creatureTurn) {
         this.drawController.newRect(2,0,0,1200,675,[100,100,255])
       } else {
         this.drawController.newRect(2,0,0,1200,675,[255,0,0])
       }
+      //enemy action text
       this.drawController.newText(2,0,0,1200,675,[0,0,0],this.bottomCanvasText())
     }
-
+    //draw enemies
     for (let i = 1;i<this.creatures.length;i++) {
       this.drawSprite(this.creatures[i].position.x-50,this.creatures[i].position.y-50,100,100,100,"../sprites/evilCharacter.png")
     }
+    //draw the player
     this.drawSprite(this.creatures[0].position.x-50,this.creatures[0].position.y-50,100,100,100,"../sprites/character.png")
 
+    //height tiles
     for (let i = Math.max(0, ptx - this.renderDistance);i<ptx;i++) {
       for (let j = Math.max(0, pty - this.renderDistance/2);j<pty;j++) {
         if (!this.tiles[i][j].isEmpty) {
@@ -343,6 +352,7 @@ export class World extends GameState {
         }
       }
     }
+    //stats menu
     if (this.isStatsMenuOpen) {
       this.drawController.newRect(0,104,100,992,475,[0, 0, 0])
       this.drawController.newRect(0,110,105,980,465,[50,50,50])
@@ -469,6 +479,7 @@ export class World extends GameState {
         this.creatures[i].stance = 40
       }
       this.creatureTurn = 0
+      this.addActionButtons()
       this.creatures[0].startTurn()
     }
   }
@@ -512,18 +523,20 @@ export class World extends GameState {
         end = true
       }
     } else {
+      this.processButtons(inputPacket)
       if (inputPacket.keys.indexOf("KeyV") != -1) {
         this.combat(false)
       }
       if (inputPacket.keys.indexOf("KeyE") != -1 && !(this.lastInputPacket.keys.indexOf("KeyE") != -1) && this.creatures[0].currentAction == null) {
         end = true
+        this.removeButtons()
       }
-      this.removeButtons()
     }
     if (end) {
       if (this.creatureTurn + 1 == this.creatures.length) {
         this.pauseTimer = 60
         this.creatureTurn = 0
+        this.addActionButtons()
         this.creatures[this.creatureTurn].startTurn()
       } else {
         this.pauseTimer = 60
@@ -532,8 +545,10 @@ export class World extends GameState {
       }
     }    
   }
+  addActionButtons() {
+
+  }
   logicFrame(inputPacket) {
-    this.drawController.canvases[2].heightRel = inputPacket.mouseX/1200
     if (this.iterations ==0) {
       //add border tiles
       for (let i = 0;i<1000;i++) {
