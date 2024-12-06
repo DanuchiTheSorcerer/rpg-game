@@ -28,6 +28,7 @@ export class GameState {
       this.tickCount = 0
       this.logicRunning = false
       this.pauseTimer = 0
+      this.buttonCooldown = 0
     }
     load(callback) {
       this.resetState();
@@ -117,13 +118,18 @@ export class GameState {
       this.buttons = []
     }
     processButtons(inputPacket) {
+      if (this.buttonCooldown > 0) {
+        this.buttonCooldown -= 1
+      }
       for (let i = 0;i<this.buttons.length;i++) {
         if (inputPacket.mouseX > this.buttons[i].x &&
             inputPacket.mouseY > this.buttons[i].y &&
             inputPacket.mouseX < this.buttons[i].x + this.buttons[i].width &&
             inputPacket.mouseY < this.buttons[i].y + this.buttons[i].height &&
-            inputPacket.leftMouse) {
+            inputPacket.leftMouse &&
+            !this.buttonCooldown) {
           this.buttons[i].func()
+          this.buttonCooldown = 30
         }
       }
     }
@@ -305,6 +311,10 @@ export class World extends GameState {
       //bottom bar color
       if (!this.creatureTurn) {
         this.drawController.newRect(2,0,0,1200,675,[100,100,255])
+        //combat buttons
+        this.drawController.newButton(2,50,150,325,350,[219, 127, 29],"Attack")
+        this.drawController.newButton(2,425,150,325,350,[219, 127, 29],"Dodge")
+        this.drawController.newButton(2,800,150,325,350,[219, 127, 29],"Move")
       } else {
         this.drawController.newRect(2,0,0,1200,675,[255,0,0])
       }
@@ -546,7 +556,10 @@ export class World extends GameState {
     }    
   }
   addActionButtons() {
-
+    let player = this.creatures[0]
+    this.addButton(337.5,543.75,243.75,87.5,() => {if (Math.sqrt((player.position.x-this.creatures[1].position.x)**2 + (player.position.y-this.creatures[1].position.y)**2) <= 50 && player.actions >0) {this.creatures[0].currentAction = "attack"}})
+    this.addButton(618.75,543.75,243.75,87.5,() => {})
+    this.addButton(900,543.75,243.75,87.5,() => {if (player.movementSpeed>=0.5 || player.actions>0) {this.creatures[0].currentAction = "move"}})
   }
   logicFrame(inputPacket) {
     if (this.iterations ==0) {
@@ -581,6 +594,6 @@ export class World extends GameState {
 
     this.viewport.moveTo(this.creatures[this.creatureTurn].position.x-600,this.creatures[this.creatureTurn].position.y-337.5)
     this.lastInputPacket = JSON.parse(JSON.stringify(inputPacket))
-    document.getElementById("console").innerText = this.tps + " " + this.fps
+    //document.getElementById("console").innerText = this.tps + " " + this.fps
   }
 };

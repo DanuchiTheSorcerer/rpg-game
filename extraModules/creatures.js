@@ -13,6 +13,7 @@ export class Creature {
         this.baseDefense = 0
         this.baseDamage = 0
         this.movementSpeed = 0
+        this.tempStats = {def:0,dmg:0}
         this.currentAction = null
     }
     startTurn() {}
@@ -139,6 +140,8 @@ export class Player extends Creature {
         this.baseDefense = 5
     }
     startTurn() {
+        this.tempStats.def = 0
+        this.tempStats.dmg = 0
         if (this.stance <= 90) {
             this.stance += 10
         } else {
@@ -196,6 +199,8 @@ export class Enemy extends Creature {
         this.targetSet = false
     }
     startTurn() {
+        this.tempStats.def = 0
+        this.tempStats.dmg = 0
         if (this.stance <= 90) {
             this.stance += 10
         } else {
