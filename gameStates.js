@@ -95,7 +95,7 @@ export class GameState {
       let d = new Date()
       this.time = d.getTime()
       if (this.name == "world") {
-        this.creatures = [new Player(900,900),new Enemy(1800,1800),new Enemy(1800,900)]
+        this.creatures = [new Player(900,900),new Enemy(1800,1800)]
       }
       this.inputController = new InputController()
       this.removeButtons()
@@ -220,7 +220,7 @@ export class Title extends GameState {
 export class World extends GameState {
   constructor() {
     super("world", new DrawController([new Canvas(0,0,1,1,"main"),new Canvas(0,0,0,0,"side"),new Canvas(0,0,0,0,"bottom")]));
-    this.creatures = [new Player(900,900),new Enemy(1800,1800),new Enemy(1800,900)]
+    this.creatures = [new Player(900,900),new Enemy(1800,1800)]
     this.tiles = []
     this.floorTiles = []
     this.viewport = new Viewport()
@@ -230,6 +230,7 @@ export class World extends GameState {
     this.isInCombat = false
     this.isStatsMenuOpen = false
     this.creatureTurn = 0
+    this.midAction = null
   }
   createTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor,height) {
     this.tiles[xLocation][yLocation] = new StaticTile(xLocation,yLocation,isWall,bounceFactor,func,sideColor,topColor,height)
@@ -312,9 +313,14 @@ export class World extends GameState {
       if (!this.creatureTurn) {
         this.drawController.newRect(2,0,0,1200,675,[100,100,255])
         //combat buttons
-        this.drawController.newButton(2,50,150,325,350,[219, 127, 29],"Attack")
-        this.drawController.newButton(2,425,150,325,350,[219, 127, 29],"Dodge")
-        this.drawController.newButton(2,800,150,325,350,[219, 127, 29],"Move")
+        if (this.midAction == null) {
+          this.drawController.newButton(2,50,150,325,350,[219, 127, 29],"Attack")
+          this.drawController.newButton(2,425,150,325,350,[219, 127, 29],"Dodge")
+          this.drawController.newButton(2,800,150,325,350,[219, 127, 29],"Move")
+        } else if (this.midAction == "attacking") {
+          this.drawController.newButton(2,50,150,325,350,[219, 127, 29],"Reckless")
+          this.drawController.newButton(2,425,150,325,350,[219, 127, 29],"Parrying")
+        }
       } else {
         this.drawController.newRect(2,0,0,1200,675,[255,0,0])
       }
@@ -557,9 +563,14 @@ export class World extends GameState {
   }
   addActionButtons() {
     let player = this.creatures[0]
-    this.addButton(337.5,543.75,243.75,87.5,() => {if (Math.sqrt((player.position.x-this.creatures[1].position.x)**2 + (player.position.y-this.creatures[1].position.y)**2) <= 50 && player.actions >0) {this.creatures[0].currentAction = "attack"}})
-    this.addButton(618.75,543.75,243.75,87.5,() => {})
-    this.addButton(900,543.75,243.75,87.5,() => {if (player.movementSpeed>=0.5 || player.actions>0) {this.creatures[0].currentAction = "move"}})
+    if (this.midAction == null) {
+      this.addButton(337.5,543.75,243.75,87.5,() => {if (Math.sqrt((player.position.x-this.creatures[1].position.x)**2 + (player.position.y-this.creatures[1].position.y)**2) <= 50 && player.actions >0) {this.midAction = "attacking";this.removeButtons();this.addActionButtons()}})
+      this.addButton(618.75,543.75,243.75,87.5,() => {if (this.actions>0) {this.creatures[0].tempStats.def += 20}})
+      this.addButton(900,543.75,243.75,87.5,() => {if (player.movementSpeed>=0.5 || player.actions>0) {this.creatures[0].currentAction = "move"}})
+    } else if (this.midAction == "attacking") {
+      this.addButton(337.5,543.75,243.75,87.5,() => {player.stance -= 15;player.tempStats.dmg += 10;player.currentAction = "attack";this.midAction=null;this.removeButtons();this.addActionButtons()})
+      this.addButton(618.75,543.75,243.75,87.5,() => {player.tempStats.def += 10;player.currentAction = "attack";this.midAction=null;this.removeButtons();this.addActionButtons()})
+    }
   }
   logicFrame(inputPacket) {
     if (this.iterations ==0) {
@@ -591,6 +602,8 @@ export class World extends GameState {
     if (inputPacket.keys.indexOf("KeyR") && !this.lastInputPacket.keys.indexOf("KeyR")) {
       this.isStatsMenuOpen = !this.isStatsMenuOpen
     }
+
+    this.creatures = this.creatures.filter(item => item.stance > 0)
 
     this.viewport.moveTo(this.creatures[this.creatureTurn].position.x-600,this.creatures[this.creatureTurn].position.y-337.5)
     this.lastInputPacket = JSON.parse(JSON.stringify(inputPacket))

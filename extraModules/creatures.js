@@ -8,7 +8,7 @@ export class Creature {
         this.tilePos = {x:Math.floor(spawnX/100),y:Math.floor(spawnY/100)}
         this.targetPos = {x:0,y:0}
         this.actions = 0
-        this.warp = 1000
+        this.warp = 0
         this.stance = 50
         this.baseDefense = 0
         this.baseDamage = 0
@@ -140,6 +140,8 @@ export class Player extends Creature {
         this.baseDefense = 5
     }
     startTurn() {
+        this.actions = 0
+        this.warp += 110
         this.tempStats.def = 0
         this.tempStats.dmg = 0
         if (this.stance <= 90) {
