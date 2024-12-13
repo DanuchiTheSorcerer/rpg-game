@@ -155,14 +155,6 @@ export class Player extends Creature {
             this.actions++
             this.warp -= 100
           }
-        if (this.currentAction == null) {
-            
-            if (inputPacket.keys.indexOf("KeyM") != -1 && (this.movementSpeed>=0.5 || this.actions>0)) {
-                this.currentAction = "move"
-            } else if (inputPacket.keys.indexOf("KeyK") != -1 && !(lastInputPacket.keys.indexOf("KeyK") != -1) && Math.sqrt((this.position.x-creatures[1].position.x)**2 + (this.position.y-creatures[1].position.y)**2) <= 50 && this.actions >0) {
-                this.currentAction = "attack"
-            }
-        }
         if (this.currentAction == "move") {
             if (this.movementSpeed <= 0.5 && this.actions > 0) {
                 this.movementSpeed += 7.5
