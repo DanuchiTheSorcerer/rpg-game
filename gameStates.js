@@ -603,7 +603,9 @@ export class World extends GameState {
       this.isStatsMenuOpen = !this.isStatsMenuOpen
     }
 
-    this.creatures = this.creatures.filter(item => item.stance > 0)
+    if (this.creatures[0].stance > 0) {
+      this.creatures = this.creatures.filter(item => item.stance > 0)
+    }
 
     this.viewport.moveTo(this.creatures[this.creatureTurn].position.x-600,this.creatures[this.creatureTurn].position.y-337.5)
     this.lastInputPacket = JSON.parse(JSON.stringify(inputPacket))

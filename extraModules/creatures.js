@@ -146,7 +146,7 @@ export class Player extends Creature {
         this.tempStats.dmg = 0
         if (this.stance <= 90) {
             this.stance += 10
-        } else {
+        } else if (this.stance>90) {
             this.stance = 100
         }
     }
@@ -197,7 +197,7 @@ export class Enemy extends Creature {
         this.tempStats.dmg = 0
         if (this.stance <= 90) {
             this.stance += 10
-        } else {
+        } else if (this.stance>90) {
             this.stance = 100
         }
         this.actions++
@@ -206,10 +206,18 @@ export class Enemy extends Creature {
         let player = creatures[0]
         let distanceToPlayer = Math.sqrt((player.position.x-this.position.x)**2 + (player.position.y-this.position.y)**2)/100
         if (this.currentAction == null) {
-            if (distanceToPlayer >= 0.5) {
+            if (this.stance<10) {
+                this.tempStats.def += 20
+            } else if (distanceToPlayer >= 0.5) {
                 this.currentAction = "move"
              } else {
                 this.currentAction = "attack"
+                if (this.stance >= 50) {
+                    this.tempStats.dmg += 10
+                    this.stance -= 15
+                } else {
+                    this.tempStats.def += 10
+                }
              }
         }
         if (this.currentAction == "move") {
